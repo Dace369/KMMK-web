@@ -6,13 +6,14 @@
 <title>KMMK – Egyedi Bútorok</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
   --black: #0D0D0B;
   --off-white: #F4F1EC;
   --warm-white: #FAFAF7;
   --teal: #0F212B;
-  --gold: #C9A96E;
+  --gold: #B58763;
   --text-dark: #1A1A18;
   --text-mid: #5A5750;
   --text-light: #9A9590;
@@ -42,7 +43,7 @@ nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
   padding: var(--f2) var(--f5);
-  background: rgba(13,13,11,0.93);
+  background: rgba(15,33,43,0.96);
   backdrop-filter: blur(16px);
 }
 .nav-logo {
@@ -51,6 +52,8 @@ nav {
   width: 44px; height: 44px;
 }
 .nav-logo img { display: block; width: 44px; height: 44px; object-fit: contain; }
+.foot-logo { display: block; }
+.foot-logo img { display: block; width: 40px; height: 40px; object-fit: contain; }
 nav ul { display: flex; list-style: none; gap: var(--f4); align-items: center; }
 nav ul a {
   text-decoration: none; color: rgba(255,255,255,0.6);
@@ -99,14 +102,14 @@ nav ul a:hover { color: white; }
   animation: fadeUp 1s 0.35s ease both;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
-.hero-cta:hover { background: var(--gold); color: white; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,169,110,0.35); }
+.hero-cta:hover { background: var(--gold); color: white; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(181,135,99,0.35); }
 
 /* ABOUT */
 .about {
   background: var(--off-white); padding: var(--f6) var(--f5);
   display: grid; grid-template-columns: 1fr 1.618fr; gap: var(--f6); align-items: center;
 }
-.about-label { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-light); margin-bottom: var(--f3); }
+.about-label { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: #B58763; margin-bottom: var(--f3); }
 .about h2 {
   font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 3rem);
   font-weight: 400; line-height: 1.2; color: var(--text-dark); margin-bottom: var(--f4);
@@ -122,7 +125,7 @@ nav ul a:hover { color: white; }
   transition: all 0.3s;
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
-.btn-dark:hover { background: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,169,110,0.3); }
+.btn-dark:hover { background: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(181,135,99,0.3); }
 .about-img { height: 480px; overflow: hidden; border-radius: var(--r-xl); }
 .about-img img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -135,41 +138,78 @@ nav ul a:hover { color: white; }
 .feat-img:hover img { transform: scale(1.04); }
 .feat-text { background: var(--teal); padding: var(--f5); display: flex; flex-direction: column; justify-content: center; }
 .feat-text p { font-size: 0.9rem; line-height: 1.618; color: rgba(255,255,255,0.6); margin-bottom: var(--f4); }
-.feat-text a { color: var(--gold); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; text-decoration: none; border-bottom: 1px solid rgba(201,169,110,0.35); padding-bottom: 2px; }
+.feat-text a { color: var(--gold); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; text-decoration: none; border-bottom: 1px solid rgba(181,135,99,0.35); padding-bottom: 2px; }
 
 /* VALUES */
 .values { background: var(--warm-white); padding: var(--f6) var(--f5); text-align: center; }
 .values h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 400; color: var(--text-dark); margin-bottom: var(--f2); }
 .values-sub { font-size: 0.85rem; color: var(--text-light); margin-bottom: var(--f5); }
-.values-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--f3); max-width: 1000px; margin: 0 auto; position: relative; }
-.values-grid::before { content: ''; position: absolute; top: 22px; left: 12.5%; right: 12.5%; height: 1px; background: rgba(0,0,0,0.07); }
+.values-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--f4); max-width: 1040px; margin: 0 auto; position: relative;
+  align-items: stretch;
+}
+/* Vízszintes csík a kártyák közepén */
+.values-grid::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+  height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 8%, rgba(0,0,0,0.06) 92%, transparent 100%);
+  pointer-events: none;
+}
+/* Függőleges csíkok a kártyák között, középen */
 .val-item {
-  padding: var(--f4); position: relative;
-  background: var(--off-white); border-radius: var(--r-lg);
-  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  padding: var(--f5) var(--f4);
+  background: var(--off-white);
+  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: var(--r-lg);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  text-align: center;
 }
-.val-item:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+.val-item:not(:last-child)::after {
+  content: '';
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 1px; height: 48px;
+  background: rgba(0,0,0,0.06);
+  pointer-events: none;
+}
+.val-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.06);
+}
 .val-num {
-  width: 44px; height: 44px; border: 1px solid rgba(0,0,0,0.1); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; margin: 0 auto var(--f4);
-  font-size: 0.72rem; font-weight: 500; color: var(--text-mid); background: var(--warm-white);
+  width: 36px; height: 36px;
+  margin: 0 auto var(--f3);
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.02em;
+  color: var(--text-mid);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
 }
-.val-item h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--text-dark); margin-bottom: var(--f2); }
-.val-item p { font-size: 0.82rem; line-height: 1.618; color: var(--text-mid); }
+.val-item h4 {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 600;
+  color: var(--text-dark); margin-bottom: var(--f2); letter-spacing: 0.01em;
+}
+.val-item p { font-size: 0.83rem; line-height: 1.65; color: var(--text-mid); }
 
 /* PORTFOLIO */
 .portfolio { background: var(--teal); padding: var(--f6) var(--f5); }
-.port-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--f5); }
+.port-top { margin-bottom: var(--f5); text-align: center; }
 .port-top h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 300; color: white; font-style: italic; }
-.port-navs { display: flex; gap: var(--f2); }
+.port-carousel-wrap { position: relative; }
+.port-track-wrap { overflow: hidden; }
+.port-track { display: flex; gap: var(--f4); transition: transform 0.4s ease; flex-wrap: nowrap; }
+.port-track .port-card { flex: 0 0 calc(33.333% - var(--f4) * 2 / 3); min-width: 0; }
+.port-nav { display: flex; justify-content: center; align-items: center; gap: var(--f3); margin-top: var(--f5); padding-top: var(--f4); }
 .port-btn {
-  width: 42px; height: 42px; border: 1px solid rgba(255,255,255,0.18);
-  background: none; color: rgba(255,255,255,0.7); cursor: pointer;
-  border-radius: var(--r-pill);
-  transition: all 0.3s; font-size: 0.9rem;
+  width: 48px; height: 48px; border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08); color: white; cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.3s; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
 }
-.port-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); color: white; }
-.port-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--f4); }
+.port-btn:hover:not(:disabled) { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.5); }
+.port-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .port-card {
   background: rgba(255,255,255,0.05);
   border-radius: var(--r-lg);
@@ -185,13 +225,81 @@ nav ul a:hover { color: white; }
 .port-card-body span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); }
 .port-card-body a { display: inline-block; margin-top: var(--f2); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); text-decoration: none; }
 
+/* Portfólió modal – nagyított kártya */
+.port-modal-overlay {
+  position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center;
+  padding: var(--f2); box-sizing: border-box; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+}
+.port-modal-overlay.open { opacity: 1; visibility: visible; }
+.port-modal-backdrop {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.port-modal-card {
+  position: relative; background: white; border-radius: var(--r-xl); max-width: min(920px, 92vw); width: 100%; max-height: 90vh;
+  overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.35); transform: scale(0.95); transition: transform 0.3s;
+}
+.port-modal-overlay.open .port-modal-card { transform: scale(1); }
+.port-modal-close {
+  position: absolute; top: var(--f2); right: var(--f2); z-index: 3; width: 40px; height: 40px;
+  border: none; background: rgba(255,255,255,0.9); border-radius: 50%; font-size: 1.5rem; line-height: 1; cursor: pointer;
+  color: var(--text-dark); box-shadow: 0 2px 12px rgba(0,0,0,0.15); transition: background 0.2s;
+}
+.port-modal-close:hover { background: white; }
+.port-modal-gallery {
+  position: relative; aspect-ratio: 16/10; background: #f0f0f0; overflow: hidden;
+}
+.port-modal-img-wrap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.port-modal-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.port-modal-arr {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 44px; height: 44px;
+  border: none; background: rgba(255,255,255,0.9); border-radius: 50%; font-size: 1.2rem; cursor: pointer;
+  color: var(--text-dark); box-shadow: 0 2px 12px rgba(0,0,0,0.15); transition: background 0.2s, opacity 0.2s;
+}
+.port-modal-arr:hover { background: white; }
+.port-modal-arr.hidden { opacity: 0; pointer-events: none; }
+.port-modal-prev { left: var(--f2); }
+.port-modal-next { right: var(--f2); }
+.port-modal-counter {
+  position: absolute; bottom: var(--f2); left: 50%; transform: translateX(-50%); z-index: 2;
+  background: rgba(0,0,0,0.6); color: white; padding: var(--f1) var(--f3); border-radius: 999px;
+  font-size: 0.8rem; font-weight: 500;
+}
+.port-modal-body { padding: var(--f5); }
+.port-modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--text-dark); margin: 0 0 var(--f3); }
+.port-modal-desc { font-size: 0.9rem; line-height: 1.6; color: var(--text-mid); margin: 0 0 var(--f4); }
+.port-modal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--f3); }
+.port-modal-materials, .port-modal-time {
+  background: rgba(0,0,0,0.04); border-radius: var(--r-md); padding: var(--f3); display: flex; flex-direction: column; gap: var(--f1);
+}
+.port-modal-meta-icon { font-size: 1rem; }
+.port-modal-meta-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-mid); font-weight: 600; }
+.port-modal-meta-text { font-size: 0.85rem; color: var(--text-dark); margin: 0; line-height: 1.4; }
+
 /* MATERIALS */
 .mat-row { display: grid; grid-template-columns: 1fr 1fr; min-height: 440px; }
 .mat-row.rev { direction: rtl; }
 .mat-row.rev > * { direction: ltr; }
 .mat-img-wrap { overflow: hidden; }
-.mat-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; display: block; }
+.mat-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.8s; display: block; }
 .mat-img-wrap:hover img { transform: scale(1.04); }
+.mat-img-wrap-feelwood { background: #1a1a1a; }
+.mat-img-wrap-feelwood img { object-fit: contain; object-position: center; min-height: 100%; }
+@media (min-width: 769px) {
+  .mat-row-feelwood .mat-img-wrap-feelwood { min-height: 440px; display: flex; align-items: center; justify-content: center; }
+  .mat-row-feelwood .mat-img-wrap-feelwood img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
+}
+@media (max-width: 768px) {
+  .mat-img-wrap-feelwood img { object-fit: cover; object-position: center; }
+}
+.mat-img-wrap-poszt { background: #f5f5f5; }
+.mat-img-wrap-poszt img { object-position: center; }
+@media (min-width: 769px) {
+  .mat-row-poszt .mat-img-wrap-poszt { min-height: 440px; display: flex; align-items: center; justify-content: center; }
+  .mat-row-poszt .mat-img-wrap-poszt img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
+}
+@media (max-width: 768px) {
+  .mat-img-wrap-poszt img { object-fit: cover; }
+}
 .mat-body { padding: var(--f6) var(--f5); display: flex; flex-direction: column; justify-content: center; background: var(--off-white); }
 .mat-body.dk { background: var(--black); }
 .mat-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--gold); margin-bottom: var(--f3); }
@@ -202,8 +310,8 @@ nav ul a:hover { color: white; }
 .mat-cta {
   font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold);
   text-decoration: none; display: inline-flex; align-items: center; gap: var(--f2);
-  background: rgba(201,169,110,0.1); padding: var(--f2) var(--f4);
-  border-radius: var(--r-pill); border: 1px solid rgba(201,169,110,0.3);
+  background: rgba(181,135,99,0.1); padding: var(--f2) var(--f4);
+  border-radius: var(--r-pill); border: 1px solid rgba(181,135,99,0.3);
   transition: all 0.3s; width: fit-content;
 }
 .mat-cta::after { content: '→'; }
@@ -213,17 +321,25 @@ nav ul a:hover { color: white; }
 .kronospan { background: var(--warm-white); padding: var(--f6) var(--f5); text-align: center; }
 .kronospan h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 300; color: var(--text-dark); margin-bottom: var(--f3); }
 .kronospan p { font-size: 0.88rem; line-height: 1.618; color: var(--text-mid); max-width: 520px; margin: 0 auto var(--f5); }
-.kronospan-img { max-width: 640px; margin: 0 auto var(--f5); border-radius: var(--r-xl); overflow: hidden; box-shadow: 0 18px 55px rgba(0,0,0,0.16); }
-.kronospan-img img { display: block; width: 100%; height: auto; object-fit: cover; }
+.kronospan-img { margin: 0 auto var(--f5); max-width: 720px; border-radius: var(--r-lg); overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+.kronospan-img img { width: 100%; height: auto; display: block; object-fit: cover; }
 
 /* REVIEWS */
 .reviews { background: var(--off-white); padding: var(--f6) var(--f5); }
 .rev-head { text-align: center; margin-bottom: var(--f5); }
 .rev-head h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 400; color: var(--text-dark); margin-bottom: var(--f2); }
 .rev-head p { font-size: 0.85rem; color: var(--text-light); }
-.rev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--f4); max-width: 1000px; margin: 0 auto; }
-.rev-card { background: var(--warm-white); padding: var(--f4); border-radius: var(--r-lg); transition: transform 0.3s, box-shadow 0.3s; }
-.rev-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.07); }
+.rev-carousel-wrap { max-width: 1000px; margin: 0 auto; position: relative; }
+.rev-track-wrap { overflow: hidden; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: pan-y; }
+.rev-track-wrap:active { cursor: grabbing; }
+.rev-nav { display: flex; justify-content: center; align-items: center; gap: var(--f3); margin-top: var(--f5); padding-top: var(--f4); }
+.rev-btn { width: 48px; height: 48px; border: 1px solid rgba(0,0,0,0.12); background: var(--warm-white); color: var(--text-dark); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: all 0.3s; }
+.rev-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); background: white; }
+.rev-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.rev-track { display: flex; gap: var(--f4); transition: transform 0.4s ease; }
+.rev-track.rev-dragging { transition: none; }
+.rev-card { flex: 0 0 calc(50% - var(--f4) / 2); background: var(--warm-white); padding: var(--f4); border-radius: var(--r-lg); transition: box-shadow 0.3s; }
+.rev-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.07); }
 .rev-stars { display: flex; gap: 2px; margin-bottom: var(--f3); }
 .rev-stars span { color: var(--gold); font-size: 0.85rem; }
 .rev-quote { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; line-height: 1.618; color: var(--text-dark); margin-bottom: var(--f4); }
@@ -233,17 +349,36 @@ nav ul a:hover { color: white; }
 .rev-loc { font-size: 0.75rem; color: var(--text-light); }
 
 /* FAQ */
-.faq { background: #0F212B; padding: var(--f6) var(--f5); }
+.faq { background: var(--black); padding: var(--f6) var(--f5); }
 .faq-inner { max-width: 800px; margin: 0 auto; }
 .faq-head { margin-bottom: var(--f5); }
-.faq-head small { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--gold); display: block; margin-bottom: var(--f3); }
-.faq-head h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 300; color: white; }
+.faq-head small { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--gold); display: block; margin-bottom: var(--f3); }
+.faq-head h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 3.5vw, 3.2rem); font-weight: 300; color: white; }
 .faq-row { border-bottom: 1px solid rgba(255,255,255,0.07); padding: var(--f4) 0; cursor: pointer; }
-.faq-q { display: flex; justify-content: space-between; align-items: center; font-size: 1rem; color: rgba(255,255,255,0.9); user-select: none; gap: var(--f3); }
-.faq-icon { width: 30px; height: 30px; border: 1px solid rgba(255,255,255,0.14); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: rgba(255,255,255,0.4); transition: transform 0.35s, border-color 0.3s, color 0.3s; flex-shrink: 0; }
+.faq-q { display: flex; justify-content: space-between; align-items: center; font-size: 1.05rem; color: rgba(255,255,255,0.82); user-select: none; gap: var(--f3); }
+.faq-icon {
+  width: 30px; height: 30px; min-width: 30px; min-height: 30px;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.14); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.35s, border-color 0.3s, color 0.3s;
+  transform-origin: center center;
+  color: rgba(255,255,255,0.4);
+  font-size: 0;
+}
+.faq-icon::before,
+.faq-icon::after {
+  content: ''; position: absolute;
+  left: 50%; top: 50%;
+  background: currentColor;
+  width: 12px; height: 2px;
+  margin-left: -6px; margin-top: -1px;
+}
+.faq-icon::after { transform: rotate(90deg); }
 .faq-row.open .faq-icon { transform: rotate(45deg); border-color: var(--gold); color: var(--gold); }
-.faq-a { max-height: 0; overflow: hidden; font-size: 0.86rem; line-height: 1.618; color: rgba(255,255,255,0.42); transition: max-height 0.4s ease, padding 0.3s; }
-.faq-row.open .faq-a { max-height: 200px; padding-top: var(--f3); }
+.faq-a { max-height: 0; overflow: hidden; font-size: 0.98rem; line-height: 1.618; color: rgba(255,255,255,0.42); transition: max-height 0.4s ease, padding 0.3s; }
+.faq-row.open .faq-a { max-height: 500px; padding-top: var(--f3); }
 
 /* CTA */
 .cta { background: var(--off-white); padding: var(--f7) var(--f5); text-align: center; position: relative; overflow: hidden; }
@@ -257,16 +392,31 @@ nav ul a:hover { color: white; }
 .cta-ci { display: flex; align-items: center; gap: var(--f3); font-size: 0.85rem; color: var(--text-mid); }
 .cta-icon { width: 44px; height: 44px; border: 1px solid rgba(0,0,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
 .cta-ci-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 0.15rem; }
+/* CTA redesign – phone primary, gold call button */
+.cta-phone-number { display: block; font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 500; color: var(--text-dark); text-decoration: none; margin-bottom: var(--f4); position: relative; letter-spacing: 0.02em; }
+.cta-phone-number:hover { color: var(--gold); }
+.cta-call-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: #C9A96E; color: white; padding: 1rem 2.25rem; border-radius: 999px; font-size: 1.1rem; font-weight: 500; text-decoration: none; transition: opacity 0.25s, transform 0.25s; position: relative; border: none; }
+.cta-call-btn:hover { opacity: 0.95; transform: translateY(-2px); }
+.cta-call-icon { font-size: 1.25rem; }
+.cta-more-link-wrap { margin: var(--f4) 0 0; position: relative; }
+.cta-more-link { font-size: 0.8rem; color: var(--text-mid); text-decoration: underline; }
+.cta-more-link:hover { color: var(--gold); }
+.cta-separator { margin: var(--f5) 0; color: rgba(0,0,0,0.2); font-size: 1rem; letter-spacing: 0.2em; position: relative; }
+.cta-contact-secondary { margin-top: 0; }
+.cta-contact-secondary .cta-ci { font-size: 0.8rem; color: var(--text-light); }
+.cta-contact-secondary .cta-icon { width: 36px; height: 36px; font-size: 0.9rem; }
+.cta-contact-secondary .cta-ci-label { font-size: 0.62rem; }
 
 /* FOOTER */
-footer { background: var(--black); padding: var(--f5); }
+footer { background: var(--teal); padding: var(--f5); }
 .foot-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: var(--f4); border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: var(--f4); flex-wrap: wrap; gap: var(--f4); }
 .foot-links { display: flex; gap: var(--f4); list-style: none; flex-wrap: wrap; }
 .foot-links a { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.3s; }
 .foot-links a:hover { color: rgba(255,255,255,0.7); }
 .foot-social { display: flex; gap: var(--f2); }
-.soc { width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.75rem; transition: all 0.3s; }
+.soc { width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.45); text-decoration: none; transition: all 0.3s; }
 .soc:hover { border-color: rgba(255,255,255,0.35); color: white; }
+.soc svg { display: block; }
 .foot-bot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--f3); }
 .foot-copy { font-size: 0.72rem; color: rgba(255,255,255,0.18); }
 .foot-legal { display: flex; gap: var(--f4); list-style: none; }
@@ -284,7 +434,7 @@ footer { background: var(--black); padding: var(--f5); }
 .adm-x:hover { background: rgba(0,0,0,0.07); }
 .adm-body { padding: var(--f4); }
 .adm-sec { margin-bottom: var(--f4); }
-.adm-sec-title { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--gold); margin-bottom: var(--f3); padding-bottom: var(--f2); border-bottom: 1px solid rgba(201,169,110,0.18); }
+.adm-sec-title { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--gold); margin-bottom: var(--f3); padding-bottom: var(--f2); border-bottom: 1px solid rgba(181,135,99,0.18); }
 .ai { width: 100%; padding: var(--f2) var(--f3); border: 1.5px solid rgba(0,0,0,0.1); border-radius: var(--r-md); font-family: 'Jost', sans-serif; font-size: 0.88rem; background: white; color: var(--text-dark); outline: none; transition: border-color 0.3s; margin-bottom: var(--f2); }
 .ai:focus { border-color: var(--gold); }
 .upload-zone { border: 2px dashed rgba(0,0,0,0.1); border-radius: var(--r-lg); padding: var(--f5); text-align: center; cursor: pointer; transition: all 0.3s; background: white; }
@@ -298,6 +448,10 @@ footer { background: var(--black); padding: var(--f5); }
 .prev-img { aspect-ratio: 4/3; overflow: hidden; position: relative; }
 .prev-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .prev-del { position: absolute; top: 0.3rem; right: 0.3rem; background: rgba(0,0,0,0.6); color: white; border: none; width: 22px; height: 22px; border-radius: 50%; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.prev-img-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(0,0,0,0.04); }
+.prev-img-loading .prev-loading-spin { width: 26px; height: 26px; border: 2px solid rgba(0,0,0,0.1); border-top-color: rgba(0,0,0,0.45); border-radius: 50%; animation: prevUploadSpin 0.75s linear infinite; }
+.prev-img-loading .prev-loading-text { font-size: 0.72rem; color: var(--text-mid); }
+@keyframes prevUploadSpin { to { transform: rotate(360deg); } }
 .prev-card input { width: 100%; padding: 0.4rem 0.5rem; font-size: 0.72rem; border: none; border-top: 1px solid rgba(0,0,0,0.06); font-family: 'Jost',sans-serif; background: white; outline: none; color: var(--text-dark); }
 .btn-save { width: 100%; background: var(--black); color: white; padding: var(--f3); border: none; font-family: 'Jost',sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border-radius: var(--r-pill); transition: background 0.3s; }
 .btn-save:hover { background: var(--teal); }
@@ -307,47 +461,81 @@ footer { background: var(--black); padding: var(--f5); }
 @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
 
 @media (max-width: 900px) {
-  nav { padding: var(--f2) var(--f3); }
+  nav { padding: 1.2rem 1.5rem; }
   nav ul { display: none; }
   .lang-switcher { margin-left: auto; }
-  .hero { padding: 0 var(--f3) var(--f5); }
-  .about { grid-template-columns: 1fr; gap: var(--f3); padding: var(--f6) var(--f3); }
+  .hero { padding: 0 1.5rem 4rem; }
+  .about { grid-template-columns: 1fr; gap: 2rem; padding: 5rem 1.5rem; }
   .about-img { height: 280px; }
-  .featured { padding: 0 var(--f3) var(--f6); }
+  .featured { padding: 0 1.5rem 5rem; }
   .featured-block { grid-template-columns: 1fr; }
   .feat-img { height: 280px; }
-  .feat-text { padding: var(--f4); }
-  .values { padding: var(--f6) var(--f3); }
-  .values-grid { grid-template-columns: 1fr 1fr; }
-  .values-grid::before { display: none; }
-  .portfolio { padding: var(--f6) var(--f3); }
-  .port-grid { grid-template-columns: 1fr 1fr; }
+  .feat-text { padding: 2.5rem; }
+  .values { padding: 5rem 1.5rem; }
+  .values-grid { grid-template-columns: 1fr 1fr; gap: var(--f3); }
+  .values-grid::before { left: 5%; right: 5%; }
+  .val-item:not(:last-child)::after { display: none; }
+  .portfolio { padding: 5rem 1.5rem; }
+  .port-track .port-card { flex: 0 0 calc(50% - var(--f4) / 2); }
+  .port-nav { margin-top: var(--f4); }
   .mat-row { grid-template-columns: 1fr; }
   .mat-row.rev { direction: ltr; }
   .mat-img-wrap { height: 260px; }
-  .mat-body { padding: var(--f4) var(--f3); }
-  .kronospan { padding: var(--f6) var(--f3); }
-  .reviews { padding: var(--f6) var(--f3); }
-  .rev-grid { grid-template-columns: 1fr; }
-  .faq { padding: var(--f6) var(--f3); }
-  .cta { padding: var(--f7) var(--f3); }
+  .mat-body { padding: 3rem 2rem; }
+  .kronospan { padding: 5rem 1.5rem; }
+  .reviews { padding: 5rem 1.5rem; }
+  .rev-card { flex: 0 0 100%; }
+  .rev-track { gap: var(--f3); }
+  .faq { padding: 5rem 1.5rem; }
+  .cta { padding: 6rem 1.5rem; }
   .cta-contacts { gap: 1.5rem; }
-  footer { padding: var(--f4) var(--f3); }
+  footer { padding: 2rem 1.5rem; }
   .foot-top { flex-direction: column; align-items: flex-start; }
   .prev-grid { grid-template-columns: repeat(2,1fr); }
 }
+@media (max-width: 600px) {
+  .port-track .port-card { flex: 0 0 100%; }
+}
 
 .lang-switcher { display: flex; gap: 0.3rem; align-items: center; margin-left: 1rem; }
-.lang-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; padding: 0.3rem 0.65rem; border-radius: 999px; cursor: pointer; transition: all 0.3s; font-family: 'Jost', sans-serif; }
-.lang-btn:hover { border-color: rgba(255,255,255,0.5); color: white; }
-.lang-btn.active { background: white; color: #0D0D0B; border-color: white; }
+.lang-btn { background: transparent; border: 1px solid rgba(255,255,255,0.5); color: rgba(255,255,255,0.8); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; padding: 0.3rem 0.65rem; border-radius: var(--r-pill); cursor: pointer; transition: all 0.3s; font-family: 'Jost', sans-serif; }
+.lang-btn:hover { border-color: rgba(255,255,255,0.8); color: white; }
+.lang-btn.active { background: white; color: var(--black); border-color: white; }
+
+/* Szlovák: betűtípusok jó diakritikával (š ž ý á stb.) – normál méretű ékezetek */
+html[lang="sk"] body,
+html[lang="sk"] nav ul a,
+html[lang="sk"] .lang-btn,
+html[lang="sk"] .ai,
+html[lang="sk"] .prev-card input,
+html[lang="sk"] .btn-save,
+html[lang="sk"] .cta-phone-number,
+html[lang="sk"] .cta-more-link,
+html[lang="sk"] .cta-ci,
+html[lang="sk"] .cta-ci-label,
+html[lang="sk"] .cta-contact-secondary .cta-ci { font-family: 'Source Sans 3', sans-serif; }
+html[lang="sk"] .hero h1,
+html[lang="sk"] .about h2,
+html[lang="sk"] .featured-title,
+html[lang="sk"] .values h2,
+html[lang="sk"] .val-item h4,
+html[lang="sk"] .port-top h2,
+html[lang="sk"] .port-card-body h3,
+html[lang="sk"] .port-modal-title,
+html[lang="sk"] .mat-body h3,
+html[lang="sk"] .kronospan h2,
+html[lang="sk"] .rev-head h2,
+html[lang="sk"] .rev-quote,
+html[lang="sk"] .faq-head h2,
+html[lang="sk"] .cta h2,
+html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">
+  <a href="#home" class="nav-logo">
     <img src="assets/logo.png" alt="KMMK logó" width="44" height="44">
   </a>
   <ul>
@@ -358,11 +546,139 @@ footer { background: var(--black); padding: var(--f5); }
     <li><a href="#contact" class="nav-btn" data-i18n="nav_contact">Kapcsolat</a></li>
   </ul>
   <div class="lang-switcher">
-    <button class="lang-btn active" onclick="setLang('hu')">HU</button>
-    <button class="lang-btn" onclick="setLang('sk')">SK</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button type="button" class="lang-btn active" data-lang="hu" onclick="window.setLang('hu')">HU</button>
+    <button type="button" class="lang-btn" data-lang="sk" onclick="window.setLang('sk')">SK</button>
+    <button type="button" class="lang-btn" data-lang="en" onclick="window.setLang('en')">EN</button>
   </div>
 </nav>
+<script>
+(function() {
+  var translations = {
+    hu: {
+      nav_about: 'Rólunk', nav_portfolio: 'Portfólió', nav_materials: 'Anyagválasztás', nav_reviews: 'Vélemények', nav_contact: 'Kapcsolat',
+      hero_sub: 'KMMK · Asztalos Műhely · Préselt bútorlapok', hero_title: 'Tér, ami<br>rólad szól.', hero_cta: 'Projekt indítása',
+      about_label: 'Otthonteremtés új szinten', about_title: 'Egyedi otthon,<br><em>fiatalos lendülettel.</em>',
+      about_text: 'Fiatalos asztalos csapat vagyunk, akik nemcsak bútort készítenek, hanem veled együtt álmodják meg az otthonod tereit. 3D-ben megtervezzük, te kiválasztod a stílust, mi pedig életre keltjük pontosan úgy, ahogy elképzelted!',
+      about_btn: 'Tudj meg többet!',
+      featured_title: 'Nálunk minden bútor egyedi.', featured_text: 'Nem sablonokban gondolkodunk. A 3D-ben megálmodott tervekből pontosan olyan megoldás születik, ami illik hozzád és az otthonodhoz.',
+      featured_link: 'Munkáim megtekintése',
+      values_title: 'Amit minden munkánk képvisel', values_sub: 'Hiszünk abban, hogy a bútorkészítés több, mint fa és szerszám: bizalom, precizitás és kreativitás.',
+      val1_title: 'Egyediség', val1_text: 'Minden bútor személyre szabott. Nem sablonokat kínálunk, hanem olyan megoldásokat, amelyek pontosan a te igényeidhez illenek.',
+      val2_title: 'Megbízhatóság', val2_text: 'Pontos határidők, profi kommunikáció és hibátlan kivitelezés.',
+      val3_title: 'Modern technológia', val3_text: '3D tervrajz minden projekthez, prémium anyagok és modern gépek.',
+      val4_title: 'Minőség', val4_text: 'Csak olyat adunk ki a műhelyből, amire valóban büszkék vagyunk.',
+      port_title: 'Ahogy az ötletekből otthon születik.',
+      mat1_tag: 'Laminált bútorlapok', mat1_title: 'EGGER és KRONOSPAN laminált bútorlapok',
+      mat1_text: 'Prémium minőségű laminált bútor- és faforgácslapok. Hosszú élettartam, gazdag szín- és dekórválaszték, prémium minőségű felületek.',
+      mat2_tag: 'Egyenes éli prémium munkalapok', mat2_title: 'Feelwood egyenes éli prémium munkalapok',
+      mat2_text: 'Természetes fa hatású, prémium minőségű munkalapok. Természetes felület, modern esztétika, egyedi kialakítás.',
+      mat3_tag: 'Lekerekített élű munkalapok', mat3_title: 'Posztforming munkalapok',
+      mat3_text: 'Klasszikus, lekerekített élű munkalapok nagy tartósságú és könnyen tisztítható felülettel. Letisztult, tartós megoldás.',
+      mat_cta: 'Katalógus megtekintése',
+      krono_title: 'Kronospan Global Collection', krono_text: 'A legújabb trendeket követő bútorlapok széles szín- és dekórkínálattal – fás, beton, semleges, matt és fényes felületekkel.',
+      krono_btn: 'Kollekció megtekintése',
+      rev_title: 'Mit mondanak a megrendelőink?', rev_sub: 'Röviden arról, milyen velünk együtt dolgozni.',
+      faq_label: 'Kérdések', faq_title: 'Tudj meg mindent,<br>mielőtt kapcsolatba lépnél.',
+      faq1_q: 'Hogyan lehet kapcsolatba lépni? <span class="faq-icon">+</span>', faq1_a: 'Az oldalon lévő kapcsolati űrlapon, e-mailen vagy telefonon bármikor elérhetsz minket. Általában 24 órán belül válaszolunk.',
+      faq2_q: 'Milyen típusú projekteket vállalsz? <span class="faq-icon">+</span>', faq2_a: 'Konyhabútor, szekrénysor, gardrób, fürdőszobabútor, irodabútor és egyéb egyedi darabok préselt bútorlapból.',
+      faq3_q: 'Mennyi idő alatt készül el egy projekt? <span class="faq-icon">+</span>', faq3_a: 'Átlagosan 2–4 hét, a projekt méretétől és komplexitásától függően. Pontos határidőt az egyeztetéskor megadunk.',
+      faq4_q: 'Mik a mérési paraméterek? <span class="faq-icon">+</span>', faq4_a: 'Minden projektet helyszíni méréssel kezdünk, így a bútor pontosan a te teredbe illeszkedik. Ez az egyedi kivitelezés alapja.',
+      faq5_q: 'Hogy kezdjük el? <span class="faq-icon">+</span>', faq5_a: 'Küldj egy üzenetet az elképzeléseddel, egyeztetünk egy helyszíni mérésre, majd 3D tervrajzot készítünk – ezután indul a gyártás.',
+      cta_title: 'Egy ötlettel kezdődik minden.', cta_text: 'Lépj velünk kapcsolatba, és néhány nap múlva már láthatod is 3D-ben az elképzelt konyhádat vagy nappalid terveit.',
+      cta_btn1: 'Lépj velünk kapcsolatba', cta_btn2: 'Tudj meg többet!', cta_call_btn: 'Hívj fel most!', cta_tel: 'Tel', cta_email_label: 'Email', cta_loc_label: 'Helyszín', cta_location: 'Magyarország'
+    },
+    sk: {
+      nav_about: 'O nás', nav_portfolio: 'Portfólio', nav_materials: 'Výber materiálov', nav_reviews: 'Recenzie', nav_contact: 'Kontakt',
+      hero_sub: 'KMMK · Stolárska dielňa · Prestované nábytokové dosky', hero_title: 'Priestor,<br>ktorý hovorí o vás.', hero_cta: 'Spustiť projekt',
+      about_label: 'Priestor, o ktorom snívate', about_title: 'Jedinečný domov,<br><em>s mladistvou energiou.</em>',
+      about_text: 'Sme mladý tím stolárov, ktorí nielen vyrábajú nábytok, ale s vami spoločne snívajú o priestoroch vášho domova. Plánujeme v 3D, vy si zvolíte štýl a my to oživíme presne tak, ako ste si to predstavovali!',
+      about_btn: 'Zistiť viac!',
+      featured_title: 'U nás je každý nábytok jedinečný.', featured_text: 'Nemyslíme v šablónach. Z 3D návrhov vznikajú presne také riešenia, ktoré sa hodia k vám a vášmu domovu.',
+      featured_link: 'Pozrieť moje práce',
+      values_title: 'Čo reprezentuje každá naša práca', values_sub: 'Veríme, že výroba nábytku je viac ako drevo a nástroje: dôvera, precíznosť a kreativita.',
+      val1_title: 'Jedinečnosť', val1_text: 'Každý nábytok sa vyrába výhradne podľa vašich požiadaviek a vášho priestoru.',
+      val2_title: 'Spoľahlivosť', val2_text: 'Presné termíny, profesionálna komunikácia a bezchybná realizácia.',
+      val3_title: 'Moderná technológia', val3_text: '3D plány pre každý projekt, prémiové materiály a moderné stroje.',
+      val4_title: 'Kvalita', val4_text: 'Z dielne odchádza len to, na čo sme skutočne hrdí.',
+      port_title: 'Ako sa z nápadov rodí domov.',
+      mat1_tag: 'Laminátové nábytokové dosky', mat1_title: 'EGGER a KRONOSPAN laminátové nábytokové dosky',
+      mat2_tag: 'Prémiové pracovné dosky s rovnou hranou', mat2_title: 'Feelwood prémiové pracovné dosky s rovnou hranou',
+      mat3_tag: 'Pracovné dosky so zaoblenou hranou', mat3_title: 'Postforming pracovné dosky',
+      mat_cta: 'Zobraziť katalóg', krono_title: 'Kronospan Global Collection', krono_btn: 'Zobraziť kolekciu',
+      rev_title: 'Čo hovoria naši zákazníci?', rev_sub: 'Stručne o tom, aké je s nami spolupracovať.',
+      faq_label: 'Otázky', faq_title: 'Zistite všetko<br>predtým, ako nás kontaktujete.',
+      faq1_q: 'Ako vás môžem kontaktovať? <span class="faq-icon">+</span>', faq1_a: 'Môžete nás kedykoľvek osloviť cez kontaktný formulár na stránke, e-mailom alebo telefonicky. Zvyčajne odpovedáme do 24 hodín.',
+      faq2_q: 'Aké typy projektov prijímate? <span class="faq-icon">+</span>', faq2_a: 'Kuchynské skrine, obývacie steny, šatníky, kúpeľňový nábytok, kancelársky nábytok a ďalšie individuálne kusy z prestovaných dosiek.',
+      faq3_q: 'Ako dlho trvá realizácia projektu? <span class="faq-icon">+</span>', faq3_a: 'Priemerne 2–4 týždne v závislosti od veľkosti a zložitosti projektu. Presný termín určíme pri konzultácii.',
+      faq4_q: 'Aké sú parametre merania? <span class="faq-icon">+</span>', faq4_a: 'Každý projekt začíname meraním na mieste, aby nábytok presne zapadol do vášho priestoru. To je základ individuálnej výroby.',
+      faq5_q: 'Ako začneme? <span class="faq-icon">+</span>', faq5_a: 'Pošlite správu s vašou predstavou, dohodneme meranie na mieste, pripravíme 3D plán – potom začína výroba.',
+      cta_title: 'Všetko začína jedným nápadom.', cta_text: 'Kontaktujte nás a o niekoľko dní uvidíte svoju vysnívanú kuchyňu alebo obývačku v 3D.',
+      cta_btn1: 'Kontaktujte nás', cta_btn2: 'Zistiť viac!', cta_call_btn: 'Zavolajte teraz!', cta_tel: 'Tel', cta_email_label: 'Email', cta_loc_label: 'Miesto', cta_location: 'Slovensko',
+      mat1_text: 'Prémiové laminátové a drevotrieskové dosky. Dlhá životnosť, bohatá škála farieb a dekorov.', mat2_text: 'Pracovné dosky s prirodzeným vzhľadom dreva. Prirodzený povrch, moderná estetika.', mat3_text: 'Klasické pracovné dosky so zaoblenou hranou s vysokou odolnosťou a ľahko čistiteľným povrchom.', krono_text: 'Nábytokové dosky sledujúce najnovšie trendy so širokou ponukou farieb a dekorov.'
+    },
+    en: {
+      nav_about: 'About us', nav_portfolio: 'Portfolio', nav_materials: 'Material selection', nav_reviews: 'Reviews', nav_contact: 'Contact',
+      hero_sub: 'KMMK · Joinery Workshop · Laminated boards', hero_title: 'Space that<br>speaks of you.', hero_cta: 'Start a project',
+      about_label: 'Space you dream of', about_title: 'Unique home,<br><em>with youthful energy.</em>',
+      about_text: 'We are a young team of joiners who don\'t just make furniture – we dream up your home spaces with you. We plan in 3D, you choose the style, and we bring it to life exactly as you imagined!',
+      about_btn: 'Learn more!',
+      featured_title: 'Every piece of furniture we make is unique.', featured_text: 'We don\'t think in templates. From 3D dreams come solutions that fit you and your home.',
+      featured_link: 'View my work',
+      values_title: 'What every piece of our work represents', values_sub: 'We believe that furniture-making is more than wood and tools: trust, precision and creativity.',
+      val1_title: 'Uniqueness', val1_text: 'Every piece of furniture is made exclusively to your needs and your space.',
+      val2_title: 'Reliability', val2_text: 'Accurate deadlines, professional communication and flawless execution.',
+      val3_title: 'Modern technology', val3_text: '3D plans for every project, premium materials and modern machinery.',
+      val4_title: 'Quality', val4_text: 'Only what we\'re truly proud of leaves the workshop.',
+      port_title: 'How ideas become home.',
+      mat1_tag: 'Laminated boards', mat1_title: 'EGGER and KRONOSPAN laminated boards', mat1_text: 'Premium laminated and chipboard panels. Long lifespan, rich colour and decor range, premium surfaces.',
+      mat2_tag: 'Premium worktops with straight edge', mat2_title: 'Feelwood premium straight-edge worktops', mat2_text: 'Worktops with natural wood appearance. Natural surface, modern aesthetics, custom design.',
+      mat3_tag: 'Worktops with rounded edge', mat3_title: 'Postforming worktops', mat3_text: 'Classic worktops with rounded edge, highly durable and easy to clean. Clean, durable solution.',
+      mat_cta: 'View catalogue', krono_title: 'Kronospan Global Collection', krono_text: 'Board collections following the latest trends with a wide range of colours and decors – wood, concrete, neutral, matt and glossy surfaces.', krono_btn: 'View collection',
+      rev_title: 'What do our customers say?', rev_sub: 'Briefly about what it\'s like to work with us.',
+      faq_label: 'Questions', faq_title: 'Learn everything<br>before you get in touch.',
+      faq1_q: 'How can I get in touch? <span class="faq-icon">+</span>', faq1_a: 'You can reach us anytime via the contact form on the site, by email or phone. We usually respond within 24 hours.',
+      faq2_q: 'What types of projects do you take on? <span class="faq-icon">+</span>', faq2_a: 'Kitchen cabinets, living room units, wardrobes, bathroom furniture, office furniture and other bespoke pieces from laminated boards.',
+      faq3_q: 'How long does a project take? <span class="faq-icon">+</span>', faq3_a: 'On average 2–4 weeks depending on project size and complexity. We\'ll give you an exact deadline at the consultation.',
+      faq4_q: 'What are the measurement parameters? <span class="faq-icon">+</span>', faq4_a: 'Every project starts with an on-site measurement so the furniture fits your space exactly. That\'s the basis of bespoke manufacturing.',
+      faq5_q: 'How do we get started? <span class="faq-icon">+</span>', faq5_a: 'Send a message with your idea, we\'ll arrange an on-site measurement, we\'ll prepare a 3D plan – then production begins.',
+      cta_title: 'Everything starts with one idea.', cta_text: 'Get in touch and in a few days you\'ll see your dream kitchen or living room in 3D.',
+      cta_btn1: 'Get in touch', cta_btn2: 'Learn more!', cta_call_btn: 'Call now!', cta_tel: 'Tel', cta_email_label: 'Email', cta_loc_label: 'Location', cta_location: 'Hungary'
+    }
+  };
+  window.__translations = translations;
+  window.setLang = function(lang) {
+    var t = (window.__translations && window.__translations[lang]) || {};
+    var els = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < els.length; i++) {
+      var key = els[i].getAttribute('data-i18n');
+      if (t[key] !== undefined) els[i].innerHTML = t[key];
+    }
+    var btns = document.querySelectorAll('.lang-btn');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].classList.toggle('active', btns[j].getAttribute('data-lang') === lang);
+    }
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('kmmk_lang', lang); } catch(e) {}
+  };
+  function initLang() {
+    var lang = 'hu';
+    try { lang = localStorage.getItem('kmmk_lang') || 'hu'; } catch(e) {}
+    window.setLang(lang);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLang);
+  } else {
+    initLang();
+  }
+  function initFaq() {
+    document.querySelectorAll('.faq-row').forEach(function(r) {
+      var q = r.querySelector('.faq-q');
+      if (q) q.addEventListener('click', function() { r.classList.toggle('open'); });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initFaq);
+})();
+</script>
 
 <!-- HERO -->
 <section class="hero" id="home">
@@ -377,13 +693,13 @@ footer { background: var(--black); padding: var(--f5); }
 <!-- ABOUT -->
 <section class="about" id="about">
   <div>
-    <p class="about-label" data-i18n="about_label">Tér, amilyenről álmodsz</p>
+    <p class="about-label" data-i18n="about_label">Otthonteremtés új szinten</p>
     <h2 data-i18n="about_title">Egyedi otthon,<br><em>fiatalos lendülettel.</em></h2>
-    <p class="about-text" data-i18n="about_text">Fiatalos asztalos csapat vagyunk, akik nemcsak bútort készítenek, hanem veled együtt álmodják meg az otthonod tereit. 3D-ben megtervezzük, te kiválasztod a stílust, mi pedig életre keltjük pontosan úgy, ahogy elképzelted!</p>
+    <p class="about-text" data-i18n="about_text">Preselt bútorlapokból készítek modern, tartós és személyre szabott bútorokat – a tervezéstől a szerelésig minden az én kezem munkája. Nem gyáriszériás darabok, hanem valódi egyedi megoldások. Segítek megtalálni az igényeidnek megfelelő anyagot, és elkészítem a bútort pontosan olyanra, amilyenre álmodtad.</p>
     <a href="#portfolio" class="btn-dark" data-i18n="about_btn">Tudj meg többet!</a>
   </div>
   <div class="about-img">
-    <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80" alt="Modern konyhabútor">
+    <img id="aboutSectionImg" src="assets/Messenger_creation_CEA874E4-E7D7-4B64-A728-621EC54235EE%201.png" alt="Egyedi otthon">
   </div>
 </section>
 
@@ -395,7 +711,7 @@ footer { background: var(--black); padding: var(--f5); }
       <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=900&q=80" alt="Egyedi bútor">
     </div>
     <div class="feat-text">
-      <p data-i18n="featured_text">Nem sablonokban gondolkodunk. A 3D-ben megálmodott tervekből pontosan olyan megoldás születik, ami illik hozzád és az otthonodhoz.</p>
+      <p data-i18n="featured_text">Nem sablonmegoldásokban gondolkodunk. A 3D-ben megtervezett bútorok pontosan a te terédbe egyeznek – méretben, kivitelben, stílusban és az előzetes elvárásaidban is.</p>
       <a href="#portfolio" data-i18n="featured_link">Munkáim megtekintése</a>
     </div>
   </div>
@@ -409,7 +725,7 @@ footer { background: var(--black); padding: var(--f5); }
     <div class="val-item">
       <div class="val-num">01</div>
       <h4 data-i18n="val1_title">Egyediség</h4>
-      <p data-i18n="val1_text">Minden bútor kizárólag a te igényeidre és terédre szabva készül.</p>
+      <p data-i18n="val1_text">Minden bútor személyre szabott. Nem sablonokat kínálunk, hanem olyan megoldásokat, amelyek pontosan a te igényeidhez illenek.</p>
     </div>
     <div class="val-item">
       <div class="val-num">02</div>
@@ -424,7 +740,7 @@ footer { background: var(--black); padding: var(--f5); }
     <div class="val-item">
       <div class="val-num">04</div>
       <h4 data-i18n="val4_title">Minőség</h4>
-      <p data-i18n="val4_text">Csak olyat adok ki a műhelyből, amire valóban büszke vagyok.</p>
+      <p data-i18n="val4_text">Csak olyat adunk ki a műhelyből, amire valóban büszkék vagyunk.</p>
     </div>
   </div>
 </section>
@@ -433,26 +749,237 @@ footer { background: var(--black); padding: var(--f5); }
 <section class="portfolio" id="portfolio">
   <div class="port-top">
     <h2 data-i18n="port_title">Ahogy az ötletekből otthon születik.</h2>
-    <div class="port-navs">
-      <button class="port-btn">←</button>
-      <button class="port-btn">→</button>
-    </div>
   </div>
-  <div class="port-grid" id="portGrid">
-    <div class="port-card">
-      <div class="port-card-img"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80" alt="Konyhabútor"></div>
-      <div class="port-card-body"><h3>Modern konyhabútor</h3><span>Konyha</span><br><a href="#">Megnézem →</a></div>
+  <div class="port-carousel-wrap">
+    <div class="port-track-wrap">
+      <div class="port-track" id="portGrid">
+        <div class="port-card" data-desc="Modern, teljesen felszerelt konyha, ahol minden adott egy kényelmes és élvezetes főzéshez." data-materials="Egger laminált bútorlap, soft close zsanér, LED világítás" data-time="5 hét" data-images="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80 https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=600&q=80 https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80">
+          <div class="port-card-img"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80" alt="Konyhabútor"></div>
+          <div class="port-card-body"><h3>Modern konyhabútor</h3><span>Konyha</span><br><a href="#">Megnézem →</a></div>
+        </div>
+        <div class="port-card" data-desc="Szekrénysor a nappaliba, tárolás és stílus egyben." data-materials="Laminált lap, lágyzárás" data-time="3–4 hét">
+          <div class="port-card-img"><img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80" alt="Szekrénysor"></div>
+          <div class="port-card-body"><h3>Modern szekrénysor</h3><span>Nappali</span><br><a href="#">Megnézem →</a></div>
+        </div>
+        <div class="port-card" data-desc="Egyedi konyhabútor, precíz kivitelezéssel." data-materials="Prémium laminát, modern fogantyúk" data-time="5 hét">
+          <div class="port-card-img"><img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&q=80" alt="Konyha"></div>
+          <div class="port-card-body"><h3>Modern konyhabútor</h3><span>Konyha</span><br><a href="#">Megnézem →</a></div>
+        </div>
+        <div class="port-card" data-desc="Hálószobabútor készlet, álomba ringató hangulat." data-materials="Faforgácslap, lágyzárás" data-time="4 hét">
+          <div class="port-card-img"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80" alt="Hálószoba"></div>
+          <div class="port-card-body"><h3>Hálószobabútor</h3><span>Háló</span><br><a href="#">Megnézem →</a></div>
+        </div>
+        <div class="port-card" data-desc="Íróasztal és polc irodához vagy otthoni munkához." data-materials="Laminált lap, fém lábak" data-time="2–3 hét">
+          <div class="port-card-img"><img src="https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=600&q=80" alt="Íróasztal"></div>
+          <div class="port-card-body"><h3>Íróasztal és polc</h3><span>Iroda</span><br><a href="#">Megnézem →</a></div>
+        </div>
+        <div class="port-card" data-desc="Nappali bútorok, kényelmes és stílusos." data-materials="Fa megjelenésű laminát" data-time="4 hét">
+          <div class="port-card-img"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Nappali"></div>
+          <div class="port-card-body"><h3>Nappali bútorok</h3><span>Nappali</span><br><a href="#">Megnézem →</a></div>
+        </div>
+        <div class="port-card" data-desc="Beépített gardrób, maximális tárolás." data-materials="Egger lap, LED, lágyzárás" data-time="4–5 hét">
+          <div class="port-card-img"><img src="https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=600&q=80" alt="Gardrób"></div>
+          <div class="port-card-body"><h3>Beépített gardrób</h3><span>Gardrób</span><br><a href="#">Megnézem →</a></div>
+        </div>
+        <div class="port-card" data-desc="Konyha részlet, minőségi megoldások." data-materials="Laminált bútorlap, prémium kivitelezés" data-time="5 hét">
+          <div class="port-card-img"><img src="https://images.unsplash.com/photo-1616486029423-aa4789e82961?w=600&q=80" alt="Konyha részlet"></div>
+          <div class="port-card-body"><h3>Konyha részlet</h3><span>Egyedi bútor</span><br><a href="#">Megnézem →</a></div>
+        </div>
+      </div>
     </div>
-    <div class="port-card">
-      <div class="port-card-img"><img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80" alt="Szekrénysor"></div>
-      <div class="port-card-body"><h3>Modern szekrénysor</h3><span>Nappali</span><br><a href="#">Megnézem →</a></div>
-    </div>
-    <div class="port-card">
-      <div class="port-card-img"><img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&q=80" alt="Konyha"></div>
-      <div class="port-card-body"><h3>Modern konyhabútor</h3><span>Konyha</span><br><a href="#">Megnézem →</a></div>
+    <div class="port-nav">
+      <button type="button" class="port-btn" id="portPrev" aria-label="Előző" onclick="portGoPrev(); return false;">←</button>
+      <button type="button" class="port-btn" id="portNext" aria-label="Következő" onclick="portGoNext(); return false;">→</button>
     </div>
   </div>
 </section>
+
+<!-- Portfólió nagyított kártya modal -->
+<div id="portModalOverlay" class="port-modal-overlay" aria-hidden="true">
+  <div class="port-modal-backdrop" id="portModalBackdrop"></div>
+  <div class="port-modal-card" id="portModalCard" role="dialog" aria-modal="true" aria-labelledby="portModalTitle">
+    <button type="button" class="port-modal-close" id="portModalClose" aria-label="Bezárás">×</button>
+    <div class="port-modal-gallery">
+      <button type="button" class="port-modal-arr port-modal-prev" id="portModalPrev" aria-label="Előző kép">←</button>
+      <button type="button" class="port-modal-arr port-modal-next" id="portModalNext" aria-label="Következő kép">→</button>
+      <div class="port-modal-img-wrap">
+        <img id="portModalImg" src="" alt="">
+      </div>
+      <span class="port-modal-counter" id="portModalCounter" aria-live="polite"></span>
+    </div>
+    <div class="port-modal-body">
+      <h3 id="portModalTitle" class="port-modal-title"></h3>
+      <p id="portModalDesc" class="port-modal-desc"></p>
+      <div class="port-modal-meta">
+        <div class="port-modal-materials">
+          <span class="port-modal-meta-icon" aria-hidden="true">📋</span>
+          <span class="port-modal-meta-label">Alapanyagok</span>
+          <p id="portModalMaterials" class="port-modal-meta-text"></p>
+        </div>
+        <div class="port-modal-time">
+          <span class="port-modal-meta-icon" aria-hidden="true">🕐</span>
+          <span class="port-modal-meta-label">Elkészítési idő</span>
+          <p id="portModalTime" class="port-modal-meta-text"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  window.portIndex = 0;
+  window.updatePortCarousel = function() {
+    var track = document.getElementById('portGrid');
+    var wrap = track ? track.parentElement : null;
+    var prevBtn = document.getElementById('portPrev');
+    var nextBtn = document.getElementById('portNext');
+    if (!track || !wrap) return;
+    var cards = track.querySelectorAll('.port-card');
+    var n = cards.length;
+    if (n === 0) return;
+    var cardWidth = cards[0].getBoundingClientRect().width;
+    if (cardWidth <= 0) cardWidth = (wrap.getBoundingClientRect().width - 84) / 3;
+    if (cardWidth <= 0) return;
+    var gapPx = 42;
+    try { var g = getComputedStyle(track).gap; if (g && g.indexOf('rem') !== -1) { var r = getComputedStyle(document.documentElement).fontSize; gapPx = parseFloat(g) * (parseFloat(r) || 16); } else if (g) { gapPx = parseFloat(g) || 42; } } catch (e) {}
+    var step = cardWidth + gapPx;
+    for (var i = 0; i < cards.length; i++) cards[i].style.flex = '0 0 ' + cardWidth + 'px';
+    var visible = window.innerWidth <= 600 ? 1 : (window.innerWidth <= 768 ? 2 : 3);
+    var maxIndex = Math.max(0, n - visible);
+    window.portIndex = Math.max(0, Math.min(window.portIndex, maxIndex));
+    track.style.transform = 'translateX(-' + (window.portIndex * step) + 'px)';
+    if (prevBtn) prevBtn.disabled = window.portIndex <= 0;
+    if (nextBtn) nextBtn.disabled = window.portIndex >= maxIndex;
+  };
+  window.portGoPrev = function() {
+    var track = document.getElementById('portGrid');
+    if (!track) return;
+    var n = track.querySelectorAll('.port-card').length;
+    var visible = window.innerWidth <= 600 ? 1 : (window.innerWidth <= 768 ? 2 : 3);
+    if (window.portIndex > 0) { window.portIndex--; window.updatePortCarousel(); }
+  };
+  window.portGoNext = function() {
+    var track = document.getElementById('portGrid');
+    if (!track) return;
+    var n = track.querySelectorAll('.port-card').length;
+    var visible = window.innerWidth <= 600 ? 1 : (window.innerWidth <= 768 ? 2 : 3);
+    var maxIndex = Math.max(0, n - visible);
+    if (window.portIndex < maxIndex) { window.portIndex++; window.updatePortCarousel(); }
+  };
+  window.addEventListener('resize', window.updatePortCarousel);
+  window.updatePortCarousel();
+  setTimeout(window.updatePortCarousel, 200);
+
+  /* Portfólió modal – Megnézem kattintás, nagy kártya, képek lapozása */
+  var modalImages = [];
+  var modalImgIndex = 0;
+
+  function openPortModal(card) {
+    var titleEl = card.querySelector('.port-card-body h3');
+    var imgEl = card.querySelector('.port-card-img img');
+    var title = titleEl ? titleEl.textContent.trim() : '';
+    var images = [];
+    var dataImg = card.getAttribute('data-images');
+    if (dataImg) { images = dataImg.trim().split(/\s+/).filter(Boolean); }
+    if (images.length === 0 && imgEl && imgEl.src) images = [imgEl.src];
+    var desc = card.getAttribute('data-desc') || 'Egyedi bútor, személyre szabott megoldással.';
+    var materials = card.getAttribute('data-materials') || 'Minőségi laminált bútorlap, lágyzárás.';
+    var time = card.getAttribute('data-time') || '4–5 hét';
+
+    modalImages = images;
+    modalImgIndex = 0;
+
+    document.getElementById('portModalTitle').textContent = title;
+    document.getElementById('portModalDesc').textContent = desc;
+    document.getElementById('portModalMaterials').textContent = materials;
+    document.getElementById('portModalTime').textContent = time;
+
+    var imgNode = document.getElementById('portModalImg');
+    if (images.length > 0) {
+      imgNode.src = images[0];
+      imgNode.alt = title;
+    }
+    var prevBtn = document.getElementById('portModalPrev');
+    var nextBtn = document.getElementById('portModalNext');
+    prevBtn.classList.toggle('hidden', images.length <= 1);
+    nextBtn.classList.toggle('hidden', images.length <= 1);
+
+    var counterEl = document.getElementById('portModalCounter');
+    if (images.length > 1) {
+      counterEl.textContent = '1 / ' + images.length;
+      counterEl.style.display = '';
+    } else {
+      counterEl.style.display = 'none';
+    }
+
+    document.getElementById('portModalOverlay').classList.add('open');
+    document.getElementById('portModalOverlay').setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updateModalImage() {
+    var imgNode = document.getElementById('portModalImg');
+    var prevBtn = document.getElementById('portModalPrev');
+    var nextBtn = document.getElementById('portModalNext');
+    var counterEl = document.getElementById('portModalCounter');
+    if (modalImages.length === 0) return;
+    imgNode.src = modalImages[modalImgIndex];
+    prevBtn.classList.toggle('hidden', modalImages.length <= 1);
+    nextBtn.classList.toggle('hidden', modalImages.length <= 1);
+    if (modalImages.length > 1) {
+      counterEl.textContent = (modalImgIndex + 1) + ' / ' + modalImages.length;
+      counterEl.style.display = '';
+    } else {
+      counterEl.style.display = 'none';
+    }
+  }
+
+  function closePortModal() {
+    document.getElementById('portModalOverlay').classList.remove('open');
+    document.getElementById('portModalOverlay').setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest && e.target.closest('.port-card-body a[href="#"]');
+    if (link) {
+      e.preventDefault();
+      var card = link.closest('.port-card');
+      if (card) openPortModal(card);
+    }
+    if (e.target.id === 'portModalBackdrop' || e.target.id === 'portModalClose') {
+      closePortModal();
+    }
+    if (e.target.closest && e.target.closest('#portModalPrev') && modalImages.length > 1) {
+      modalImgIndex = (modalImgIndex - 1 + modalImages.length) % modalImages.length;
+      updateModalImage();
+    }
+    if (e.target.closest && e.target.closest('#portModalNext') && modalImages.length > 1) {
+      modalImgIndex = (modalImgIndex + 1) % modalImages.length;
+      updateModalImage();
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('portModalOverlay').classList.contains('open')) {
+      closePortModal();
+    }
+    if (document.getElementById('portModalOverlay').classList.contains('open') && modalImages.length > 1) {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        modalImgIndex = (modalImgIndex - 1 + modalImages.length) % modalImages.length;
+        updateModalImage();
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        modalImgIndex = (modalImgIndex + 1) % modalImages.length;
+        updateModalImage();
+      }
+    }
+  });
+})();
+</script>
 
 <!-- MATERIALS -->
 <section id="materials">
@@ -468,9 +995,9 @@ footer { background: var(--black); padding: var(--f5); }
     </div>
   </div>
 
-  <div class="mat-row">
-    <div class="mat-img-wrap">
-      <img src="./assets/medium-shot-artisan-doing-woodcutting 1.png" alt="Feelwood egyenes élű prémium munkalapok">
+  <div class="mat-row mat-row-feelwood">
+    <div class="mat-img-wrap mat-img-wrap-feelwood">
+      <img src="assets/5.png" alt="Feelwood egyenes élű prémium munkalapok">
     </div>
     <div class="mat-body dk">
       <p class="mat-tag" data-i18n="mat2_tag">Egyenes éli prémium munkalapok</p>
@@ -480,9 +1007,9 @@ footer { background: var(--black); padding: var(--f5); }
     </div>
   </div>
 
-  <div class="mat-row">
-    <div class="mat-img-wrap">
-      <img src="./assets/modern-kitchen-with-contemporary-interior-decor-furnishings 1.png" alt="Posztforming munkalapok">
+  <div class="mat-row mat-row-poszt">
+    <div class="mat-img-wrap mat-img-wrap-poszt">
+      <img src="assets/6.png" alt="Posztforming munkalapok">
     </div>
     <div class="mat-body">
       <p class="mat-tag" data-i18n="mat3_tag">Lekerekített élű munkalapok</p>
@@ -497,9 +1024,7 @@ footer { background: var(--black); padding: var(--f5); }
 <section class="kronospan">
   <h2 data-i18n="krono_title">Kronospan Global Collection</h2>
   <p data-i18n="krono_text">A legújabb trendeket követő bútorlapok széles szín- és dekórkínálattal – fás, beton, semleges, matt és fényes felületekkel.</p>
-  <div class="kronospan-img">
-    <img src="./assets/kronospan-global.png" alt="Kronospan Global Collection modern konyhabútor" loading="lazy" decoding="async">
-  </div>
+  <div class="kronospan-img"><img src="assets/kronospan-global.png" alt="Kronospan Global Collection"></div>
   <a href="#" class="btn-dark" id="kronospanLink" data-i18n="krono_btn">Kollekció megtekintése</a>
 </section>
 
@@ -509,26 +1034,34 @@ footer { background: var(--black); padding: var(--f5); }
     <h2 data-i18n="rev_title">Mit mondanak a megrendelőink?</h2>
     <p data-i18n="rev_sub">Röviden arról, milyen velünk együtt dolgozni.</p>
   </div>
-  <div class="rev-grid">
-    <div class="rev-card">
-      <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-      <p class="rev-quote">"Teljesen el voltam ragadtatva a végeredménytől. Pontosan olyan lett a konyha, ahogy elképzeltem – sőt, még szebb is."</p>
-      <div class="rev-row"><div class="rev-av">K</div><div><div class="rev-name">Kovács Annamária</div><div class="rev-loc">Budapest · Konyhabútor</div></div></div>
+  <div class="rev-carousel-wrap">
+    <div class="rev-track-wrap">
+      <div class="rev-track" id="revTrack">
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <p class="rev-quote">"Teljesen el voltam ragadtatva a végeredménytől. Pontosan olyan lett a konyha, ahogy elképzeltem – sőt, még szebb is."</p>
+          <div class="rev-row"><div class="rev-av">K</div><div><div class="rev-name">Kovács Annamária</div><div class="rev-loc">Budapest · Konyhabútor</div></div></div>
+        </div>
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <p class="rev-quote">"Fiatal, de nagyon profi! Segített az anyagválasztásban is. A szekrénysor tökéletesen illik a nappaliba, mindenki megkérdezi hol csináltattuk."</p>
+          <div class="rev-row"><div class="rev-av">S</div><div><div class="rev-name">Szabó Péter</div><div class="rev-loc">Győr · Nappali szekrénysor</div></div></div>
+        </div>
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <p class="rev-quote">"Irodai bútorokat nagyon gyorsan készített el és szerelt fel. Precíz, tiszta munka. Másodjára is nála rendeltünk."</p>
+          <div class="rev-row"><div class="rev-av">N</div><div><div class="rev-name">Nagy Gábor</div><div class="rev-loc">Miskolc · Irodabútor</div></div></div>
+        </div>
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <p class="rev-quote">"Remek áron, kiváló minőségben készítette el a gardróbszekrényt. A méretek tökéletesek, a kivitelezés hibátlan."</p>
+          <div class="rev-row"><div class="rev-av">V</div><div><div class="rev-name">Varga Eszter</div><div class="rev-loc">Debrecen · Gardrób</div></div></div>
+        </div>
+      </div>
     </div>
-    <div class="rev-card">
-      <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-      <p class="rev-quote">"Fiatal, de nagyon profi! Segített az anyagválasztásban is. A szekrénysor tökéletesen illik a nappaliba, mindenki megkérdezi hol csináltattuk."</p>
-      <div class="rev-row"><div class="rev-av">S</div><div><div class="rev-name">Szabó Péter</div><div class="rev-loc">Győr · Nappali szekrénysor</div></div></div>
-    </div>
-    <div class="rev-card">
-      <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-      <p class="rev-quote">"Irodai bútorokat nagyon gyorsan készített el és szerelt fel. Precíz, tiszta munka. Másodjára is nála rendeltünk."</p>
-      <div class="rev-row"><div class="rev-av">N</div><div><div class="rev-name">Nagy Gábor</div><div class="rev-loc">Miskolc · Irodabútor</div></div></div>
-    </div>
-    <div class="rev-card">
-      <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-      <p class="rev-quote">"Remek áron, kiváló minőségben készítette el a gardróbszekrényt. A méretek tökéletesek, a kivitelezés hibátlan."</p>
-      <div class="rev-row"><div class="rev-av">V</div><div><div class="rev-name">Varga Eszter</div><div class="rev-loc">Debrecen · Gardrób</div></div></div>
+    <div class="rev-nav">
+      <button type="button" class="rev-btn" id="revPrev" aria-label="Előző">←</button>
+      <button type="button" class="rev-btn" id="revNext" aria-label="Következő">→</button>
     </div>
   </div>
 </section>
@@ -538,13 +1071,13 @@ footer { background: var(--black); padding: var(--f5); }
   <div class="faq-inner">
     <div class="faq-head">
       <small data-i18n="faq_label">Kérdések</small>
-      <h2 data-i18n="faq_title">Tudjon meg mindent,<br>mielőtt kapcsolatba lép.</h2>
+      <h2 data-i18n="faq_title">Tudj meg mindent,<br>mielőtt kapcsolatba lépnél.</h2>
     </div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq1_q">Hogyan lehet kapcsolatba lépni? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq1_a">Az oldalon lévő kapcsolati formon, emailen vagy telefonon bármikor elérhetsz. Általában 24 órán belül válaszolok.</div></div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq2_q">Milyen típusú projekteket vállalsz? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq2_a">Konyhabútor, szekrénysor, gardrób, fürdőszobabútor, irodabútor és egyéb egyedi darabok preselt bútorlapból.</div></div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq3_q">Mennyi idő alatt készül el egy projekt? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq3_a">Átlagosan 2-4 hét a projekt méretétől és komplexitásától függően. Pontos határidőt az egyeztetéskor adok meg.</div></div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq4_q">Mik a méretezési paraméterek? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq4_a">Minden projektet helyszíni méréssel kezdünk, így a bútor pontosan a te teredbe illeszkedik. Ez az egyedi kivitelezés alapja.</div></div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq5_q">Hogy kezdjük el? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq5_a">Küldj egy üzenetet az elképzeléseddel, egyeztetünk egy helyszíni mérésre, majd 3D tervrajzot készítek – ezután indul a gyártás.</div></div>
+    <div class="faq-row"><div class="faq-q" data-i18n="faq1_q">Hogyan lehet kapcsolatba lépni? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq1_a">Az oldalon lévő kapcsolati űrlapon, e-mailen vagy telefonon bármikor elérhetsz minket. Általában 24 órán belül válaszolunk.</div></div>
+    <div class="faq-row"><div class="faq-q" data-i18n="faq2_q">Milyen típusú projekteket vállalsz? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq2_a">Konyhabútor, szekrénysor, gardrób, fürdőszobabútor, irodabútor és egyéb egyedi darabok préselt bútorlapból.</div></div>
+    <div class="faq-row"><div class="faq-q" data-i18n="faq3_q">Mennyi idő alatt készül el egy projekt? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq3_a">Átlagosan 2–4 hét, a projekt méretétől és komplexitásától függően. Pontos határidőt az egyeztetéskor megadunk.</div></div>
+    <div class="faq-row"><div class="faq-q" data-i18n="faq4_q">Mik a mérési paraméterek? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq4_a">Minden projektet helyszíni méréssel kezdünk, így a bútor pontosan a te teredbe illeszkedik. Ez az egyedi kivitelezés alapja.</div></div>
+    <div class="faq-row"><div class="faq-q" data-i18n="faq5_q">Hogy kezdjük el? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq5_a">Küldj egy üzenetet az elképzeléseddel, egyeztetünk egy helyszíni mérésre, majd 3D tervrajzot készítünk – ezután indul a gyártás.</div></div>
   </div>
 </section>
 
@@ -553,15 +1086,11 @@ footer { background: var(--black); padding: var(--f5); }
   <div class="cta-bg"></div>
   <h2 data-i18n="cta_title">Egy ötlettel kezdődik minden.</h2>
   <p data-i18n="cta_text">Lépj velünk kapcsolatba, és néhány nap múlva már láthatod is 3D-ben az elképzelt konyhádat vagy nappalid terveit.</p>
-  <div class="cta-btns">
-    <a href="/cdn-cgi/l/email-protection#c3aaada5ac83a8aeaea8edabb6" class="btn-dark" data-i18n="cta_btn1">Lépj velünk kapcsolatba</a>
-    <a href="#portfolio" class="btn-outline" data-i18n="cta_btn2">Tudj meg többet!</a>
-  </div>
-  <div class="cta-contacts">
-    <div class="cta-ci">
-      <div class="cta-icon">📞</div>
-      <div><div class="cta-ci-label" data-i18n="cta_tel">Tel</div><span id="ctaPhone">+36 30 000 0000</span></div>
-    </div>
+  <a id="ctaPhone" class="cta-phone-number" href="tel:+421907609199">+421 907 609 199</a>
+  <a href="tel:+421907609199" class="cta-call-btn" id="ctaCallBtn"><span class="cta-call-icon" aria-hidden="true">📞</span><span data-i18n="cta_call_btn">Hívj fel most!</span></a>
+  <p class="cta-more-link-wrap"><a href="#portfolio" class="cta-more-link" data-i18n="cta_btn2">Tudj meg többet!</a></p>
+  <div class="cta-separator" aria-hidden="true">──</div>
+  <div class="cta-contacts cta-contact-secondary">
     <div class="cta-ci">
       <div class="cta-icon">✉️</div>
       <div><div class="cta-ci-label" data-i18n="cta_email_label">Email</div><span id="ctaEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e48d8a828ba48f89898fca8c91">[email&#160;protected]</a></span></div>
@@ -576,9 +1105,7 @@ footer { background: var(--black); padding: var(--f5); }
 <!-- FOOTER -->
 <footer>
   <div class="foot-top">
-    <a href="#home" class="nav-logo">
-      <img src="assets/logo.png" alt="KMMK logó" width="40" height="40">
-    </a>
+    <a href="#home" class="foot-logo"><img src="assets/logo.png" alt="KMMK logó" width="40" height="40"></a>
     <ul class="foot-links">
       <li><a href="#about" data-i18n="nav_about">Rólunk</a></li>
       <li><a href="#portfolio" data-i18n="nav_portfolio">Portfólió</a></li>
@@ -586,19 +1113,8 @@ footer { background: var(--black); padding: var(--f5); }
       <li><a href="#reviews" data-i18n="nav_reviews">Vélemények</a></li>
     </ul>
     <div class="foot-social">
-      <a href="#" class="soc" aria-label="Facebook">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="11" stroke="rgba(255,255,255,0.45)" stroke-width="1.4"/>
-          <path d="M13.3 18H11v-5.1H9.8V11h1.2V9.7c0-1.3.8-2.7 2.8-2.7.8 0 1.4.1 1.4.1v1.5h-.8c-.8 0-1 .4-1 0.9V11h1.7l-.3 1.9h-1.4V18z" fill="rgba(255,255,255,0.9)"/>
-        </svg>
-      </a>
-      <a href="#" class="soc" aria-label="Instagram">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="4" y="4" width="16" height="16" rx="4" stroke="rgba(255,255,255,0.45)" stroke-width="1.4"/>
-          <circle cx="12" cy="12" r="4" stroke="rgba(255,255,255,0.9)" stroke-width="1.4"/>
-          <circle cx="17" cy="7" r="1.1" fill="rgba(255,255,255,0.9)"/>
-        </svg>
-      </a>
+      <a href="#" class="soc soc-fb" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+      <a href="#" class="soc soc-ig" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
     </div>
   </div>
   <div class="foot-bot">
@@ -652,6 +1168,12 @@ footer { background: var(--black); padding: var(--f5); }
           <input class="ai" type="tel" id="admPhone" placeholder="Telefonszám (pl. +36 30 123 4567)">
           <input class="ai" type="email" id="admEmail" placeholder="Email cím">
         </div>
+        <div class="adm-sec">
+          <div class="adm-sec-title">Vélemények</div>
+          <p class="adm-sec-hint" style="font-size:0.8rem;color:var(--text-mid);margin-bottom:var(--f3);">Itt tudsz új véleményt hozzáadni. A mezők változása a „Mentés” után jelenik meg az oldalon.</p>
+          <div id="admReviewsList"></div>
+          <button type="button" class="btn-rev-add" onclick="addReviewRow()" style="margin-top:var(--f2);padding:var(--f2) var(--f3);background:var(--warm-white);border:1px solid rgba(0,0,0,0.12);border-radius:var(--r-md);cursor:pointer;font-size:0.82rem;">+ Új vélemény</button>
+        </div>
         <button class="btn-save" onclick="saveAll()">Mentés és közzététel</button>
         <div class="adm-ok" id="admOk">✓ Változtatások elmentve és közzétéve!</div>
       </div>
@@ -659,138 +1181,69 @@ footer { background: var(--black); padding: var(--f5); }
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// i18n
-const translations = {
-  hu: {
-    nav_about: 'Rólunk', nav_portfolio: 'Portfólió', nav_materials: 'Anyagválasztás', nav_reviews: 'Vélemények', nav_contact: 'Kapcsolat',
-    hero_sub: 'KMMK · Asztalos Műhely · Preselt bútorlapok', hero_title: 'Tér, ami<br>rólad szól.', hero_cta: 'Projekt indítása',
-    about_label: 'Tér, amilyenről álmodsz', about_title: 'Egyedi otthon,<br><em>fiatalos lendülettel.</em>',
-    about_text: 'Fiatalos asztalos csapat vagyunk, akik nemcsak bútort készítenek, hanem veled együtt álmodják meg az otthonod tereit. 3D-ben megtervezzük, te kiválasztod a stílust, mi pedig életre keltjük pontosan úgy, ahogy elképzelted!',
-    about_btn: 'Tudj meg többet!',
-    featured_title: 'Nálunk minden bútor egyedi.', featured_text: 'Nem sablonokban gondolkodunk. A 3D-ben megálmodott tervekből pontosan olyan megoldás születik, ami illik hozzád és az otthonodhoz.',
-    featured_link: 'Munkáim megtekintése',
-    values_title: 'Amit minden munkánk képvisel', values_sub: 'Minden darab mögött tartós anyagok és precíz kivitelezési elvek állnak.',
-    val1_title: 'Egyediség', val1_text: 'Minden bútor kizárólag a te igényeidre és terédre szabva készül.',
-    val2_title: 'Megbízhatóság', val2_text: 'Pontos határidők, profi kommunikáció és hibátlan kivitelezés.',
-    val3_title: 'Modern technológia', val3_text: '3D tervrajz minden projekthez, prémium anyagok és modern gépek.',
-    val4_title: 'Minőség', val4_text: 'Csak olyat adok ki a műhelyből, amire valóban büszke vagyok.',
-    port_title: 'Ahogy az ötletekből otthon születik.',
-    mat1_tag: 'Laminált bútorlapok', mat1_title: 'EGGER és KRONOSPAN laminált bútorlapok',
-    mat1_text: 'Prémium minőségű laminált bútor- és faforgácslapok. Hosszú élettartam, gazdag szín- és dekórválaszték, prémium minőségű felületek.',
-    mat2_tag: 'Egyenes éli prémium munkalapok', mat2_title: 'Feelwood egyenes éli prémium munkalapok',
-    mat2_text: 'Természetes fa hatású, prémium minőségű munkalapok. Természetes felület, modern esztétika, egyedi kialakítás.',
-    mat3_tag: 'Lekerekített élű munkalapok', mat3_title: 'Posztforming munkalapok',
-    mat3_text: 'Klasszikus, lekerekített élű munkalapok nagy tartósságú és könnyen tisztítható felülettel. Letisztult, tartós megoldás.',
-    mat_cta: 'Katalógus megtekintése',
-    krono_title: 'Kronospan Global Collection', krono_text: 'A legújabb trendeket követő bútorlapok széles szín- és dekórkínálattal – fás, beton, semleges, matt és fényes felületekkel.',
-    krono_btn: 'Kollekció megtekintése',
-    rev_title: 'Mit mondanak a megrendelőink?', rev_sub: 'Röviden arról, milyen velünk együtt dolgozni.',
-    faq_label: 'Kérdések', faq_title: 'Tudjon meg mindent,<br>mielőtt kapcsolatba lép.',
-    faq1_q: 'Hogyan lehet kapcsolatba lépni? <span class="faq-icon">+</span>', faq1_a: 'Az oldalon lévő kapcsolati formon, emailen vagy telefonon bármikor elérhetsz. Általában 24 órán belül válaszolok.',
-    faq2_q: 'Milyen típusú projekteket vállalsz? <span class="faq-icon">+</span>', faq2_a: 'Konyhabútor, szekrénysor, gardrób, fürdőszobabútor, irodabútor és egyéb egyedi darabok preselt bútorlapból.',
-    faq3_q: 'Mennyi idő alatt készül el egy projekt? <span class="faq-icon">+</span>', faq3_a: 'Átlagosan 2-4 hét a projekt méretétől és komplexitásától függően. Pontos határidőt az egyeztetéskor adok meg.',
-    faq4_q: 'Mik a méretezési paraméterek? <span class="faq-icon">+</span>', faq4_a: 'Minden projektet helyszíni méréssel kezdünk, így a bútor pontosan a te teredbe illeszkedik. Ez az egyedi kivitelezés alapja.',
-    faq5_q: 'Hogy kezdjük el? <span class="faq-icon">+</span>', faq5_a: 'Küldj egy üzenetet az elképzeléseddel, egyeztetünk egy helyszíni mérésre, majd 3D tervrajzot készítek – ezután indul a gyártás.',
-    cta_title: 'Egy ötlettel kezdődik minden.', cta_text: 'Lépj velünk kapcsolatba, és néhány nap múlva már láthatod is 3D-ben az elképzelt konyhádat vagy nappalid terveit.',
-    cta_btn1: 'Lépj velünk kapcsolatba', cta_btn2: 'Tudj meg többet!', cta_tel: 'Tel', cta_email_label: 'Email', cta_loc_label: 'Helyszín', cta_location: 'Magyarország'
-  },
-  sk: {
-    nav_about: 'O nás', nav_portfolio: 'Portfólio', nav_materials: 'Výber materiálov', nav_reviews: 'Recenzie', nav_contact: 'Kontakt',
-    hero_sub: 'KMMK · Stolárska dielňa · Prestované nábytokové dosky', hero_title: 'Priestor,<br>ktorý hovorí o vás.', hero_cta: 'Spustiť projekt',
-    about_label: 'Priestor, o akom snívate', about_title: 'Jedinečný domov,<br><em>s mladistvou energiou.</em>',
-    about_text: 'Sme mladý stolársky tím, ktorý nevyrába len nábytok, ale spolu s vami sníva o priestore vášho domova. Pripravíme 3D návrh, vy si vyberiete štýl a my ho oživíme presne podľa vašej predstavy!',
-    about_btn: 'Zistiť viac!',
-    featured_title: 'U nás je každý nábytok jedinečný.', featured_text: 'Nemyslíme v šablónach. Z 3D návrhov vzniká riešenie presne také, ktoré sa hodí k vám aj k vášmu domovu.',
-    featured_link: 'Pozrieť moje práce',
-    values_title: 'Čo reprezentuje každá naša práca', values_sub: 'Za každým kusom stoja odolné materiály a precízne výrobné princípy.',
-    val1_title: 'Jedinečnosť', val1_text: 'Každý nábytok sa vyrába výhradne podľa vašich požiadaviek a vášho priestoru.',
-    val2_title: 'Spoľahlivosť', val2_text: 'Presné termíny, profesionálna komunikácia a bezchybná realizácia.',
-    val3_title: 'Moderná technológia', val3_text: '3D plány pre každý projekt, prémiové materiály a moderné stroje.',
-    val4_title: 'Kvalita', val4_text: 'Z dielne odchádza len to, na čo som skutočne hrdý.',
-    port_title: 'Ako sa z nápadov rodí domov.',
-    mat1_tag: 'Laminátové nábytokové dosky', mat1_title: 'EGGER a KRONOSPAN laminátové nábytokové dosky',
-    mat1_text: 'Prémiové laminátové a drevotrieskové dosky. Dlhá životnosť, bohatá škála farieb a dekorov, prémiové povrchy.',
-    mat2_tag: 'Prémiové pracovné dosky s rovnou hranou', mat2_title: 'Feelwood prémiové pracovné dosky s rovnou hranou',
-    mat2_text: 'Pracovné dosky s prirodzeným vzhľadom dreva. Prirodzený povrch, moderná estetika, individuálne riešenie.',
-    mat3_tag: 'Pracovné dosky so zaoblenou hranou', mat3_title: 'Postforming pracovné dosky',
-    mat3_text: 'Klasické pracovné dosky so zaoblenou hranou s vysokou odolnosťou a ľahko čistiteľným povrchom. Jednoduché, odolné riešenie.',
-    mat_cta: 'Zobraziť katalóg',
-    krono_title: 'Kronospan Global Collection', krono_text: 'Nábytokové dosky sledujúce najnovšie trendy so širokou ponukou farieb a dekorov – drevené, betónové, neutrálne, matné a lesklé povrchy.',
-    krono_btn: 'Zobraziť kolekciu',
-    rev_title: 'Čo hovoria naši zákazníci?', rev_sub: 'Stručne o tom, aké je s nami spolupracovať.',
-    faq_label: 'Otázky', faq_title: 'Zistite všetko<br>predtým, ako nás kontaktujete.',
-    faq1_q: 'Ako vás môžem kontaktovať? <span class="faq-icon">+</span>', faq1_a: 'Môžete ma kedykoľvek osloviť cez kontaktný formulár na stránke, e-mailom alebo telefonicky. Zvyčajne odpovedám do 24 hodín.',
-    faq2_q: 'Aké typy projektov prijímate? <span class="faq-icon">+</span>', faq2_a: 'Kuchynské skrine, obývacie steny, šatníky, kúpeľňový nábytok, kancelársky nábytok a ďalšie individuálne kusy z prestovaných dosiek.',
-    faq3_q: 'Ako dlho trvá realizácia projektu? <span class="faq-icon">+</span>', faq3_a: 'Priemerne 2–4 týždne v závislosti od veľkosti a zložitosti projektu. Presný termín určím pri konzultácii.',
-    faq4_q: 'Aké sú parametre merania? <span class="faq-icon">+</span>', faq4_a: 'Každý projekt začíname meraním na mieste, aby nábytok presne zapadol do vášho priestoru. To je základ individuálnej výroby.',
-    faq5_q: 'Ako začneme? <span class="faq-icon">+</span>', faq5_a: 'Pošlite správu s vašou predstavou, dohodneme meranie na mieste, pripravím 3D plán – potom začína výroba.',
-    cta_title: 'Všetko začína jedným nápadom.', cta_text: 'Kontaktujte nás a o niekoľko dní už uvidíte svoju vysnívanú kuchyňu alebo obývačku v 3D.',
-    cta_btn1: 'Kontaktujte nás', cta_btn2: 'Zistiť viac!', cta_tel: 'Tel', cta_email_label: 'Email', cta_loc_label: 'Miesto', cta_location: 'Slovensko'
-  },
-  en: {
-    nav_about: 'About us', nav_portfolio: 'Portfolio', nav_materials: 'Material selection', nav_reviews: 'Reviews', nav_contact: 'Contact',
-    hero_sub: 'KMMK · Joinery Workshop · Laminated boards', hero_title: 'Space that<br>speaks of you.', hero_cta: 'Start a project',
-    about_label: 'Space you dream of', about_title: 'Unique home,<br><em>with youthful energy.</em>',
-    about_text: 'We are a young carpentry team that not only makes furniture, but designs your home together with you. We plan everything in 3D, you choose the style and we bring it to life exactly as you imagined!',
-    about_btn: 'Learn more!',
-    featured_title: 'Every piece of furniture we make is unique.', featured_text: 'We don\'t think in templates. From 3D concepts we create a solution that fits you and your home perfectly.',
-    featured_link: 'View my work',
-    values_title: 'What every piece of our work represents', values_sub: 'Behind every piece are durable materials and precise manufacturing principles.',
-    val1_title: 'Uniqueness', val1_text: 'Every piece of furniture is made exclusively to your needs and your space.',
-    val2_title: 'Reliability', val2_text: 'Accurate deadlines, professional communication and flawless execution.',
-    val3_title: 'Modern technology', val3_text: '3D plans for every project, premium materials and modern machinery.',
-    val4_title: 'Quality', val4_text: 'Only what I am truly proud of leaves the workshop.',
-    port_title: 'How ideas become home.',
-    mat1_tag: 'Laminated boards', mat1_title: 'EGGER and KRONOSPAN laminated boards',
-    mat1_text: 'Premium laminated and chipboard panels. Long lifespan, rich colour and decor range, premium surfaces.',
-    mat2_tag: 'Premium worktops with straight edge', mat2_title: 'Feelwood premium straight-edge worktops',
-    mat2_text: 'Worktops with natural wood appearance. Natural surface, modern aesthetics, custom design.',
-    mat3_tag: 'Worktops with rounded edge', mat3_title: 'Postforming worktops',
-    mat3_text: 'Classic worktops with rounded edge, highly durable and easy to clean. Clean, durable solution.',
-    mat_cta: 'View catalogue',
-    krono_title: 'Kronospan Global Collection', krono_text: 'Board collections following the latest trends with a wide range of colours and decors – wood, concrete, neutral, matt and glossy surfaces.',
-    krono_btn: 'View collection',
-    rev_title: 'What do our customers say?', rev_sub: 'Briefly about what it\'s like to work with us.',
-    faq_label: 'Questions', faq_title: 'Learn everything<br>before you get in touch.',
-    faq1_q: 'How can I get in touch? <span class="faq-icon">+</span>', faq1_a: 'You can reach me anytime via the contact form on the site, by email or phone. I usually respond within 24 hours.',
-    faq2_q: 'What types of projects do you take on? <span class="faq-icon">+</span>', faq2_a: 'Kitchen cabinets, living room units, wardrobes, bathroom furniture, office furniture and other bespoke pieces from laminated boards.',
-    faq3_q: 'How long does a project take? <span class="faq-icon">+</span>', faq3_a: 'On average 2–4 weeks depending on project size and complexity. I\'ll give you an exact deadline at the consultation.',
-    faq4_q: 'What are the measurement parameters? <span class="faq-icon">+</span>', faq4_a: 'Every project starts with an on-site measurement so the furniture fits your space exactly. That\'s the basis of bespoke manufacturing.',
-    faq5_q: 'How do we get started? <span class="faq-icon">+</span>', faq5_a: 'Send a message with your idea, we\'ll arrange an on-site measurement, I\'ll prepare a 3D plan – then production begins.',
-    cta_title: 'Everything starts with one idea.', cta_text: 'Get in touch and in a few days you\'ll see your dream kitchen or living room in 3D.',
-    cta_btn1: 'Get in touch', cta_btn2: 'Learn more!', cta_tel: 'Tel', cta_email_label: 'Email', cta_loc_label: 'Location', cta_location: 'Hungary'
-  }
-};
-function setLang(lang) {
-  const t = translations[lang];
-  if (!t) return;
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (t[key] !== undefined) el.innerHTML = t[key];
-  });
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
-  });
-  document.documentElement.lang = lang;
-  try { localStorage.setItem('kmmk_lang', lang); } catch(e) {}
-}
-(function() {
-  let lang = 'hu';
-  try { lang = localStorage.getItem('kmmk_lang') || 'hu'; } catch(e) {}
-  setLang(lang);
+<script>
+// #region agent log
+(function _dbg() {
+  var ids = ['portGrid','ctaPhone','ctaEmail','prevGrid','matLink1','kronospanLink'];
+  var found = {}; ids.forEach(function(id){ found[id] = !!document.getElementById(id); });
+  var faqRows = document.querySelectorAll('.faq-row');
+  var faqQNull = []; faqRows.forEach(function(r,i){ if(!r.querySelector('.faq-q')) faqQNull.push(i); });
+  fetch('http://127.0.0.1:7895/ingest/3999ed14-988d-4b6b-af92-78b0b23a14ca',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'fe20f9'},body:JSON.stringify({sessionId:'fe20f9',location:'index.html:script-init',message:'DOM check',data:{ids:found,faqRowCount:faqRows.length,faqQNullIndices:faqQNull},timestamp:Date.now(),hypothesisId:'H-A,H-C,H-E'})}).catch(function(){});
 })();
-
-// FAQ
-document.querySelectorAll('.faq-row').forEach(r => {
-  r.querySelector('.faq-q').addEventListener('click', () => r.classList.toggle('open'));
-});
+// #endregion
+// #region agent log
+var aboutImg = document.getElementById('aboutSectionImg');
+if (aboutImg) { aboutImg.addEventListener('error', function() { fetch('http://127.0.0.1:7895/ingest/3999ed14-988d-4b6b-af92-78b0b23a14ca',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'fe20f9'},body:JSON.stringify({sessionId:'fe20f9',location:'index.html:about-img',message:'about image load error',data:{src:aboutImg.src},timestamp:Date.now(),hypothesisId:'H-D'})}).catch(function(){}); }); }
+// #endregion
+// FAQ – lenyitható kérdések (a kezelő az oldal elején futó scriptben van)
 
 // ADMIN
 const PASS = 'kmmk2024';
+const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/djguaaz7z/image/upload';
+const CLOUDINARY_UPLOAD_PRESET = 'KMMK uploads';
 let imgs = [];
+let imgUploadSeq = 0;
 
-try { imgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]'); } catch(e) { imgs = []; }
+var REVIEWS_DEFAULT = [
+  { name: 'Kovács Annamária', location: 'Budapest · Konyhabútor', text: 'Teljesen el voltam ragadtatva a végeredménytől. Pontosan olyan lett a konyha, ahogy elképzeltem – sőt, még szebb is.', stars: 5 },
+  { name: 'Szabó Péter', location: 'Győr · Nappali szekrénysor', text: 'Fiatal, de nagyon profi! Segített az anyagválasztásban is. A szekrénysor tökéletesen illik a nappaliba, mindenki megkérdezi hol csináltattuk.', stars: 5 },
+  { name: 'Nagy Gábor', location: 'Miskolc · Irodabútor', text: 'Irodai bútorokat nagyon gyorsan készített el és szerelt fel. Precíz, tiszta munka. Másodjára is nála rendeltünk.', stars: 5 },
+  { name: 'Varga Eszter', location: 'Debrecen · Gardrób', text: 'Remek áron, kiváló minőségben készítette el a gardróbszekrényt. A méretek tökéletesek, a kivitelezés hibátlan.', stars: 5 }
+];
+
+function loadParsedReviews() {
+  try {
+    var s = localStorage.getItem('kmmk_reviews');
+    if (!s || s === '[]') return null;
+    var arr = JSON.parse(s);
+    if (!Array.isArray(arr) || arr.length === 0) return null;
+    var out = [];
+    for (var i = 0; i < arr.length; i++) {
+      var r = arr[i];
+      if (!r || typeof r !== 'object') continue;
+      var text = r.text != null ? String(r.text) : String(r.quote || '').replace(/^"|"$/g, '').trim();
+      var name = r.name || '';
+      var location = r.location != null ? String(r.location) : (r.loc || '');
+      var stars = Math.max(1, Math.min(5, parseInt(r.stars, 10) || 5));
+      if (text || name || location) out.push({ name: name, location: location, text: text, stars: stars });
+    }
+    return out.length ? out : null;
+  } catch (e) { return null; }
+}
+
+var _parsedReviews = loadParsedReviews();
+let reviews = _parsedReviews ? _parsedReviews.slice() : REVIEWS_DEFAULT.slice();
+var hasSavedReviews = !!_parsedReviews;
+
+try {
+  var portInit = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
+  if (Array.isArray(portInit) && portInit.length > 0) {
+    imgs = portInit.map(function(p) { return { src: p.src || '', title: p.title || '' }; });
+  } else {
+    imgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
+    if (!Array.isArray(imgs)) imgs = [];
+  }
+} catch (e) { imgs = []; }
 
 function openAdm() { document.getElementById('admOverlay').classList.add('open'); }
 function closeAdm() { document.getElementById('admOverlay').classList.remove('open'); }
@@ -817,33 +1270,260 @@ function loadAdmData() {
     if(ct.phone) document.getElementById('admPhone').value = ct.phone;
     if(ct.email) document.getElementById('admEmail').value = ct.email;
   } catch(e) {}
+  try {
+    var portAdm = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
+    if (Array.isArray(portAdm) && portAdm.length > 0) {
+      imgs = portAdm.map(function(p) { return { src: p.src || '', title: p.title || '' }; });
+    } else {
+      imgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
+      if (!Array.isArray(imgs)) imgs = [];
+    }
+  } catch (e2) { imgs = []; }
+  var pr = loadParsedReviews();
+  if (pr) { reviews = pr.slice(); hasSavedReviews = true; }
+  else { reviews = REVIEWS_DEFAULT.slice(); hasSavedReviews = false; }
   renderPrev();
+  renderAdmReviews();
+}
+
+function escRevHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+}
+function revStarsHtml(n) {
+  var num = Math.max(1, Math.min(5, parseInt(n, 10) || 5));
+  var parts = [];
+  for (var i = 1; i <= 5; i++) {
+    parts.push('<span' + (i > num ? ' style="opacity:0.25"' : '') + '>★</span>');
+  }
+  return '<div class="rev-stars">' + parts.join('') + '</div>';
+}
+function renderReviews() {
+  var track = document.getElementById('revTrack');
+  if (!track) return;
+  track.innerHTML = reviews.map(function(r) {
+    var text = r.text != null ? String(r.text) : String(r.quote || '').replace(/^"|"$/g, '');
+    var name = r.name || '';
+    var loc = r.location != null ? String(r.location) : (r.loc || '');
+    var stars = Math.max(1, Math.min(5, parseInt(r.stars, 10) || 5));
+    var init = (r.initial || name.charAt(0) || '?').toUpperCase();
+    var q = '"' + escRevHtml(text) + '"';
+    return '<div class="rev-card">' + revStarsHtml(stars) + '<p class="rev-quote">' + q + '</p><div class="rev-row"><div class="rev-av">' + escRevHtml(init) + '</div><div><div class="rev-name">' + escRevHtml(name) + '</div><div class="rev-loc">' + escRevHtml(loc) + '</div></div></div></div>';
+  }).join('');
+  revIndex = 0;
+  updateRevCarousel();
+}
+
+var revIndex = 0;
+function updateRevCarousel() {
+  var track = document.getElementById('revTrack');
+  var wrap = track ? track.parentElement : null;
+  var prevBtn = document.getElementById('revPrev');
+  var nextBtn = document.getElementById('revNext');
+  if (!track || !wrap) return;
+  var cards = track.querySelectorAll('.rev-card');
+  var n = cards.length;
+  if (n === 0) return;
+  var cardWidth = cards[0].offsetWidth;
+  var gap = 16;
+  var step = cardWidth + gap;
+  var maxIndex = n <= 2 ? 0 : n - 2;
+  if (window.innerWidth <= 768) maxIndex = n <= 1 ? 0 : n - 1;
+  track.style.transform = 'translateX(-' + (revIndex * step) + 'px)';
+  if (prevBtn) { prevBtn.disabled = revIndex <= 0; }
+  if (nextBtn) { nextBtn.disabled = revIndex >= maxIndex; }
+}
+
+function initRevCarousel() {
+  var track = document.getElementById('revTrack');
+  var wrap = track ? track.parentElement : null;
+  if (!track || !wrap) return;
+  var cards = track.querySelectorAll('.rev-card');
+  if (cards.length === 0) return;
+
+  function getStep() {
+    var c = track.querySelectorAll('.rev-card');
+    return c.length ? c[0].offsetWidth + 16 : 0;
+  }
+  function getMaxIndex() {
+    var n = cards.length;
+    if (window.innerWidth <= 768) return n <= 1 ? 0 : n - 1;
+    return n <= 2 ? 0 : n - 2;
+  }
+
+  document.getElementById('revPrev').addEventListener('click', function() {
+    if (revIndex > 0) { revIndex--; updateRevCarousel(); }
+  });
+  document.getElementById('revNext').addEventListener('click', function() {
+    var maxIndex = getMaxIndex();
+    if (revIndex < maxIndex) { revIndex++; updateRevCarousel(); }
+  });
+
+  var startX = 0, baseTranslate = 0, maxTranslatePx = 0;
+  function pointerX(e) { return e.touches ? e.touches[0].pageX : e.pageX; }
+  function onStart(e) {
+    if (e.target.closest('a, button')) return;
+    track.classList.add('rev-dragging');
+    startX = pointerX(e);
+    var step = getStep();
+    baseTranslate = revIndex * step;
+    maxTranslatePx = getMaxIndex() * step;
+  }
+  function onMove(e) {
+    if (!track.classList.contains('rev-dragging')) return;
+    var delta = pointerX(e) - startX;
+    var tx = Math.max(0, Math.min(maxTranslatePx, baseTranslate - delta));
+    track.style.transform = 'translateX(-' + tx + 'px)';
+  }
+  function onEnd(e) {
+    if (!track.classList.contains('rev-dragging')) return;
+    track.classList.remove('rev-dragging');
+    var step = getStep();
+    if (step <= 0) return;
+    var delta = pointerX(e) - startX;
+    var tx = Math.max(0, Math.min(maxTranslatePx, baseTranslate - delta));
+    revIndex = Math.round(tx / step);
+    revIndex = Math.max(0, Math.min(getMaxIndex(), revIndex));
+    updateRevCarousel();
+  }
+
+  wrap.addEventListener('mousedown', onStart);
+  wrap.addEventListener('touchstart', onStart, { passive: true });
+  document.addEventListener('mousemove', function(e) {
+    if (track.classList.contains('rev-dragging')) onMove(e);
+  });
+  document.addEventListener('touchmove', function(e) {
+    if (track.classList.contains('rev-dragging')) { e.preventDefault(); onMove(e); }
+  }, { passive: false });
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchend', onEnd);
+  document.addEventListener('touchcancel', onEnd);
+
+  window.addEventListener('resize', function() { updateRevCarousel(); });
+  updateRevCarousel();
+}
+
+function renderAdmReviews() {
+  var list = document.getElementById('admReviewsList');
+  if (!list) return;
+  list.innerHTML = reviews.map(function(r, i) {
+    var text = r.text != null ? String(r.text) : String(r.quote || '').replace(/^"|"$/g, '');
+    var name = r.name || '';
+    var loc = r.location != null ? String(r.location) : (r.loc || '');
+    var stars = Math.max(1, Math.min(5, parseInt(r.stars, 10) || 5));
+    var starOpts = '';
+    for (var s = 1; s <= 5; s++) starOpts += '<option value="' + s + '"' + (stars === s ? ' selected' : '') + '>' + s + ' csillag</option>';
+    return '<div class="rev-adm-row" data-idx="' + i + '" style="margin-bottom:var(--f4);padding:var(--f3);background:white;border-radius:var(--r-md);border:1px solid rgba(0,0,0,0.08);">' +
+      '<textarea class="ai" data-rev-ta rows="2" placeholder="Vélemény szövege" style="margin-bottom:var(--f2);">' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;') + '</textarea>' +
+      '<input type="text" class="ai" data-rev-name placeholder="Név" value="' + name.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" style="margin-bottom:var(--f2);">' +
+      '<input type="text" class="ai" data-rev-loc placeholder="Helyszín / projekt (pl. Budapest · Konyha)" value="' + loc.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" style="margin-bottom:var(--f2);">' +
+      '<div style="display:flex;align-items:center;gap:var(--f2);flex-wrap:wrap;">' +
+      '<select class="ai" data-rev-stars style="padding:var(--f1) var(--f2);font-size:0.85rem;border-radius:var(--r-sm);border:1px solid rgba(0,0,0,0.12);">' + starOpts + '</select>' +
+      '<button type="button" onclick="delReview(' + i + ')" style="padding:var(--f1) var(--f2);background:#b44;color:white;border:none;border-radius:var(--r-sm);cursor:pointer;font-size:0.75rem;">Törlés</button></div></div>';
+  }).join('');
+}
+
+function addReviewRow() {
+  reviews.push({ name: '', location: '', text: '', stars: 5 });
+  renderAdmReviews();
+}
+
+function delReview(i) {
+  reviews.splice(i, 1);
+  renderAdmReviews();
 }
 
 function handleFiles(files) {
-  Array.from(files).forEach(f => {
+  Array.from(files).forEach(function(f) {
     if(f.size > 5*1024*1024) { alert('Max 5MB!'); return; }
-    const r = new FileReader();
-    r.onload = e => { imgs.push({src: e.target.result, title: f.name.replace(/\.[^.]+$/, '')}); renderPrev(); };
-    r.readAsDataURL(f);
+    var uploadId = ++imgUploadSeq;
+    var title = f.name.replace(/\.[^.]+$/, '');
+    imgs.push({ src: '', title: title, uploading: true, uploadId: uploadId });
+    renderPrev();
+    var fd = new FormData();
+    fd.append('file', f);
+    fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    fetch(CLOUDINARY_UPLOAD_URL, { method: 'POST', body: fd })
+      .then(function(res) {
+        return res.json().then(function(j) {
+          if (!res.ok) throw new Error(j.error && j.error.message ? j.error.message : 'Upload failed');
+          return j;
+        });
+      })
+      .then(function(data) {
+        var idx = imgs.findIndex(function(x) { return x.uploadId === uploadId; });
+        if (idx === -1) return;
+        imgs[idx] = { src: data.secure_url, title: imgs[idx].title };
+        renderPrev();
+      })
+      .catch(function(err) {
+        var idx = imgs.findIndex(function(x) { return x.uploadId === uploadId; });
+        if (idx !== -1) { imgs.splice(idx, 1); renderPrev(); }
+        alert('Feltöltés sikertelen: ' + (err.message || 'hiba'));
+      });
   });
+  var fi = document.getElementById('fileIn');
+  if (fi) fi.value = '';
 }
 
 function renderPrev() {
-  document.getElementById('prevGrid').innerHTML = imgs.map((img, i) => `
-    <div class="prev-card">
-      <div class="prev-img">
-        <img src="${img.src}" alt="">
-        <button class="prev-del" onclick="delImg(${i})">✕</button>
-      </div>
-      <input type="text" value="${img.title}" onchange="imgs[${i}].title=this.value" placeholder="Megnevezés">
-    </div>`).join('');
+  function escAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+  document.getElementById('prevGrid').innerHTML = imgs.map(function(img, i) {
+    if (img.uploading) {
+      return '<div class="prev-card">' +
+        '<div class="prev-img prev-img-loading">' +
+        '<span class="prev-loading-spin" aria-hidden="true"></span>' +
+        '<span class="prev-loading-text">Feltöltés…</span>' +
+        '<button type="button" class="prev-del" onclick="delImg(' + i + ')">✕</button>' +
+        '</div>' +
+        '<input type="text" value="' + escAttr(img.title) + '" onchange="imgs[' + i + '].title=this.value" placeholder="Megnevezés">' +
+        '</div>';
+    }
+    return '<div class="prev-card">' +
+      '<div class="prev-img">' +
+      '<img src="' + escAttr(img.src) + '" alt="">' +
+      '<button type="button" class="prev-del" onclick="delImg(' + i + ')">✕</button>' +
+      '</div>' +
+      '<input type="text" value="' + escAttr(img.title) + '" onchange="imgs[' + i + '].title=this.value" placeholder="Megnevezés">' +
+      '</div>';
+  }).join('');
 }
 
 function delImg(i) { imgs.splice(i,1); renderPrev(); }
 
+function imgsForStore() {
+  return imgs.filter(function(x) { return x.src && !x.uploading; }).map(function(x) { return { src: x.src, title: x.title }; });
+}
+
 function saveAll() {
-  try { localStorage.setItem('kmmk_imgs', JSON.stringify(imgs)); } catch(e) {}
+  try { localStorage.setItem('kmmk_imgs', JSON.stringify(imgsForStore())); } catch(e) {}
+  var imgsSaved = imgsForStore();
+  var portfolioStore = imgsSaved.map(function(x) { return { src: x.src, title: x.title, category: 'Egyedi bútor', description: '' }; });
+  try { localStorage.setItem('kmmk_portfolio', JSON.stringify(portfolioStore)); } catch(e) {}
+  var rows = document.querySelectorAll('#admReviewsList .rev-adm-row');
+  reviews = [];
+  rows.forEach(function(row) {
+    var ta = row.querySelector('[data-rev-ta]');
+    var nameIn = row.querySelector('[data-rev-name]');
+    var locIn = row.querySelector('[data-rev-loc]');
+    var starsSel = row.querySelector('[data-rev-stars]');
+    var text = ta ? ta.value.trim() : '';
+    var name = nameIn ? nameIn.value.trim() : '';
+    var loc = locIn ? locIn.value.trim() : '';
+    var stars = starsSel ? (parseInt(starsSel.value, 10) || 5) : 5;
+    if (text || name || loc) reviews.push({ name: name, location: loc, text: text, stars: stars });
+  });
+  try { localStorage.setItem('kmmk_reviews', JSON.stringify(reviews)); } catch(e) {}
+  hasSavedReviews = reviews.length > 0;
+  if (hasSavedReviews) {
+    renderReviews();
+  } else {
+    var emptyHold = reviews;
+    reviews = REVIEWS_DEFAULT.slice();
+    renderReviews();
+    reviews = emptyHold;
+  }
   const lnks = {
     egger: document.getElementById('lnkEgger').value,
     feelwood: document.getElementById('lnkFeelwood').value,
@@ -858,15 +1538,30 @@ function saveAll() {
   if(lnks.feelwood) document.getElementById('matLink2').href = lnks.feelwood;
   if(lnks.poszt) document.getElementById('matLink3').href = lnks.poszt;
   if(lnks.krono) document.getElementById('kronospanLink').href = lnks.krono;
-  if(ct.phone) { document.getElementById('ctaPhone').textContent = ct.phone; }
-  if(ct.email) { document.getElementById('ctaEmail').textContent = ct.email; }
+  if(ct.phone) {
+      var p = document.getElementById('ctaPhone');
+      var b = document.getElementById('ctaCallBtn');
+      var tel = 'tel:' + String(ct.phone).replace(/\s/g, '');
+      if(p) { p.textContent = ct.phone; p.href = tel; }
+      if(b) b.href = tel;
+    }
+  if(ct.email) {
+    var el = document.getElementById('ctaEmail');
+    if(el) el.innerHTML = '<a href="mailto:' + ct.email.replace(/"/g,'&quot;') + '">' + ct.email.replace(/</g,'&lt;').replace(/&/g,'&amp;') + '</a>';
+  }
 
-  if(imgs.length > 0) {
-    document.getElementById('portGrid').innerHTML = imgs.map(img => `
-      <div class="port-card">
-        <div class="port-card-img"><img src="${img.src}" alt="${img.title}"></div>
-        <div class="port-card-body"><h3>${img.title}</h3><span>Egyedi bútor</span></div>
-      </div>`).join('');
+  var imgsSaved2 = imgsForStore();
+  if(imgsSaved2.length > 0) {
+    document.getElementById('portGrid').innerHTML = imgsSaved2.map(function(img) {
+      function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+      var t = esc(img.title);
+      var s = esc(img.src);
+      return '<div class="port-card" data-desc="" data-images="' + s + '">' +
+        '<div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div>' +
+        '<div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#">Megnézem →</a></div>' +
+        '</div>';
+    }).join('');
+    if (window.updatePortCarousel) window.updatePortCarousel();
   }
 
   const ok = document.getElementById('admOk');
@@ -875,18 +1570,69 @@ function saveAll() {
 }
 
 // Init: apply saved data
-(function init() {
+function runInit() {
   try {
+    if (hasSavedReviews) {
+      renderReviews();
+    }
+    initRevCarousel();
     const lnks = JSON.parse(localStorage.getItem('kmmk_links') || '{}');
     if(lnks.egger) document.getElementById('matLink1').href = lnks.egger;
     if(lnks.feelwood) document.getElementById('matLink2').href = lnks.feelwood;
     if(lnks.poszt) document.getElementById('matLink3').href = lnks.poszt;
     if(lnks.krono) document.getElementById('kronospanLink').href = lnks.krono;
     const ct = JSON.parse(localStorage.getItem('kmmk_ct') || '{}');
-    if(ct.phone) document.getElementById('ctaPhone').textContent = ct.phone;
-    if(ct.email) document.getElementById('ctaEmail').textContent = ct.email;
-    const savedImgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
-    if(savedImgs.length > 0) {
-      imgs = savedImgs;
-      document.getElementById('portGrid').innerHTML = savedImgs.map(img => `
-        <div class="port-card">
+    // #region agent log
+    var elPhone = document.getElementById('ctaPhone'); var elEmail = document.getElementById('ctaEmail');
+    if (elEmail) fetch('http://127.0.0.1:7895/ingest/3999ed14-988d-4b6b-af92-78b0b23a14ca',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'fe20f9'},body:JSON.stringify({sessionId:'fe20f9',location:'index.html:init-before-cta',message:'ctaEmail before set',data:{hasCtEmail:!!ct.email,ctaEmailChildCount:elEmail?elEmail.childNodes.length:0,ctaEmailInnerHTMLLength:elEmail?elEmail.innerHTML.length:0},timestamp:Date.now(),hypothesisId:'H-B'})}).catch(function(){});
+    // #endregion
+    if(ct.phone) {
+      var p = document.getElementById('ctaPhone');
+      var b = document.getElementById('ctaCallBtn');
+      var tel = 'tel:' + String(ct.phone).replace(/\s/g, '');
+      if(p) { p.textContent = ct.phone; p.href = tel; }
+      if(b) b.href = tel;
+    }
+    if(ct.email) {
+      var el = document.getElementById('ctaEmail');
+      if(el) el.innerHTML = '<a href="mailto:' + ct.email.replace(/"/g,'&quot;') + '">' + ct.email.replace(/</g,'&lt;').replace(/&/g,'&amp;') + '</a>';
+    }
+    function escPort(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
+    var portOk = false;
+    try {
+      var port = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
+      if (Array.isArray(port) && port.length > 0) {
+        portOk = true;
+        imgs = port.map(function(p) { return { src: p.src || '', title: p.title || '' }; });
+        document.getElementById('portGrid').innerHTML = port.map(function(item) {
+          var desc = escPort(item.description || '');
+          var title = escPort(item.title || '');
+          var cat = escPort(item.category || '');
+          var src = escPort(item.src || '');
+          return '<div class="port-card" data-desc="' + desc + '" data-images="' + src + '"><div class="port-card-img"><img src="' + src + '" alt="' + title + '"></div><div class="port-card-body"><h3>' + title + '</h3><span>' + cat + '</span><br><a href="#">Megnézem →</a></div></div>';
+        }).join('');
+        if (window.updatePortCarousel) window.updatePortCarousel();
+      }
+    } catch (ePort) {}
+    if (!portOk) {
+      const savedImgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
+      if (savedImgs.length > 0) {
+        imgs = savedImgs;
+        document.getElementById('portGrid').innerHTML = savedImgs.map(function(img) {
+          var t = escPort(img.title);
+          var s = escPort(img.src);
+          return '<div class="port-card" data-desc="" data-images="' + s + '"><div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div><div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#">Megnézem →</a></div></div>';
+        }).join('');
+        if (window.updatePortCarousel) window.updatePortCarousel();
+      }
+    }
+  } catch(e) {}
+  if (window.updatePortCarousel) window.updatePortCarousel();
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', runInit);
+} else {
+  runInit();
+}
