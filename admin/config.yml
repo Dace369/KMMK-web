@@ -1,0 +1,38 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "portfolio"
+    label: "Portfólió"
+    folder: "_portfolio"
+    create: true
+    fields:
+      - {label: "Cím", name: "title", widget: "string"}
+      - {label: "Kategória", name: "category", widget: "string"}
+      - {label: "Kép", name: "image", widget: "image"}
+      - {label: "Leírás", name: "description", widget: "text", required: false}
+
+  - name: "reviews"
+    label: "Vélemények"
+    folder: "_reviews"
+    create: true
+    fields:
+      - {label: "Név", name: "name", widget: "string"}
+      - {label: "Helyszín & projekt", name: "location", widget: "string"}
+      - {label: "Vélemény szövege", name: "text", widget: "text"}
+      - {label: "Csillagok (1-5)", name: "stars", widget: "number", min: 1, max: 5}
+
+  - name: "settings"
+    label: "Beállítások"
+    files:
+      - label: "Elérhetőségek"
+        name: "contact"
+        file: "_data/contact.json"
+        fields:
+          - {label: "Telefonszám", name: "phone", widget: "string"}
+          - {label: "Email", name: "email", widget: "string"}
+          - {label: "Helyszín", name: "location", widget: "string"}
