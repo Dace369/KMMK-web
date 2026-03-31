@@ -1632,10 +1632,55 @@ function runInit() {
   } catch(e) {}
   if (window.updatePortCarousel) window.updatePortCarousel();
 }
+
+async function loadPortfolio() {
+  try {
+    const response = await fetch('https://api.github.com/repos/Dace369/KMMK-web/contents/_portfolio');
+    if (!response.ok) return;
+    const files = await response.json();
+    
+    const cards = await Promise.all(files.map(async file => {
+      const fileResponse = await fetch(file.download_url);
+      const text = await fileResponse.text();
+      
+      // Parse frontmatter
+      const titleMatch = text.match(/title:\s*["']?(.+?)["']?\s*\n/);
+      const categoryMatch = text.match(/category:\s*["']?(.+?)["']?\s*\n/);
+      const imageMatch = text.match(/image:\s*["']?(.+?)["']?\s*\n/);
+      const descMatch = text.match(/description:\s*["']?(.+?)["']?\s*\n/);
+      
+      const title = titleMatch ? titleMatch[1] : 'Egyedi bútor';
+      const category = categoryMatch ? categoryMatch[1] : '';
+      const image = imageMatch ? imageMatch[1] : '';
+      const description = descMatch ? descMatch[1] : '';
+      
+      return `
+        <div class="port-card">
+          <div class="port-card-img"><img src="${image}" alt="${title}" loading="lazy"></div>
+          <div class="port-card-body">
+            <h3>${title}</h3>
+            <span>${category}</span>
+            ${description ? `<p style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">${description}</p>` : ''}
+          </div>
+        </div>`;
+    }));
+    
+    if (cards.length > 0) {
+      document.getElementById('portGrid').innerHTML = cards.join('');
+    }
+  } catch(e) {
+    console.log('Portfolio load error:', e);
+  }
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', runInit);
+  document.addEventListener('DOMContentLoaded', function() {
+    runInit();
+    loadPortfolio();
+  });
 } else {
   runInit();
+  loadPortfolio();
 }
 </script>
 <script>
