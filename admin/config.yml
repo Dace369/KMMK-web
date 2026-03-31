@@ -13,7 +13,10 @@ collections:
     fields:
       - {label: "Cím", name: "title", widget: "string"}
       - {label: "Kategória", name: "category", widget: "string"}
-      - {label: "Kép", name: "image", widget: "image"}
+      - label: "Képek"
+        name: "images"
+        widget: "list"
+        field: {label: "Kép", name: "image", widget: "image"}
       - {label: "Leírás", name: "description", widget: "text", required: false}
 
   - name: "reviews"
