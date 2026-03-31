@@ -1648,11 +1648,15 @@ async function loadPortfolio() {
       const categoryMatch = text.match(/category:\s*["']?(.+?)["']?\s*\n/);
       const imageMatch = text.match(/image:\s*["']?(.+?)["']?\s*\n/);
       const descMatch = text.match(/description:\s*["']?(.+?)["']?\s*\n/);
+      const materialMatch = text.match(/material:\s*["']?(.+?)["']?\s*\n/);
+      const durationMatch = text.match(/duration:\s*["']?(.+?)["']?\s*\n/);
       
       const title = titleMatch ? titleMatch[1] : 'Egyedi bútor';
       const category = categoryMatch ? categoryMatch[1] : '';
       const image = imageMatch ? imageMatch[1] : '';
       const description = descMatch ? descMatch[1] : '';
+      const material = materialMatch ? materialMatch[1] : '';
+      const duration = durationMatch ? durationMatch[1] : '';
       
       return `
         <div class="port-card">
@@ -1660,6 +1664,8 @@ async function loadPortfolio() {
           <div class="port-card-body">
             <h3>${title}</h3>
             <span>${category}</span>
+            ${material ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Anyag: ${material}</span>` : ''}
+            ${duration ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Elkészítési idő: ${duration}</span>` : ''}
             ${description ? `<p style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">${description}</p>` : ''}
           </div>
         </div>`;

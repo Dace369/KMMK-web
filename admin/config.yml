@@ -13,10 +13,9 @@ collections:
     fields:
       - {label: "Cím", name: "title", widget: "string"}
       - {label: "Kategória", name: "category", widget: "string"}
-      - label: "Képek"
-        name: "images"
-        widget: "list"
-        field: {label: "Kép", name: "image", widget: "image"}
+      - {label: "Anyag", name: "material", widget: "string", required: false}
+      - {label: "Elkészítési idő", name: "duration", widget: "string", required: false, hint: "Pl. 2 hét"}
+      - {label: "Kép", name: "image", widget: "image"}
       - {label: "Leírás", name: "description", widget: "text", required: false}
 
   - name: "reviews"
