@@ -216,6 +216,8 @@ nav ul a:hover { color: white; }
   border-radius: var(--r-lg);
   overflow: hidden; cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
+  container-type: inline-size;
+  container-name: portcard;
 }
 .port-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
 .port-card-img { aspect-ratio: 1.618/1; overflow: hidden; position: relative; }
@@ -264,6 +266,53 @@ nav ul a:hover { color: white; }
 .port-card-body h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; color: white; margin-bottom: var(--f1); }
 .port-card-body span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); }
 .port-card-body a { display: inline-block; margin-top: var(--f2); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); text-decoration: none; }
+.port-card-expand-panel {
+  display: none;
+  margin-top: var(--f2);
+  padding-top: var(--f3);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.port-card.is-expanded .port-card-expand-panel { display: block; }
+.port-card.is-expanded .port-card-img { aspect-ratio: 16 / 10; }
+.port-card-meta-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--f2);
+  margin-bottom: var(--f3);
+}
+@container portcard (max-width: 240px) {
+  .port-card-meta-row { grid-template-columns: 1fr; }
+}
+.port-card-meta-cell {
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--r-md);
+  padding: var(--f2) var(--f3);
+  min-width: 0;
+}
+.port-card-meta-label {
+  display: block;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: var(--f1);
+}
+.port-card-meta-value {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.88);
+  line-height: 1.45;
+  margin: 0;
+}
+.port-card-expand-desc {
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.55);
+  margin: 0;
+}
+@supports (font-size: 1cqi) {
+  .port-card-meta-value { font-size: clamp(0.7rem, 3.2cqi, 0.82rem); }
+  .port-card-expand-desc { font-size: clamp(0.74rem, 3.5cqi, 0.88rem); }
+}
 
 /* Portfólió modal – nagyított kártya */
 .port-modal-overlay {
@@ -1007,11 +1056,17 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       if (cnt) cnt.textContent = (idx + 1) + ' / ' + urls.length;
       return;
     }
-    var link = e.target.closest && e.target.closest('.port-card-body a[href="#"]');
+    var link = e.target.closest && e.target.closest('#portGrid .port-card-body a[href="#"]');
     if (link) {
       e.preventDefault();
       var card = link.closest('.port-card');
-      if (card) openPortModal(card);
+      if (card && window.togglePortfolioCard) window.togglePortfolioCard(card);
+      return;
+    }
+    var pcard = e.target.closest && e.target.closest('#portGrid .port-card');
+    if (pcard && !e.target.closest('.port-card-expand-panel') && !e.target.closest('.port-card-mini-btn')) {
+      if (window.togglePortfolioCard) window.togglePortfolioCard(pcard);
+      return;
     }
     if (e.target.id === 'portModalBackdrop' || e.target.id === 'portModalClose') {
       closePortModal();
@@ -1261,6 +1316,40 @@ var aboutImg = document.getElementById('aboutSectionImg');
 if (aboutImg) { aboutImg.addEventListener('error', function() { fetch('http://127.0.0.1:7895/ingest/3999ed14-988d-4b6b-af92-78b0b23a14ca',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'fe20f9'},body:JSON.stringify({sessionId:'fe20f9',location:'index.html:about-img',message:'about image load error',data:{src:aboutImg.src},timestamp:Date.now(),hypothesisId:'H-D'})}).catch(function(){}); }); }
 // #endregion
 // FAQ – lenyitható kérdések (a kezelő az oldal elején futó scriptben van)
+
+window.togglePortfolioCard = function(card) {
+  if (!card || !card.classList.contains('port-card')) return;
+  var was = card.classList.contains('is-expanded');
+  document.querySelectorAll('#portGrid .port-card.is-expanded').forEach(function(c) { c.classList.remove('is-expanded'); });
+  if (!was) card.classList.add('is-expanded');
+  if (window.updatePortCarousel) setTimeout(function() { window.updatePortCarousel(); }, 50);
+};
+window.initPortfolioExpandPanels = function() {
+  var grid = document.getElementById('portGrid');
+  if (!grid) return;
+  grid.querySelectorAll('.port-card').forEach(function(card) {
+    var desc = card.getAttribute('data-desc') || '';
+    var materials = card.getAttribute('data-materials') || '';
+    var time = card.getAttribute('data-time') || '';
+    var panel = card.querySelector('.port-card-expand-panel');
+    if (!panel) {
+      var body = card.querySelector('.port-card-body');
+      if (!body) return;
+      panel = document.createElement('div');
+      panel.className = 'port-card-expand-panel';
+      panel.innerHTML = '<div class="port-card-meta-row">' +
+        '<div class="port-card-meta-cell"><span class="port-card-meta-label">Alapanyag</span><p class="port-card-meta-value"></p></div>' +
+        '<div class="port-card-meta-cell"><span class="port-card-meta-label">Elkészítési idő</span><p class="port-card-meta-value"></p></div></div>' +
+        '<p class="port-card-expand-desc"></p>';
+      body.appendChild(panel);
+    }
+    var vals = panel.querySelectorAll('.port-card-meta-value');
+    if (vals[0]) vals[0].textContent = materials.trim() ? materials : '—';
+    if (vals[1]) vals[1].textContent = time.trim() ? time : '—';
+    var de = panel.querySelector('.port-card-expand-desc');
+    if (de) de.textContent = desc.trim() ? desc : '';
+  });
+};
 
 // ADMIN
 const PASS = 'kmmk2024';
@@ -1621,12 +1710,13 @@ function saveAll() {
       function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
       var t = esc(img.title);
       var s = esc(img.src);
-      return '<div class="port-card" data-desc="" data-images="' + s + '">' +
+      return '<div class="port-card" data-desc="" data-images="' + s + '" data-materials="" data-time="">' +
         '<div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div>' +
         '<div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#">Megnézem →</a></div>' +
         '</div>';
     }).join('');
     if (window.updatePortCarousel) window.updatePortCarousel();
+    if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
   }
 
   const ok = document.getElementById('admOk');
@@ -1676,9 +1766,12 @@ function runInit() {
           var title = escPort(item.title || '');
           var cat = escPort(item.category || '');
           var src = escPort(item.src || '');
-          return '<div class="port-card" data-desc="' + desc + '" data-images="' + src + '"><div class="port-card-img"><img src="' + src + '" alt="' + title + '"></div><div class="port-card-body"><h3>' + title + '</h3><span>' + cat + '</span><br><a href="#">Megnézem →</a></div></div>';
+          var mat = escPort(item.material || '');
+          var dur = escPort(item.duration || '');
+          return '<div class="port-card" data-desc="' + desc + '" data-images="' + src + '" data-materials="' + mat + '" data-time="' + dur + '"><div class="port-card-img"><img src="' + src + '" alt="' + title + '"></div><div class="port-card-body"><h3>' + title + '</h3><span>' + cat + '</span><br><a href="#">Megnézem →</a></div></div>';
         }).join('');
         if (window.updatePortCarousel) window.updatePortCarousel();
+        if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
       }
     } catch (ePort) {}
     if (!portOk) {
@@ -1688,9 +1781,10 @@ function runInit() {
         document.getElementById('portGrid').innerHTML = savedImgs.map(function(img) {
           var t = escPort(img.title);
           var s = escPort(img.src);
-          return '<div class="port-card" data-desc="" data-images="' + s + '"><div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div><div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#">Megnézem →</a></div></div>';
+          return '<div class="port-card" data-desc="" data-images="' + s + '" data-materials="" data-time=""><div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div><div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#">Megnézem →</a></div></div>';
         }).join('');
         if (window.updatePortCarousel) window.updatePortCarousel();
+        if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
       }
     }
   } catch(e) {}
@@ -1769,7 +1863,7 @@ async function loadPortfolio() {
       const image = first;
       
       return `
-        <div class="port-card${multi ? ' port-card-multi' : ''}" data-img-index="0" data-desc="${escAttrPf(description)}" data-images="${dataImagesAttr}" data-materials="${escAttrPf(material)}" data-time="${escAttrPf(duration)}" onclick="toggleCard(this)">
+        <div class="port-card${multi ? ' port-card-multi' : ''}" data-img-index="0" data-desc="${escAttrPf(description)}" data-images="${dataImagesAttr}" data-materials="${escAttrPf(material)}" data-time="${escAttrPf(duration)}">
           <div class="port-card-img">
             <img src="${escAttrPf(image)}" alt="${escHtmlPf(title)}" loading="lazy">
             ${navHtml}
@@ -1777,11 +1871,7 @@ async function loadPortfolio() {
           <div class="port-card-body">
             <h3>${escHtmlPf(title)}</h3>
             <span>${escHtmlPf(category)}</span>
-            <div class="port-card-details" style="display:none; margin-top:var(--f2);">
-              ${material ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:0.25rem;">Anyag: ${escHtmlPf(material)}</span>` : ''}
-              ${duration ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:0.25rem;">Elkészítési idő: ${escHtmlPf(duration)}</span>` : ''}
-              ${description ? `<p style="font-size:0.8rem;color:rgba(255,255,255,0.45);margin-top:0.5rem;line-height:1.6;">${escHtmlPf(description)}</p>` : ''}
-            </div>
+            <br><a href="#">Megnézem →</a>
           </div>
         </div>`;
     }));
@@ -1793,24 +1883,21 @@ async function loadPortfolio() {
     }
   } catch(e) {
     console.log('Portfolio load error:', e);
+  } finally {
+    if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
   }
 }
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
     runInit();
+    if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
     loadPortfolio();
   });
 } else {
   runInit();
+  if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
   loadPortfolio();
-}
-
-function toggleCard(card) {
-  const details = card.querySelector('.port-card-details');
-  if (details) {
-    details.style.display = details.style.display === 'none' ? 'block' : 'none';
-  }
 }
 </script>
 <script>
