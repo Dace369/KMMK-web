@@ -2,8 +2,15 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: "assets/uploads"
-public_folder: "/assets/uploads"
+media_library:
+  name: cloudinary
+  config:
+    cloud_name: djguaaz7z
+    api_key: 359455984297588
+    upload_preset: "KMMK uploads"
+
+# media_folder: "assets/uploads"
+# public_folder: "/assets/uploads"
 
 collections:
   - name: "portfolio"
