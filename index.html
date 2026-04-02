@@ -221,6 +221,45 @@ nav ul a:hover { color: white; }
 .port-card-img { aspect-ratio: 1.618/1; overflow: hidden; position: relative; }
 .port-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; display: block; }
 .port-card:hover .port-card-img img { transform: scale(1.05); }
+.port-card-multi:hover .port-card-img img { transform: none; }
+.port-card-mini-nav {
+  position: absolute;
+  bottom: var(--f2);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--f1);
+  z-index: 2;
+}
+.port-card-mini-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.port-card-mini-btn:hover { background: rgba(0,0,0,0.78); }
+.port-card-mini-count {
+  position: absolute;
+  top: var(--f2);
+  right: var(--f2);
+  z-index: 2;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.95);
+  background: rgba(0,0,0,0.45);
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  pointer-events: none;
+}
 .port-card-body { padding: var(--f3) var(--f4) var(--f4); }
 .port-card-body h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; color: white; margin-bottom: var(--f1); }
 .port-card-body span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); }
@@ -889,7 +928,9 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
     var time = card.getAttribute('data-time') || '4–5 hét';
 
     modalImages = images;
-    modalImgIndex = 0;
+    var idxAttr = card.getAttribute('data-img-index');
+    modalImgIndex = (idxAttr !== null && idxAttr !== '') ? (parseInt(idxAttr, 10) || 0) : 0;
+    if (modalImgIndex >= images.length) modalImgIndex = 0;
 
     document.getElementById('portModalTitle').textContent = title;
     document.getElementById('portModalDesc').textContent = desc;
@@ -898,7 +939,7 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
 
     var imgNode = document.getElementById('portModalImg');
     if (images.length > 0) {
-      imgNode.src = images[0];
+      imgNode.src = images[modalImgIndex];
       imgNode.alt = title;
     }
     var prevBtn = document.getElementById('portModalPrev');
@@ -908,7 +949,7 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
 
     var counterEl = document.getElementById('portModalCounter');
     if (images.length > 1) {
-      counterEl.textContent = '1 / ' + images.length;
+      counterEl.textContent = (modalImgIndex + 1) + ' / ' + images.length;
       counterEl.style.display = '';
     } else {
       counterEl.style.display = 'none';
@@ -943,6 +984,27 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
   }
 
   document.addEventListener('click', function(e) {
+    var miniPrev = e.target.closest && e.target.closest('.port-card-mini-prev');
+    var miniNext = e.target.closest && e.target.closest('.port-card-mini-next');
+    if (miniPrev || miniNext) {
+      e.preventDefault();
+      e.stopPropagation();
+      var card = (miniPrev || miniNext).closest('.port-card');
+      if (!card) return;
+      var dataImg = card.getAttribute('data-images');
+      if (!dataImg) return;
+      var urls = dataImg.trim().split(/\s+/).filter(Boolean);
+      if (urls.length < 2) return;
+      var idx = parseInt(card.getAttribute('data-img-index') || '0', 10) || 0;
+      if (miniNext) idx = (idx + 1) % urls.length;
+      else idx = (idx - 1 + urls.length) % urls.length;
+      card.setAttribute('data-img-index', String(idx));
+      var img = card.querySelector('.port-card-img img');
+      if (img) img.src = urls[idx];
+      var cnt = card.querySelector('.port-card-mini-count');
+      if (cnt) cnt.textContent = (idx + 1) + ' / ' + urls.length;
+      return;
+    }
     var link = e.target.closest && e.target.closest('.port-card-body a[href="#"]');
     if (link) {
       e.preventDefault();
@@ -1633,6 +1695,42 @@ function runInit() {
   if (window.updatePortCarousel) window.updatePortCarousel();
 }
 
+function escHtmlPf(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function escAttrPf(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+function parsePortfolioImages(text) {
+  const fmMatch = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  const fm = fmMatch ? fmMatch[1] : text;
+  const imgs = [];
+  const lines = fm.split(/\r?\n/);
+  var inImages = false;
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    if (/^images:\s*$/.test(line.trim())) {
+      inImages = true;
+      continue;
+    }
+    if (inImages) {
+      var li = line.match(/^\s*-\s*(.+)$/);
+      if (li) {
+        var rest = li[1].trim();
+        var objImg = rest.match(/^image:\s*["']?(.+?)["']?\s*$/);
+        imgs.push(objImg ? objImg[1].trim() : rest.replace(/^["']|["']$/g, ''));
+        continue;
+      }
+      if (/^[a-zA-Z_][a-zA-Z0-9_]*:/.test(line)) break;
+      if (line.trim() === '') continue;
+      if (line.length && !/^\s/.test(line)) break;
+    }
+  }
+  if (imgs.length) return imgs.filter(Boolean);
+  var one = fm.match(/(?:^|\n)image:\s*["']?([^\n]+?)["']?\s*(?:\n|$)/);
+  return one ? [one[1].trim()] : [];
+}
+
 async function loadPortfolio() {
   try {
     const response = await fetch('https://api.github.com/repos/Dace369/KMMK-web/contents/_portfolio');
@@ -1640,39 +1738,54 @@ async function loadPortfolio() {
     const files = await response.json();
     
     const cards = await Promise.all(files.map(async file => {
+      if (file.type !== 'file' || !/\.md$/i.test(file.name || '')) return '';
       const fileResponse = await fetch(file.download_url);
       const text = await fileResponse.text();
       
-      // Parse frontmatter
       const titleMatch = text.match(/title:\s*["']?(.+?)["']?\s*\n/);
       const categoryMatch = text.match(/category:\s*["']?(.+?)["']?\s*\n/);
-      const imageMatch = text.match(/image:\s*["']?(.+?)["']?\s*\n/);
       const descMatch = text.match(/description:\s*["']?(.+?)["']?\s*\n/);
       const materialMatch = text.match(/material:\s*["']?(.+?)["']?\s*\n/);
       const durationMatch = text.match(/duration:\s*["']?(.+?)["']?\s*\n/);
       
       const title = titleMatch ? titleMatch[1] : 'Egyedi bútor';
       const category = categoryMatch ? categoryMatch[1] : '';
-      const image = imageMatch ? imageMatch[1] : '';
       const description = descMatch ? descMatch[1] : '';
       const material = materialMatch ? materialMatch[1] : '';
       const duration = durationMatch ? durationMatch[1] : '';
+      const imageUrls = parsePortfolioImages(text);
+      const first = imageUrls[0] || '';
+      const multi = imageUrls.length > 1;
+      const dataImagesAttr = escAttrPf(imageUrls.join(' '));
+      const navHtml = multi
+        ? '<div class="port-card-mini-nav">' +
+          '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép">‹</button>' +
+          '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép">›</button>' +
+          '</div>' +
+          '<span class="port-card-mini-count">1 / ' + imageUrls.length + '</span>'
+        : '';
       
       return `
-        <div class="port-card">
-          <div class="port-card-img"><img src="${image}" alt="${title}" loading="lazy"></div>
+        <div class="port-card${multi ? ' port-card-multi' : ''}" data-img-index="0" data-desc="${escAttrPf(description)}" data-images="${dataImagesAttr}" data-materials="${escAttrPf(material)}" data-time="${escAttrPf(duration)}">
+          <div class="port-card-img">
+            <img src="${escAttrPf(first)}" alt="${escHtmlPf(title)}" loading="lazy">
+            ${navHtml}
+          </div>
           <div class="port-card-body">
-            <h3>${title}</h3>
-            <span>${category}</span>
-            ${material ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Anyag: ${material}</span>` : ''}
-            ${duration ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Elkészítési idő: ${duration}</span>` : ''}
-            ${description ? `<p style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">${description}</p>` : ''}
+            <h3>${escHtmlPf(title)}</h3>
+            <span>${escHtmlPf(category)}</span>
+            ${material ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Anyag: ${escHtmlPf(material)}</span>` : ''}
+            ${duration ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Elkészítési idő: ${escHtmlPf(duration)}</span>` : ''}
+            ${description ? `<p style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">${escHtmlPf(description)}</p>` : ''}
+            <br><a href="#">Megnézem →</a>
           </div>
         </div>`;
     }));
     
-    if (cards.length > 0) {
-      document.getElementById('portGrid').innerHTML = cards.join('');
+    const html = cards.filter(Boolean).join('');
+    if (html) {
+      document.getElementById('portGrid').innerHTML = html;
+      if (window.updatePortCarousel) window.updatePortCarousel();
     }
   } catch(e) {
     console.log('Portfolio load error:', e);
