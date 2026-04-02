@@ -501,6 +501,8 @@ footer { background: var(--teal); padding: var(--f5); }
 @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
 
 @media (max-width: 900px) {
+  .port-grid { grid-template-columns: 1fr; }
+  .rev-grid { grid-template-columns: 1fr; }
   nav { padding: 1.2rem 1.5rem; }
   nav ul { display: none; }
   .lang-switcher { margin-left: auto; }
@@ -1759,25 +1761,27 @@ async function loadPortfolio() {
       const dataImagesAttr = escAttrPf(imageUrls.join(' '));
       const navHtml = multi
         ? '<div class="port-card-mini-nav">' +
-          '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép">‹</button>' +
-          '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép">›</button>' +
+          '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép" onclick="event.stopPropagation()">‹</button>' +
+          '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép" onclick="event.stopPropagation()">›</button>' +
           '</div>' +
           '<span class="port-card-mini-count">1 / ' + imageUrls.length + '</span>'
         : '';
+      const image = first;
       
       return `
-        <div class="port-card${multi ? ' port-card-multi' : ''}" data-img-index="0" data-desc="${escAttrPf(description)}" data-images="${dataImagesAttr}" data-materials="${escAttrPf(material)}" data-time="${escAttrPf(duration)}">
+        <div class="port-card${multi ? ' port-card-multi' : ''}" data-img-index="0" data-desc="${escAttrPf(description)}" data-images="${dataImagesAttr}" data-materials="${escAttrPf(material)}" data-time="${escAttrPf(duration)}" onclick="toggleCard(this)">
           <div class="port-card-img">
-            <img src="${escAttrPf(first)}" alt="${escHtmlPf(title)}" loading="lazy">
+            <img src="${escAttrPf(image)}" alt="${escHtmlPf(title)}" loading="lazy">
             ${navHtml}
           </div>
           <div class="port-card-body">
             <h3>${escHtmlPf(title)}</h3>
             <span>${escHtmlPf(category)}</span>
-            ${material ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Anyag: ${escHtmlPf(material)}</span>` : ''}
-            ${duration ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Elkészítési idő: ${escHtmlPf(duration)}</span>` : ''}
-            ${description ? `<p style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">${escHtmlPf(description)}</p>` : ''}
-            <br><a href="#">Megnézem →</a>
+            <div class="port-card-details" style="display:none; margin-top:var(--f2);">
+              ${material ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:0.25rem;">Anyag: ${escHtmlPf(material)}</span>` : ''}
+              ${duration ? `<span style="display:block;font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:0.25rem;">Elkészítési idő: ${escHtmlPf(duration)}</span>` : ''}
+              ${description ? `<p style="font-size:0.8rem;color:rgba(255,255,255,0.45);margin-top:0.5rem;line-height:1.6;">${escHtmlPf(description)}</p>` : ''}
+            </div>
           </div>
         </div>`;
     }));
@@ -1800,6 +1804,13 @@ if (document.readyState === 'loading') {
 } else {
   runInit();
   loadPortfolio();
+}
+
+function toggleCard(card) {
+  const details = card.querySelector('.port-card-details');
+  if (details) {
+    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+  }
 }
 </script>
 <script>
