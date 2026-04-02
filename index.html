@@ -1325,15 +1325,22 @@ if (aboutImg) { aboutImg.addEventListener('error', function() { fetch('http://12
 
 window.togglePortfolioCard = function(card) {
   if (!card || !card.classList.contains('port-card')) return;
+  if (!document.getElementById('portGrid') || card.closest('#portGrid') !== document.getElementById('portGrid')) return;
   var was = card.classList.contains('is-expanded');
-  document.querySelectorAll('#portGrid .port-card.is-expanded').forEach(function(c) { c.classList.remove('is-expanded'); });
-  if (!was) card.classList.add('is-expanded');
-  var hasOpen = !!document.querySelector('#portGrid .port-card.is-expanded');
+  document.querySelectorAll('#portGrid > .port-card').forEach(function(c) {
+    if (c !== card) c.classList.remove('is-expanded');
+  });
+  if (was) {
+    card.classList.remove('is-expanded');
+  } else {
+    card.classList.add('is-expanded');
+  }
+  var hasOpen = !!document.querySelector('#portGrid > .port-card.is-expanded');
   var wrap = document.querySelector('.port-track-wrap');
   var caro = document.querySelector('.port-carousel-wrap');
   if (wrap) wrap.classList.toggle('port-track-grow', hasOpen);
   if (caro) caro.classList.toggle('port-caro-grow', hasOpen);
-  document.querySelectorAll('#portGrid .port-card').forEach(function(c) {
+  document.querySelectorAll('#portGrid > .port-card').forEach(function(c) {
     var a = c.querySelector('.port-card-body a[href="#"]');
     if (!a) return;
     a.textContent = c.classList.contains('is-expanded') ? 'Összecsukás' : 'Megnézem →';
@@ -1368,7 +1375,31 @@ window.initPortfolioExpandPanels = function() {
     if (vals[1]) vals[1].textContent = time.trim() ? time : '—';
     var de = panel.querySelector('.port-card-expand-desc');
     if (de) de.textContent = desc.trim() ? desc : '';
+    window.ensurePortCardImageNav(card);
   });
+};
+window.ensurePortCardImageNav = function(card) {
+  if (!card) return;
+  var dataImg = card.getAttribute('data-images');
+  if (!dataImg) return;
+  var urls = dataImg.trim().split(/\s+/).filter(Boolean);
+  if (urls.length < 2) return;
+  if (card.querySelector('.port-card-mini-nav')) return;
+  var imgWrap = card.querySelector('.port-card-img');
+  if (!imgWrap) return;
+  card.classList.add('port-card-multi');
+  if (card.getAttribute('data-img-index') == null || card.getAttribute('data-img-index') === '') {
+    card.setAttribute('data-img-index', '0');
+  }
+  var nav = document.createElement('div');
+  nav.className = 'port-card-mini-nav';
+  nav.innerHTML = '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép" onclick="event.stopPropagation()">‹</button>' +
+    '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép" onclick="event.stopPropagation()">›</button>';
+  var cnt = document.createElement('span');
+  cnt.className = 'port-card-mini-count';
+  cnt.textContent = '1 / ' + urls.length;
+  imgWrap.appendChild(nav);
+  imgWrap.appendChild(cnt);
 };
 
 // ADMIN
