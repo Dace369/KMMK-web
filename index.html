@@ -198,7 +198,9 @@ nav ul a:hover { color: white; }
 .port-top { margin-bottom: var(--f5); text-align: center; }
 .port-top h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 300; color: white; font-style: italic; }
 .port-carousel-wrap { position: relative; }
+.port-carousel-wrap.port-caro-grow { overflow: visible; z-index: 5; }
 .port-track-wrap { overflow: hidden; }
+.port-track-wrap.port-track-grow { overflow: visible; }
 .port-track { display: flex; gap: var(--f4); transition: transform 0.4s ease; flex-wrap: nowrap; }
 .port-track .port-card { flex: 0 0 calc(33.333% - var(--f4) * 2 / 3); min-width: 0; }
 .port-nav { display: flex; justify-content: center; align-items: center; gap: var(--f3); margin-top: var(--f5); padding-top: var(--f4); }
@@ -214,16 +216,25 @@ nav ul a:hover { color: white; }
 .port-card {
   background: rgba(255,255,255,0.05);
   border-radius: var(--r-lg);
-  overflow: hidden; cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+  cursor: default;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
   container-type: inline-size;
   container-name: portcard;
 }
-.port-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+.port-card:hover:not(.is-expanded) { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+.port-card.is-expanded {
+  position: relative;
+  z-index: 4;
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 28px 60px rgba(0,0,0,0.5);
+}
+.port-card.is-expanded:hover { transform: translateY(-10px) scale(1.04); box-shadow: 0 30px 64px rgba(0,0,0,0.55); }
 .port-card-img { aspect-ratio: 1.618/1; overflow: hidden; position: relative; }
 .port-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; display: block; }
 .port-card:hover .port-card-img img { transform: scale(1.05); }
 .port-card-multi:hover .port-card-img img { transform: none; }
+.port-card.is-expanded:hover .port-card-img img { transform: none; }
 .port-card-mini-nav {
   position: absolute;
   bottom: var(--f2);
@@ -265,7 +276,7 @@ nav ul a:hover { color: white; }
 .port-card-body { padding: var(--f3) var(--f4) var(--f4); }
 .port-card-body h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; color: white; margin-bottom: var(--f1); }
 .port-card-body span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); }
-.port-card-body a { display: inline-block; margin-top: var(--f2); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); text-decoration: none; }
+.port-card-body a { display: inline-block; margin-top: var(--f2); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); text-decoration: none; cursor: pointer; }
 .port-card-expand-panel {
   display: none;
   margin-top: var(--f2);
@@ -1063,11 +1074,6 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       if (card && window.togglePortfolioCard) window.togglePortfolioCard(card);
       return;
     }
-    var pcard = e.target.closest && e.target.closest('#portGrid .port-card');
-    if (pcard && !e.target.closest('.port-card-expand-panel') && !e.target.closest('.port-card-mini-btn')) {
-      if (window.togglePortfolioCard) window.togglePortfolioCard(pcard);
-      return;
-    }
     if (e.target.id === 'portModalBackdrop' || e.target.id === 'portModalClose') {
       closePortModal();
     }
@@ -1322,11 +1328,25 @@ window.togglePortfolioCard = function(card) {
   var was = card.classList.contains('is-expanded');
   document.querySelectorAll('#portGrid .port-card.is-expanded').forEach(function(c) { c.classList.remove('is-expanded'); });
   if (!was) card.classList.add('is-expanded');
+  var hasOpen = !!document.querySelector('#portGrid .port-card.is-expanded');
+  var wrap = document.querySelector('.port-track-wrap');
+  var caro = document.querySelector('.port-carousel-wrap');
+  if (wrap) wrap.classList.toggle('port-track-grow', hasOpen);
+  if (caro) caro.classList.toggle('port-caro-grow', hasOpen);
+  document.querySelectorAll('#portGrid .port-card').forEach(function(c) {
+    var a = c.querySelector('.port-card-body a[href="#"]');
+    if (!a) return;
+    a.textContent = c.classList.contains('is-expanded') ? 'Összecsukás' : 'Megnézem →';
+  });
   if (window.updatePortCarousel) setTimeout(function() { window.updatePortCarousel(); }, 50);
 };
 window.initPortfolioExpandPanels = function() {
   var grid = document.getElementById('portGrid');
   if (!grid) return;
+  var wrap = document.querySelector('.port-track-wrap');
+  var caro = document.querySelector('.port-carousel-wrap');
+  if (wrap) wrap.classList.remove('port-track-grow');
+  if (caro) caro.classList.remove('port-caro-grow');
   grid.querySelectorAll('.port-card').forEach(function(card) {
     var desc = card.getAttribute('data-desc') || '';
     var materials = card.getAttribute('data-materials') || '';
