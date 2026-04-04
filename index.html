@@ -632,6 +632,52 @@ html[lang="sk"] .rev-quote,
 html[lang="sk"] .faq-head h2,
 html[lang="sk"] .cta h2,
 html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
+
+.rev-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85); z-index: 500;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(8px); padding: var(--f4);
+}
+.rev-modal.open { display: flex; }
+.rev-modal-inner {
+  background: var(--off-white); border-radius: var(--r-xl);
+  max-width: 540px; width: 100%; padding: var(--f5);
+  position: relative; max-height: 90vh; overflow-y: auto;
+}
+.rev-modal-inner h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; font-weight: 400;
+  color: var(--text-dark); margin-bottom: var(--f4);
+}
+.rev-modal-close {
+  position: absolute; top: var(--f3); right: var(--f3);
+  background: rgba(0,0,0,0.08); border: none;
+  width: 36px; height: 36px; border-radius: 50%;
+  cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.rev-modal-close:hover { background: rgba(0,0,0,0.15); }
+.rev-form-group { margin-bottom: var(--f3); }
+.rev-form-group label {
+  font-size: 0.72rem; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-light);
+  display: block; margin-bottom: var(--f2);
+}
+.rev-form-group textarea { resize: vertical; }
+.rev-star-select { display: flex; gap: 0.5rem; }
+.rev-star-select span {
+  font-size: 2rem; color: rgba(0,0,0,0.15);
+  cursor: pointer; transition: color 0.2s;
+}
+.rev-star-select span.active { color: var(--gold); }
+#revSuccess {
+  margin-top: var(--f3); text-align: center;
+  color: var(--teal); font-size: 0.88rem;
+  background: rgba(15,33,43,0.08);
+  padding: var(--f3); border-radius: var(--r-md);
+}
 </style>
 </head>
 <body>
@@ -1175,6 +1221,9 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
   <div class="rev-head">
     <h2 data-i18n="rev_title">Mit mondanak a megrendelőink?</h2>
     <p data-i18n="rev_sub">Röviden arról, milyen velünk együtt dolgozni.</p>
+  </div>
+  <div style="text-align:center; margin-bottom:var(--f5);">
+    <button type="button" class="btn-dark" onclick="openReviewForm()">✍️ Vélemény írása</button>
   </div>
   <div class="rev-carousel-wrap">
     <div class="rev-track-wrap">
@@ -1980,6 +2029,54 @@ if (document.readyState === 'loading') {
   if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
   loadPortfolio();
 }
+
+let selectedStars = 0;
+
+function openReviewForm() {
+  document.getElementById('revModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeRevModal(e) {
+  if (e && e.target != null) {
+    if (e.target !== document.getElementById('revModal') && !e.target.classList.contains('rev-modal-close')) return;
+  }
+  document.getElementById('revModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function selectStar(n) {
+  selectedStars = n;
+  document.querySelectorAll('#revStars span').forEach(function(s, i) {
+    s.classList.toggle('active', i < n);
+  });
+}
+
+function submitReview() {
+  var name = document.getElementById('revName').value.trim();
+  var revLoc = document.getElementById('revLocation').value.trim();
+  var text = document.getElementById('revText').value.trim();
+
+  if (!name || !text || selectedStars === 0) {
+    alert('Kérjük töltse ki a nevet, véleményt és adjon értékelést!');
+    return;
+  }
+
+  var reviews = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
+  reviews.push({ name: name, location: revLoc, text: text, stars: selectedStars, date: new Date().toISOString() });
+  localStorage.setItem('kmmk_pending_reviews', JSON.stringify(reviews));
+
+  document.getElementById('revSuccess').style.display = 'block';
+  setTimeout(function() {
+    closeRevModal();
+    document.getElementById('revSuccess').style.display = 'none';
+    document.getElementById('revName').value = '';
+    document.getElementById('revLocation').value = '';
+    document.getElementById('revText').value = '';
+    selectedStars = 0;
+    document.querySelectorAll('#revStars span').forEach(function(s) { s.classList.remove('active'); });
+  }, 2500);
+}
 </script>
 <script>
   if (window.netlifyIdentity) {
@@ -1992,6 +2089,37 @@ if (document.readyState === 'loading') {
     });
   }
 </script>
+
+<div class="rev-modal" id="revModal" onclick="closeRevModal(event)">
+  <div class="rev-modal-inner">
+    <button type="button" class="rev-modal-close" onclick="closeRevModal()">✕</button>
+    <h2>Ossza meg véleményét</h2>
+    <div class="rev-form-group">
+      <label>Név</label>
+      <input class="ai" type="text" id="revName" placeholder="Pl. Kovács Anna">
+    </div>
+    <div class="rev-form-group">
+      <label>Helyszín & projekt</label>
+      <input class="ai" type="text" id="revLocation" placeholder="Pl. Budapest · Konyhabútor">
+    </div>
+    <div class="rev-form-group">
+      <label>Vélemény</label>
+      <textarea class="ai" id="revText" rows="4" placeholder="Írja le tapasztalatát..."></textarea>
+    </div>
+    <div class="rev-form-group">
+      <label>Értékelés</label>
+      <div class="rev-star-select" id="revStars">
+        <span onclick="selectStar(1)">★</span>
+        <span onclick="selectStar(2)">★</span>
+        <span onclick="selectStar(3)">★</span>
+        <span onclick="selectStar(4)">★</span>
+        <span onclick="selectStar(5)">★</span>
+      </div>
+    </div>
+    <button type="button" class="btn-save" onclick="submitReview()">Elküldés</button>
+    <div id="revSuccess" style="display:none;">✓ Köszönjük! Hamarosan megjelenik az oldalon.</div>
+  </div>
+</div>
 
 </body>
 </html>
