@@ -1,0 +1,4 @@
+# Statikus oldal – a teljes repo gyökér a publikus mappa
+[build]
+  publish = "."
+  command = "true"
