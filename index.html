@@ -242,7 +242,8 @@ nav ul a:hover { color: white; }
   transform: translateX(-50%);
   display: flex;
   gap: var(--f1);
-  z-index: 2;
+  z-index: 6;
+  pointer-events: auto;
 }
 .port-card-mini-btn {
   width: 32px;
@@ -258,6 +259,9 @@ nav ul a:hover { color: white; }
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .port-card-mini-btn:hover { background: rgba(0,0,0,0.78); }
 .port-card-mini-count {
@@ -857,35 +861,35 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       <div class="port-track" id="portGrid">
         <div class="port-card" data-desc="Modern, teljesen felszerelt konyha, ahol minden adott egy kényelmes és élvezetes főzéshez." data-materials="Egger laminált bútorlap, soft close zsanér, LED világítás" data-time="5 hét" data-images="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80 https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=600&q=80 https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80">
           <div class="port-card-img"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80" alt="Konyhabútor"></div>
-          <div class="port-card-body"><h3>Modern konyhabútor</h3><span>Konyha</span><br><a href="#">Megnézem →</a></div>
+          <div class="port-card-body"><h3>Modern konyhabútor</h3><span>Konyha</span><br><a href="#" class="port-card-more">Megnézem →</a></div>
         </div>
         <div class="port-card" data-desc="Szekrénysor a nappaliba, tárolás és stílus egyben." data-materials="Laminált lap, lágyzárás" data-time="3–4 hét">
           <div class="port-card-img"><img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80" alt="Szekrénysor"></div>
-          <div class="port-card-body"><h3>Modern szekrénysor</h3><span>Nappali</span><br><a href="#">Megnézem →</a></div>
+          <div class="port-card-body"><h3>Modern szekrénysor</h3><span>Nappali</span><br><a href="#" class="port-card-more">Megnézem →</a></div>
         </div>
         <div class="port-card" data-desc="Egyedi konyhabútor, precíz kivitelezéssel." data-materials="Prémium laminát, modern fogantyúk" data-time="5 hét">
           <div class="port-card-img"><img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&q=80" alt="Konyha"></div>
-          <div class="port-card-body"><h3>Modern konyhabútor</h3><span>Konyha</span><br><a href="#">Megnézem →</a></div>
+          <div class="port-card-body"><h3>Modern konyhabútor</h3><span>Konyha</span><br><a href="#" class="port-card-more">Megnézem →</a></div>
         </div>
         <div class="port-card" data-desc="Hálószobabútor készlet, álomba ringató hangulat." data-materials="Faforgácslap, lágyzárás" data-time="4 hét">
           <div class="port-card-img"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80" alt="Hálószoba"></div>
-          <div class="port-card-body"><h3>Hálószobabútor</h3><span>Háló</span><br><a href="#">Megnézem →</a></div>
+          <div class="port-card-body"><h3>Hálószobabútor</h3><span>Háló</span><br><a href="#" class="port-card-more">Megnézem →</a></div>
         </div>
         <div class="port-card" data-desc="Íróasztal és polc irodához vagy otthoni munkához." data-materials="Laminált lap, fém lábak" data-time="2–3 hét">
           <div class="port-card-img"><img src="https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=600&q=80" alt="Íróasztal"></div>
-          <div class="port-card-body"><h3>Íróasztal és polc</h3><span>Iroda</span><br><a href="#">Megnézem →</a></div>
+          <div class="port-card-body"><h3>Íróasztal és polc</h3><span>Iroda</span><br><a href="#" class="port-card-more">Megnézem →</a></div>
         </div>
         <div class="port-card" data-desc="Nappali bútorok, kényelmes és stílusos." data-materials="Fa megjelenésű laminát" data-time="4 hét">
           <div class="port-card-img"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Nappali"></div>
-          <div class="port-card-body"><h3>Nappali bútorok</h3><span>Nappali</span><br><a href="#">Megnézem →</a></div>
+          <div class="port-card-body"><h3>Nappali bútorok</h3><span>Nappali</span><br><a href="#" class="port-card-more">Megnézem →</a></div>
         </div>
         <div class="port-card" data-desc="Beépített gardrób, maximális tárolás." data-materials="Egger lap, LED, lágyzárás" data-time="4–5 hét">
           <div class="port-card-img"><img src="https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=600&q=80" alt="Gardrób"></div>
-          <div class="port-card-body"><h3>Beépített gardrób</h3><span>Gardrób</span><br><a href="#">Megnézem →</a></div>
+          <div class="port-card-body"><h3>Beépített gardrób</h3><span>Gardrób</span><br><a href="#" class="port-card-more">Megnézem →</a></div>
         </div>
         <div class="port-card" data-desc="Konyha részlet, minőségi megoldások." data-materials="Laminált bútorlap, prémium kivitelezés" data-time="5 hét">
           <div class="port-card-img"><img src="https://images.unsplash.com/photo-1616486029423-aa4789e82961?w=600&q=80" alt="Konyha részlet"></div>
-          <div class="port-card-body"><h3>Konyha részlet</h3><span>Egyedi bútor</span><br><a href="#">Megnézem →</a></div>
+          <div class="port-card-body"><h3>Konyha részlet</h3><span>Egyedi bútor</span><br><a href="#" class="port-card-more">Megnézem →</a></div>
         </div>
       </div>
     </div>
@@ -1045,35 +1049,50 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
     document.body.style.overflow = '';
   }
 
-  document.addEventListener('click', function(e) {
-    var miniPrev = e.target.closest && e.target.closest('.port-card-mini-prev');
-    var miniNext = e.target.closest && e.target.closest('.port-card-mini-next');
-    if (miniPrev || miniNext) {
+  (function bindPortGridInteractions() {
+    var grid = document.getElementById('portGrid');
+    if (!grid) return;
+    grid.addEventListener('click', function(e) {
+      var t = e.target;
+      var el = (t && t.nodeType === 1) ? t : (t && t.parentElement);
+      var btn = el && el.closest && el.closest('.port-card-mini-btn');
+      if (btn && grid.contains(btn)) {
+        e.preventDefault();
+        e.stopPropagation();
+        var miniNext = btn.classList.contains('port-card-mini-next');
+        var miniPrev = btn.classList.contains('port-card-mini-prev');
+        if (!miniPrev && !miniNext) return;
+        var card = btn.closest('.port-card');
+        if (!card || card.parentElement !== grid) return;
+        var dataImg = card.getAttribute('data-images');
+        if (!dataImg) return;
+        var urls = dataImg.trim().split(/\s+/).filter(Boolean);
+        if (urls.length < 2) return;
+        var idx = parseInt(card.getAttribute('data-img-index') || '0', 10) || 0;
+        if (miniNext) idx = (idx + 1) % urls.length;
+        else idx = (idx - 1 + urls.length) % urls.length;
+        card.setAttribute('data-img-index', String(idx));
+        var img = card.querySelector('.port-card-img img');
+        if (img) img.src = urls[idx];
+        var cnt = card.querySelector('.port-card-mini-count');
+        if (cnt) cnt.textContent = (idx + 1) + ' / ' + urls.length;
+        e.stopImmediatePropagation();
+      }
+    }, true);
+    grid.addEventListener('click', function(e) {
+      var t2 = e.target;
+      var el2 = (t2 && t2.nodeType === 1) ? t2 : (t2 && t2.parentElement);
+      var link = el2 && el2.closest && el2.closest('a.port-card-more');
+      if (!link || !grid.contains(link)) return;
+      var card = link.closest('.port-card');
+      if (!card || card.parentElement !== grid) return;
       e.preventDefault();
       e.stopPropagation();
-      var card = (miniPrev || miniNext).closest('.port-card');
-      if (!card) return;
-      var dataImg = card.getAttribute('data-images');
-      if (!dataImg) return;
-      var urls = dataImg.trim().split(/\s+/).filter(Boolean);
-      if (urls.length < 2) return;
-      var idx = parseInt(card.getAttribute('data-img-index') || '0', 10) || 0;
-      if (miniNext) idx = (idx + 1) % urls.length;
-      else idx = (idx - 1 + urls.length) % urls.length;
-      card.setAttribute('data-img-index', String(idx));
-      var img = card.querySelector('.port-card-img img');
-      if (img) img.src = urls[idx];
-      var cnt = card.querySelector('.port-card-mini-count');
-      if (cnt) cnt.textContent = (idx + 1) + ' / ' + urls.length;
-      return;
-    }
-    var link = e.target.closest && e.target.closest('#portGrid .port-card-body a[href="#"]');
-    if (link) {
-      e.preventDefault();
-      var card = link.closest('.port-card');
-      if (card && window.togglePortfolioCard) window.togglePortfolioCard(card);
-      return;
-    }
+      if (window.togglePortfolioCard) window.togglePortfolioCard(card);
+    });
+  })();
+
+  document.addEventListener('click', function(e) {
     if (e.target.id === 'portModalBackdrop' || e.target.id === 'portModalClose') {
       closePortModal();
     }
@@ -1325,26 +1344,40 @@ if (aboutImg) { aboutImg.addEventListener('error', function() { fetch('http://12
 
 window.togglePortfolioCard = function(card) {
   if (!card || !card.classList.contains('port-card')) return;
-  if (!document.getElementById('portGrid') || card.closest('#portGrid') !== document.getElementById('portGrid')) return;
+  var grid = document.getElementById('portGrid');
+  if (!grid || card.parentElement !== grid) return;
   var was = card.classList.contains('is-expanded');
-  document.querySelectorAll('#portGrid > .port-card').forEach(function(c) {
-    if (c !== card) c.classList.remove('is-expanded');
-  });
+  var i;
+  for (i = 0; i < grid.children.length; i++) {
+    var ch = grid.children[i];
+    if (ch.classList && ch.classList.contains('port-card') && ch !== card) {
+      ch.classList.remove('is-expanded');
+    }
+  }
   if (was) {
     card.classList.remove('is-expanded');
   } else {
     card.classList.add('is-expanded');
   }
-  var hasOpen = !!document.querySelector('#portGrid > .port-card.is-expanded');
+  var hasOpen = false;
+  for (i = 0; i < grid.children.length; i++) {
+    var c = grid.children[i];
+    if (c.classList && c.classList.contains('port-card') && c.classList.contains('is-expanded')) {
+      hasOpen = true;
+      break;
+    }
+  }
   var wrap = document.querySelector('.port-track-wrap');
   var caro = document.querySelector('.port-carousel-wrap');
   if (wrap) wrap.classList.toggle('port-track-grow', hasOpen);
   if (caro) caro.classList.toggle('port-caro-grow', hasOpen);
-  document.querySelectorAll('#portGrid > .port-card').forEach(function(c) {
-    var a = c.querySelector('.port-card-body a[href="#"]');
-    if (!a) return;
-    a.textContent = c.classList.contains('is-expanded') ? 'Összecsukás' : 'Megnézem →';
-  });
+  for (i = 0; i < grid.children.length; i++) {
+    var pc = grid.children[i];
+    if (!pc.classList || !pc.classList.contains('port-card')) continue;
+    var a = pc.querySelector('a.port-card-more');
+    if (!a) continue;
+    a.textContent = pc.classList.contains('is-expanded') ? 'Összecsukás' : 'Megnézem →';
+  }
   if (window.updatePortCarousel) setTimeout(function() { window.updatePortCarousel(); }, 50);
 };
 window.initPortfolioExpandPanels = function() {
@@ -1393,8 +1426,8 @@ window.ensurePortCardImageNav = function(card) {
   }
   var nav = document.createElement('div');
   nav.className = 'port-card-mini-nav';
-  nav.innerHTML = '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép" onclick="event.stopPropagation()">‹</button>' +
-    '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép" onclick="event.stopPropagation()">›</button>';
+  nav.innerHTML = '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép">‹</button>' +
+    '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép">›</button>';
   var cnt = document.createElement('span');
   cnt.className = 'port-card-mini-count';
   cnt.textContent = '1 / ' + urls.length;
@@ -1763,7 +1796,7 @@ function saveAll() {
       var s = esc(img.src);
       return '<div class="port-card" data-desc="" data-images="' + s + '" data-materials="" data-time="">' +
         '<div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div>' +
-        '<div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#">Megnézem →</a></div>' +
+        '<div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#" class="port-card-more">Megnézem →</a></div>' +
         '</div>';
     }).join('');
     if (window.updatePortCarousel) window.updatePortCarousel();
@@ -1819,7 +1852,7 @@ function runInit() {
           var src = escPort(item.src || '');
           var mat = escPort(item.material || '');
           var dur = escPort(item.duration || '');
-          return '<div class="port-card" data-desc="' + desc + '" data-images="' + src + '" data-materials="' + mat + '" data-time="' + dur + '"><div class="port-card-img"><img src="' + src + '" alt="' + title + '"></div><div class="port-card-body"><h3>' + title + '</h3><span>' + cat + '</span><br><a href="#">Megnézem →</a></div></div>';
+          return '<div class="port-card" data-desc="' + desc + '" data-images="' + src + '" data-materials="' + mat + '" data-time="' + dur + '"><div class="port-card-img"><img src="' + src + '" alt="' + title + '"></div><div class="port-card-body"><h3>' + title + '</h3><span>' + cat + '</span><br><a href="#" class="port-card-more">Megnézem →</a></div></div>';
         }).join('');
         if (window.updatePortCarousel) window.updatePortCarousel();
         if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
@@ -1832,7 +1865,7 @@ function runInit() {
         document.getElementById('portGrid').innerHTML = savedImgs.map(function(img) {
           var t = escPort(img.title);
           var s = escPort(img.src);
-          return '<div class="port-card" data-desc="" data-images="' + s + '" data-materials="" data-time=""><div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div><div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#">Megnézem →</a></div></div>';
+          return '<div class="port-card" data-desc="" data-images="' + s + '" data-materials="" data-time=""><div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div><div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#" class="port-card-more">Megnézem →</a></div></div>';
         }).join('');
         if (window.updatePortCarousel) window.updatePortCarousel();
         if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
@@ -1906,8 +1939,8 @@ async function loadPortfolio() {
       const dataImagesAttr = escAttrPf(imageUrls.join(' '));
       const navHtml = multi
         ? '<div class="port-card-mini-nav">' +
-          '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép" onclick="event.stopPropagation()">‹</button>' +
-          '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép" onclick="event.stopPropagation()">›</button>' +
+          '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép">‹</button>' +
+          '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép">›</button>' +
           '</div>' +
           '<span class="port-card-mini-count">1 / ' + imageUrls.length + '</span>'
         : '';
@@ -1922,7 +1955,7 @@ async function loadPortfolio() {
           <div class="port-card-body">
             <h3>${escHtmlPf(title)}</h3>
             <span>${escHtmlPf(category)}</span>
-            <br><a href="#">Megnézem →</a>
+            <br><a href="#" class="port-card-more">Megnézem →</a>
           </div>
         </div>`;
     }));
