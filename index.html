@@ -336,10 +336,10 @@ nav ul a:hover { color: white; }
 }
 .port-modal-overlay.open { opacity: 1; visibility: visible; }
 .port-modal-backdrop {
-  position: absolute; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  position: absolute; inset: 0; background: rgba(0,0,0,0.35); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 }
 .port-modal-card {
-  position: relative; background: white; border-radius: var(--r-xl); max-width: min(920px, 92vw); width: 100%; max-height: 90vh;
+  position: relative; background: white; border-radius: var(--r-xl); width: min(1200px, 96vw); max-height: 94vh;
   overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.35); transform: scale(0.95); transition: transform 0.3s;
 }
 .port-modal-overlay.open .port-modal-card { transform: scale(1); }
@@ -350,7 +350,7 @@ nav ul a:hover { color: white; }
 }
 .port-modal-close:hover { background: white; }
 .port-modal-gallery {
-  position: relative; aspect-ratio: 16/10; background: #f0f0f0; overflow: hidden;
+  position: relative; aspect-ratio: 16/9; background: #f0f0f0; overflow: hidden;
 }
 .port-modal-img-wrap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .port-modal-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -611,6 +611,13 @@ footer { background: var(--teal); padding: var(--f5); }
   footer { padding: 2rem 1.5rem; }
   .foot-top { flex-direction: column; align-items: flex-start; }
   .prev-grid { grid-template-columns: repeat(2,1fr); }
+}
+
+@media (max-width: 768px) {
+  .port-modal-overlay { padding: 10px; }
+  .port-modal-card { width: 100%; max-height: 96vh; border-radius: 18px; }
+  .port-modal-body { padding: var(--f4); }
+  .port-modal-gallery { aspect-ratio: 4 / 3; }
 }
 .lang-switcher { display: flex; gap: 0.3rem; align-items: center; margin-left: 1rem; }
 .lang-btn { background: transparent; border: 1px solid rgba(255,255,255,0.5); color: rgba(255,255,255,0.8); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; padding: 0.3rem 0.65rem; border-radius: var(--r-pill); cursor: pointer; transition: all 0.3s; font-family: 'Jost', sans-serif; }
