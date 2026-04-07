@@ -54,6 +54,15 @@ function renderBody(provider, status, content) {
 <html>
   <head><meta charset="utf-8" /></head>
   <body>
+    <div id="fallback" style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; padding: 24px;">
+      <h2 style="margin: 0 0 8px;">Bejelentkezés feldolgozása…</h2>
+      <p style="margin: 0 0 12px;">
+        Ezt az oldalt az admin felület popupként nyitja meg. Ha ezt külön tabban látod, nyisd meg az admint, és onnan
+        indítsd a belépést:
+        <a href="/admin/">/admin/</a>
+      </p>
+      <p style="margin: 0; opacity: 0.7;">Most már nyugodtan bezárhatod ezt a lapot.</p>
+    </div>
     <script>
       (function () {
         var provider = ${JSON.stringify(provider)};
