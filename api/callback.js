@@ -1,12 +1,11 @@
-import { IncomingMessage, ServerResponse } from "http";
-import { AuthorizationCode } from "simple-oauth2";
-import { config, Provider } from "../lib/config";
+const { AuthorizationCode } = require("simple-oauth2");
+const { config } = require("../lib/config.js");
 
-export default async (req: IncomingMessage, res: ServerResponse) => {
-  const { host } = req.headers;
+module.exports = async (req, res) => {
+  const host = req.headers.host;
   const url = new URL(`https://${host}${req.url}`);
   const code = url.searchParams.get("code");
-  const provider = url.searchParams.get("provider") as Provider;
+  const provider = url.searchParams.get("provider") || "github";
 
   try {
     if (!code) throw new Error("Missing code");
@@ -18,7 +17,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
     };
 
     const accessToken = await client.getToken(tokenParams);
-    const token = accessToken.token["access_token"] as string;
+    const token = accessToken.token.access_token;
 
     res.statusCode = 200;
     res.setHeader("content-type", "text/html; charset=utf-8");
@@ -26,22 +25,11 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
   } catch (e) {
     res.statusCode = 200;
     res.setHeader("content-type", "text/html; charset=utf-8");
-    res.end(
-      renderBody(provider, "error", {
-        token: "",
-        provider: provider || "github",
-        error: String(e),
-      })
-    );
+    res.end(renderBody(provider, "error", { error: String(e), provider }));
   }
 };
 
-function renderBody(
-  provider: string,
-  status: "success" | "error",
-  content: Record<string, unknown>
-) {
-  // Decap/Netlify CMS expects a JS page that postMessages the result to the opener.
+function renderBody(provider, status, content) {
   return `<!doctype html>
 <html>
   <head><meta charset="utf-8" /></head>
