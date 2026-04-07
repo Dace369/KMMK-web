@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Dace369/KMMK-web
   branch: main
+  base_url: https://kmmk-web.vercel.app
+  auth_endpoint: auth
 
 media_library:
   name: cloudinary

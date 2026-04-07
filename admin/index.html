@@ -4,10 +4,73 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KMMK Admin</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <!-- Decap CMS (korábban Netlify CMS); a ^2.0.0 unpkg URL gyakran nem tölt be megbízhatóan -->
-  <script src="https://unpkg.com/decap-cms@3.4.0/dist/decap-cms.js"></script>
+  <noscript>Az admin felülethez engedélyezni kell a JavaScriptet.</noscript>
+
+  <script>
+    (function () {
+      function loadScript(src, onload) {
+        var s = document.createElement("script");
+        s.src = src;
+        s.async = true;
+        s.onload = onload || null;
+        s.onerror = function () {
+          // Swallow: fallback kezeli.
+        };
+        document.body.appendChild(s);
+        return s;
+      }
+
+      function whenReady(testFn, cb, timeoutMs) {
+        var start = Date.now();
+        (function tick() {
+          if (testFn()) return cb();
+          if (Date.now() - start > (timeoutMs || 15000)) return;
+          setTimeout(tick, 50);
+        })();
+      }
+
+      function loadCloudinaryMediaLibrary() {
+        // A Cloudinary media library NINCS benne alapból a decap-cms bundle-ben, külön kell regisztrálni.
+        var primary =
+          "https://cdn.jsdelivr.net/npm/decap-cms-media-library-cloudinary@3.1.0/dist/decap-cms-media-library-cloudinary.js";
+        var fallback =
+          "https://unpkg.com/decap-cms-media-library-cloudinary@3.1.0/dist/decap-cms-media-library-cloudinary.js";
+
+        loadScript(primary).onerror = function () {
+          loadScript(fallback);
+        };
+
+        whenReady(
+          function () {
+            return (
+              window.CMS &&
+              window.DecapCmsMediaLibraryCloudinary &&
+              window.DecapCmsMediaLibraryCloudinary.DecapCmsMediaLibraryCloudinary
+            );
+          },
+          function () {
+            try {
+              window.CMS.registerMediaLibrary(
+                window.DecapCmsMediaLibraryCloudinary.DecapCmsMediaLibraryCloudinary
+              );
+            } catch (e) {
+              // Ha valamiért nem sikerül, a CMS ettől még betöltődhet.
+            }
+          }
+        );
+      }
+
+      // Decap CMS bundle – először jsDelivr, majd unpkg fallback.
+      loadScript("https://cdn.jsdelivr.net/npm/decap-cms@3.4.0/dist/decap-cms.js", function () {
+        loadCloudinaryMediaLibrary();
+      }).onerror = function () {
+        loadScript("https://unpkg.com/decap-cms@3.4.0/dist/decap-cms.js", function () {
+          loadCloudinaryMediaLibrary();
+        });
+      };
+    })();
+  </script>
 </body>
 </html>
