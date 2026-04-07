@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KMMK – Egyedi Bútorok</title>
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
@@ -1390,19 +1389,6 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
 </div>
 
 <script>
-// #region agent log
-(function _dbg() {
-  var ids = ['portGrid','ctaPhone','ctaEmail','prevGrid','eggerLink','kronospanBoardsLink','kronospanLink'];
-  var found = {}; ids.forEach(function(id){ found[id] = !!document.getElementById(id); });
-  var faqRows = document.querySelectorAll('.faq-row');
-  var faqQNull = []; faqRows.forEach(function(r,i){ if(!r.querySelector('.faq-q')) faqQNull.push(i); });
-  fetch('http://127.0.0.1:7895/ingest/3999ed14-988d-4b6b-af92-78b0b23a14ca',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'fe20f9'},body:JSON.stringify({sessionId:'fe20f9',location:'index.html:script-init',message:'DOM check',data:{ids:found,faqRowCount:faqRows.length,faqQNullIndices:faqQNull},timestamp:Date.now(),hypothesisId:'H-A,H-C,H-E'})}).catch(function(){});
-})();
-// #endregion
-// #region agent log
-var aboutImg = document.getElementById('aboutSectionImg');
-if (aboutImg) { aboutImg.addEventListener('error', function() { fetch('http://127.0.0.1:7895/ingest/3999ed14-988d-4b6b-af92-78b0b23a14ca',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'fe20f9'},body:JSON.stringify({sessionId:'fe20f9',location:'index.html:about-img',message:'about image load error',data:{src:aboutImg.src},timestamp:Date.now(),hypothesisId:'H-D'})}).catch(function(){}); }); }
-// #endregion
 // FAQ – lenyitható kérdések (a kezelő az oldal elején futó scriptben van)
 
 window.togglePortfolioCard = function(card) {
@@ -1651,13 +1637,21 @@ function initRevCarousel() {
     return n <= 2 ? 0 : n - 2;
   }
 
-  document.getElementById('revPrev').addEventListener('click', function() {
-    if (revIndex > 0) { revIndex--; updateRevCarousel(); }
-  });
-  document.getElementById('revNext').addEventListener('click', function() {
-    var maxIndex = getMaxIndex();
-    if (revIndex < maxIndex) { revIndex++; updateRevCarousel(); }
-  });
+  var prev = document.getElementById('revPrev');
+  var next = document.getElementById('revNext');
+  if (prev && !prev._kmmkBound) {
+    prev._kmmkBound = true;
+    prev.addEventListener('click', function() {
+      if (revIndex > 0) { revIndex--; updateRevCarousel(); }
+    });
+  }
+  if (next && !next._kmmkBound) {
+    next._kmmkBound = true;
+    next.addEventListener('click', function() {
+      var maxIndex = getMaxIndex();
+      if (revIndex < maxIndex) { revIndex++; updateRevCarousel(); }
+    });
+  }
 
   var startX = 0, baseTranslate = 0, maxTranslatePx = 0;
   function pointerX(e) { return e.touches ? e.touches[0].pageX : e.pageX; }
@@ -1914,10 +1908,7 @@ function runInit() {
     if(lnks.poszt) document.getElementById('matLink3').href = lnks.poszt;
     if(lnks.krono) document.getElementById('kronospanLink').href = lnks.krono;
     const ct = JSON.parse(localStorage.getItem('kmmk_ct') || '{}');
-    // #region agent log
     var elPhone = document.getElementById('ctaPhone'); var elEmail = document.getElementById('ctaEmail');
-    if (elEmail) fetch('http://127.0.0.1:7895/ingest/3999ed14-988d-4b6b-af92-78b0b23a14ca',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'fe20f9'},body:JSON.stringify({sessionId:'fe20f9',location:'index.html:init-before-cta',message:'ctaEmail before set',data:{hasCtEmail:!!ct.email,ctaEmailChildCount:elEmail?elEmail.childNodes.length:0,ctaEmailInnerHTMLLength:elEmail?elEmail.innerHTML.length:0},timestamp:Date.now(),hypothesisId:'H-B'})}).catch(function(){});
-    // #endregion
     if(ct.phone) {
       var p = document.getElementById('ctaPhone');
       var b = document.getElementById('ctaCallBtn');
@@ -2138,17 +2129,6 @@ function submitReview() {
     document.querySelectorAll('#revStars span').forEach(function(s) { s.classList.remove('active'); });
   }, 2500);
 }
-</script>
-<script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
-      }
-    });
-  }
 </script>
 
 <div class="rev-modal" id="revModal" onclick="closeRevModal(event)">
