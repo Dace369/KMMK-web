@@ -14,7 +14,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
     const client = new AuthorizationCode(config(provider));
     const tokenParams = {
       code,
-      redirect_uri: `https://${host}/callback?provider=${provider}`,
+      redirect_uri: `https://${host}/api/callback?provider=${provider}`,
     };
 
     const accessToken = await client.getToken(tokenParams);
