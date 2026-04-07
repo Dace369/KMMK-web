@@ -2062,9 +2062,23 @@ function submitReview() {
     return;
   }
 
-  var reviews = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
-  reviews.push({ name: name, location: revLoc, text: text, stars: selectedStars, date: new Date().toISOString() });
-  localStorage.setItem('kmmk_pending_reviews', JSON.stringify(reviews));
+  // Azonnali megjelenítés: hozzáadjuk a helyi listához, és el is mentjük.
+  try {
+    if (!Array.isArray(reviews)) reviews = [];
+    reviews.unshift({
+      name: name,
+      location: revLoc,
+      text: text,
+      stars: selectedStars,
+      initial: (name.charAt(0) || '?').toUpperCase()
+    });
+    localStorage.setItem('kmmk_reviews', JSON.stringify(reviews));
+    hasSavedReviews = true;
+    renderReviews();
+  } catch (e) {
+    // Ha a localStorage le van tiltva, akkor is megpróbáljuk kirenderelni.
+    try { renderReviews(); } catch (e2) {}
+  }
 
   document.getElementById('revSuccess').style.display = 'block';
   setTimeout(function() {
