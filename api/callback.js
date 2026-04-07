@@ -1,6 +1,3 @@
-const { AuthorizationCode } = require("simple-oauth2");
-const { config } = require("../lib/config.js");
-
 module.exports = async (req, res) => {
   const host = req.headers.host;
   const url = new URL(`https://${host}${req.url}`);
@@ -9,15 +6,38 @@ module.exports = async (req, res) => {
 
   try {
     if (!code) throw new Error("Missing code");
+    if (provider !== "github") throw new Error("Unsupported provider");
 
-    const client = new AuthorizationCode(config(provider));
-    const tokenParams = {
-      code,
-      redirect_uri: `https://${host}/api/callback?provider=${provider}`,
-    };
+    const clientId = process.env.OAUTH_GITHUB_CLIENT_ID;
+    const clientSecret = process.env.OAUTH_GITHUB_CLIENT_SECRET;
+    if (!clientId) throw new Error("Missing OAUTH_GITHUB_CLIENT_ID");
+    if (!clientSecret) throw new Error("Missing OAUTH_GITHUB_CLIENT_SECRET");
 
-    const accessToken = await client.getToken(tokenParams);
-    const token = accessToken.token.access_token;
+    const redirectUri = `https://${host}/api/callback?provider=${provider}`;
+
+    const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        client_id: clientId,
+        client_secret: clientSecret,
+        code,
+        redirect_uri: redirectUri,
+      }),
+    });
+
+    const tokenJson = await tokenRes.json();
+    if (!tokenRes.ok || tokenJson.error) {
+      throw new Error(
+        `Token exchange failed: ${tokenJson.error || tokenRes.status} ${tokenJson.error_description || ""}`.trim()
+      );
+    }
+
+    const token = tokenJson.access_token;
+    if (!token) throw new Error("Missing access_token in response");
 
     res.statusCode = 200;
     res.setHeader("content-type", "text/html; charset=utf-8");

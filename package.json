@@ -1,9 +1,0 @@
-{
-  "name": "kmmk-web",
-  "private": true,
-  "license": "UNLICENSED",
-  "dependencies": {
-    "simple-oauth2": "^5.2.0"
-  }
-}
-
