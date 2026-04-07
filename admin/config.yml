@@ -3,7 +3,7 @@ backend:
   repo: Dace369/KMMK-web
   branch: main
   base_url: https://kmmk-web.vercel.app
-  auth_endpoint: auth
+  auth_endpoint: api/auth
 
 media_library:
   name: cloudinary
