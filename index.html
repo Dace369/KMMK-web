@@ -443,12 +443,21 @@ nav ul a:hover { color: white; }
 .rev-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .rev-track { display: flex; gap: var(--f4); transition: transform 0.4s ease; }
 .rev-track.rev-dragging { transition: none; }
-.rev-card { flex: 0 0 calc(50% - var(--f4) / 2); background: var(--warm-white); padding: var(--f4); border-radius: var(--r-lg); transition: box-shadow 0.3s; }
+.rev-card {
+  flex: 0 0 calc(50% - var(--f4) / 2);
+  background: var(--warm-white);
+  padding: var(--f4);
+  border-radius: var(--r-lg);
+  transition: box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
 .rev-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.07); }
 .rev-stars { display: flex; gap: 2px; margin-bottom: var(--f3); }
 .rev-stars span { color: var(--gold); font-size: 0.85rem; }
-.rev-quote { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; line-height: 1.618; color: var(--text-dark); margin-bottom: var(--f4); }
-.rev-row { display: flex; align-items: center; gap: var(--f3); }
+.rev-quote { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; line-height: 1.618; color: var(--text-dark); margin-bottom: var(--f4); flex: 1; }
+.rev-row { display: flex; align-items: center; gap: var(--f3); margin-top: auto; }
 .rev-av { width: 42px; height: 42px; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 500; flex-shrink: 0; }
 .rev-name { font-size: 0.85rem; font-weight: 500; color: var(--text-dark); }
 .rev-loc { font-size: 0.75rem; color: var(--text-light); }
@@ -591,7 +600,7 @@ footer { background: var(--teal); padding: var(--f5); }
   .mat-body { padding: 3rem 2rem; }
   .kronospan { padding: 5rem 1.5rem; }
   .reviews { padding: 5rem 1.5rem; }
-  .rev-card { flex: 0 0 100%; }
+  .rev-card { flex: 0 0 100%; min-height: 0; }
   .rev-track { gap: var(--f3); }
   .faq { padding: 5rem 1.5rem; }
   .cta { padding: 6rem 1.5rem; }
@@ -1621,15 +1630,14 @@ function initRevCarousel() {
   var track = document.getElementById('revTrack');
   var wrap = track ? track.parentElement : null;
   if (!track || !wrap) return;
-  var cards = track.querySelectorAll('.rev-card');
-  if (cards.length === 0) return;
+  if (track.querySelectorAll('.rev-card').length === 0) return;
 
   function getStep() {
     var c = track.querySelectorAll('.rev-card');
     return c.length ? c[0].offsetWidth + 16 : 0;
   }
   function getMaxIndex() {
-    var n = cards.length;
+    var n = track.querySelectorAll('.rev-card').length;
     if (window.innerWidth <= 768) return n <= 1 ? 0 : n - 1;
     return n <= 2 ? 0 : n - 2;
   }
@@ -1857,9 +1865,36 @@ function saveAll() {
 // Init: apply saved data
 function runInit() {
   try {
-    if (hasSavedReviews) {
-      renderReviews();
-    }
+    // Régi verzióból migráció: a korábban beküldött vélemények a kmmk_pending_reviews alatt ragadhattak.
+    try {
+      var pendingRaw = localStorage.getItem('kmmk_pending_reviews');
+      if (pendingRaw) {
+        var pending = JSON.parse(pendingRaw || '[]');
+        if (Array.isArray(pending) && pending.length) {
+          var migrated = [];
+          for (var i = 0; i < pending.length; i++) {
+            var p = pending[i];
+            if (!p) continue;
+            var nm = (p.name || '').toString().trim();
+            var lc = (p.location || '').toString().trim();
+            var tx = (p.text || '').toString().trim();
+            var st = Math.max(1, Math.min(5, parseInt(p.stars, 10) || 5));
+            if (!nm || !tx) continue;
+            migrated.push({ name: nm, location: lc, text: tx, stars: st, initial: (nm.charAt(0) || '?').toUpperCase() });
+          }
+          if (migrated.length) {
+            // a beküldött vélemények kerüljenek előre
+            reviews = migrated.concat(reviews);
+            localStorage.setItem('kmmk_reviews', JSON.stringify(reviews));
+            hasSavedReviews = true;
+          }
+          localStorage.removeItem('kmmk_pending_reviews');
+        }
+      }
+    } catch (eMig) {}
+
+    // Mindig rendereljük az aktuális listát, így a friss beküldések is biztosan látszanak.
+    renderReviews();
     initRevCarousel();
     const lnks = JSON.parse(localStorage.getItem('kmmk_links') || '{}');
     if(lnks.egger) document.getElementById('matLink1').href = lnks.egger;
