@@ -1384,6 +1384,7 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       <div id="admContent" style="display:none">
         <div class="adm-sec">
           <div class="adm-sec-title">Portfólió képek feltöltése</div>
+          <p class="adm-sec-hint" style="font-size:0.8rem;color:var(--text-mid);margin-bottom:var(--f3);">A képek a Cloudinaryre kerülnek. A „Mentés és közzététel” a közzétételi kulccsal ugyanazt a listát írja a GitHubra – minden látogató ezt látja a portfólióban (nem csak ezen a gépen).</p>
           <div class="upload-zone" onclick="document.getElementById('fileIn').click()">
             <input type="file" id="fileIn" multiple accept="image/*" onchange="handleFiles(this.files)">
             <span class="uz-icon">🖼</span>
@@ -1391,6 +1392,11 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
             <small>JPG, PNG, WEBP – max. 5MB / kép</small>
           </div>
           <div class="prev-grid" id="prevGrid"></div>
+        </div>
+        <div class="adm-sec">
+          <div class="adm-sec-title">Közzététel a weboldalra (Vercel)</div>
+          <input class="ai" type="password" id="admPublishKey" placeholder="Közzétételi kulcs = Vercel KMMK_PUBLISH_SECRET" autocomplete="new-password">
+          <div class="adm-err" id="admPublishErr" style="display:none;margin-top:var(--f2);"></div>
         </div>
         <div class="adm-sec">
           <div class="adm-sec-title">Katalógus linkek</div>
@@ -1597,6 +1603,11 @@ function loadAdmData() {
       if (!Array.isArray(imgs)) imgs = [];
     }
   } catch (e2) { imgs = []; }
+  try {
+    var pk = localStorage.getItem('kmmk_publish_secret');
+    var pke = document.getElementById('admPublishKey');
+    if (pk && pke) pke.value = pk;
+  } catch (ePk) {}
   var pr = loadParsedReviews();
   if (pr) { reviews = pr.slice(); hasSavedReviews = true; }
   else { reviews = REVIEWS_DEFAULT.slice(); hasSavedReviews = false; }
@@ -1821,7 +1832,9 @@ function imgsForStore() {
   return imgs.filter(function(x) { return x.src && !x.uploading; }).map(function(x) { return { src: x.src, title: x.title }; });
 }
 
-function saveAll() {
+async function saveAll() {
+  var errPub = document.getElementById('admPublishErr');
+  if (errPub) { errPub.style.display = 'none'; errPub.textContent = ''; }
   try { localStorage.setItem('kmmk_imgs', JSON.stringify(imgsForStore())); } catch(e) {}
   var imgsSaved = imgsForStore();
   var portfolioStore = imgsSaved.map(function(x) { return { src: x.src, title: x.title, category: 'Egyedi bútor', description: '' }; });
@@ -1878,7 +1891,7 @@ function saveAll() {
   }
 
   var imgsSaved2 = imgsForStore();
-  if(imgsSaved2.length > 0) {
+  if (imgsSaved2.length > 0) {
     document.getElementById('portGrid').innerHTML = imgsSaved2.map(function(img) {
       function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
       var t = esc(img.title);
@@ -1890,11 +1903,63 @@ function saveAll() {
     }).join('');
     if (window.updatePortCarousel) window.updatePortCarousel();
     if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
+  } else {
+    document.getElementById('portGrid').innerHTML = '';
+    if (window.updatePortCarousel) window.updatePortCarousel();
+    if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
   }
 
-  const ok = document.getElementById('admOk');
-  ok.style.display = 'block';
-  setTimeout(() => ok.style.display = 'none', 3500);
+  var publishKeyEl = document.getElementById('admPublishKey');
+  var publishKey = publishKeyEl ? publishKeyEl.value.trim() : '';
+  if (publishKey) {
+    try { localStorage.setItem('kmmk_publish_secret', publishKey); } catch (ePk) {}
+  } else {
+    try { publishKey = localStorage.getItem('kmmk_publish_secret') || ''; } catch (ePk2) {}
+  }
+
+  var portfolioApiItems = imgsSaved.map(function(x) {
+    return {
+      title: x.title || '',
+      category: 'Egyedi bútor',
+      description: '',
+      material: '',
+      duration: '',
+      images: x.src ? [x.src] : []
+    };
+  });
+
+  var ok = document.getElementById('admOk');
+  if (!publishKey) {
+    if (errPub) {
+      errPub.textContent = 'Közzétételhez add meg a kulcsot (Vercel → KMMK_PUBLISH_SECRET). Addig csak ezen a böngészőben marad a szerkesztett lista.';
+      errPub.style.display = 'block';
+    }
+    ok.textContent = '✓ Helyi mentés kész.';
+    ok.style.display = 'block';
+    setTimeout(function() { ok.style.display = 'none'; }, 4000);
+    return;
+  }
+
+  try {
+    var res = await fetch('/api/publish-portfolio', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: publishKey, items: portfolioApiItems })
+    });
+    var j = await res.json().catch(function() { return {}; });
+    if (!res.ok) throw new Error(j.error || j.detail || res.statusText);
+    ok.textContent = '✓ Közzétéve – a portfólió minden látogatónál frissül (néhány másodperc).';
+    ok.style.display = 'block';
+    setTimeout(function() { ok.style.display = 'none'; }, 4500);
+  } catch (ePub) {
+    if (errPub) {
+      errPub.textContent = 'Közzététel sikertelen: ' + (ePub && ePub.message ? ePub.message : String(ePub));
+      errPub.style.display = 'block';
+    }
+    ok.textContent = '✓ Helyi mentés kész, a közzététel nem sikerült.';
+    ok.style.display = 'block';
+    setTimeout(function() { ok.style.display = 'none'; }, 5000);
+  }
 }
 
 // Init: apply saved data
@@ -1949,41 +2014,6 @@ function runInit() {
     if(ct.email) {
       var el = document.getElementById('ctaEmail');
       if(el) el.innerHTML = '<a href="mailto:' + ct.email.replace(/"/g,'&quot;') + '">' + ct.email.replace(/</g,'&lt;').replace(/&/g,'&amp;') + '</a>';
-    }
-    function escPort(s) {
-      return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-    }
-    var portOk = false;
-    try {
-      var port = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
-      if (Array.isArray(port) && port.length > 0) {
-        portOk = true;
-        imgs = port.map(function(p) { return { src: p.src || '', title: p.title || '' }; });
-        document.getElementById('portGrid').innerHTML = port.map(function(item) {
-          var desc = escPort(item.description || '');
-          var title = escPort(item.title || '');
-          var cat = escPort(item.category || '');
-          var src = escPort(item.src || '');
-          var mat = escPort(item.material || '');
-          var dur = escPort(item.duration || '');
-          return '<div class="port-card" data-desc="' + desc + '" data-images="' + src + '" data-materials="' + mat + '" data-time="' + dur + '"><div class="port-card-img"><img src="' + src + '" alt="' + title + '"></div><div class="port-card-body"><h3>' + title + '</h3><span>' + cat + '</span><br><a href="#" class="port-card-more">Megnézem →</a></div></div>';
-        }).join('');
-        if (window.updatePortCarousel) window.updatePortCarousel();
-        if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
-      }
-    } catch (ePort) {}
-    if (!portOk) {
-      const savedImgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
-      if (savedImgs.length > 0) {
-        imgs = savedImgs;
-        document.getElementById('portGrid').innerHTML = savedImgs.map(function(img) {
-          var t = escPort(img.title);
-          var s = escPort(img.src);
-          return '<div class="port-card" data-desc="" data-images="' + s + '" data-materials="" data-time=""><div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div><div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#" class="port-card-more">Megnézem →</a></div></div>';
-        }).join('');
-        if (window.updatePortCarousel) window.updatePortCarousel();
-        if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
-      }
     }
   } catch(e) {}
   if (window.updatePortCarousel) window.updatePortCarousel();
@@ -2057,75 +2087,189 @@ function getPortfolioGithubRepo() {
   return 'Dace369/KMMK-web';
 }
 
-async function loadPortfolio() {
-  if (hasLocalPortfolioOverride()) return;
-  try {
-    var repo = getPortfolioGithubRepo();
-    const response = await fetch('https://api.github.com/repos/' + encodeURI(repo) + '/contents/_portfolio', {
-      headers: { Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!response.ok) return;
-    const files = await response.json();
-    if (!Array.isArray(files)) return;
-
-    const mdFiles = files.filter(function(file) {
-      return file && file.type === 'file' && /\.md$/i.test(file.name || '') && file.download_url;
-    });
-    mdFiles.sort(function(a, b) { return String(a.name).localeCompare(String(b.name)); });
-
-    const cards = await Promise.all(mdFiles.map(async file => {
-      const fileResponse = await fetch(file.download_url);
-      const text = await fileResponse.text();
-      
-      const titleMatch = text.match(/title:\s*["']?(.+?)["']?\s*\r?\n/);
-      const categoryMatch = text.match(/category:\s*["']?(.+?)["']?\s*\r?\n/);
-      const descMatch = text.match(/description:\s*["']?(.+?)["']?\s*\r?\n/);
-      const materialMatch = text.match(/material:\s*["']?(.+?)["']?\s*\r?\n/);
-      const durationMatch = text.match(/duration:\s*["']?(.+?)["']?\s*\r?\n/);
-      
-      const title = titleMatch ? titleMatch[1] : 'Egyedi bútor';
-      const category = categoryMatch ? categoryMatch[1] : '';
-      const description = descMatch ? descMatch[1] : '';
-      const material = materialMatch ? materialMatch[1] : '';
-      const duration = durationMatch ? durationMatch[1] : '';
-      const imageUrls = parsePortfolioImages(text);
-      const first = imageUrls[0] || '';
-      if (!first) return '';
-      const multi = imageUrls.length > 1;
-      const dataImagesAttr = escAttrPf(imageUrls.join(' '));
-      const navHtml = multi
-        ? '<div class="port-card-mini-nav">' +
-          '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép">‹</button>' +
-          '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép">›</button>' +
-          '</div>' +
-          '<span class="port-card-mini-count">1 / ' + imageUrls.length + '</span>'
-        : '';
-      const image = first;
-      
-      return `
-        <div class="port-card${multi ? ' port-card-multi' : ''}" data-img-index="0" data-desc="${escAttrPf(description)}" data-images="${dataImagesAttr}" data-materials="${escAttrPf(material)}" data-time="${escAttrPf(duration)}">
-          <div class="port-card-img">
-            <img src="${escAttrPf(image)}" alt="${escHtmlPf(title)}" loading="lazy">
-            ${navHtml}
-          </div>
-          <div class="port-card-body">
-            <h3>${escHtmlPf(title)}</h3>
-            <span>${escHtmlPf(category)}</span>
-            <br><a href="#" class="port-card-more">Megnézem →</a>
-          </div>
-        </div>`;
-    }));
-    
-    const html = cards.filter(Boolean).join('');
-    if (html) {
-      document.getElementById('portGrid').innerHTML = html;
-      if (window.updatePortCarousel) window.updatePortCarousel();
-    }
-  } catch(e) {
-    console.log('Portfolio load error:', e);
-  } finally {
-    if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
+function getPublishedPortfolioBranch() {
+  var mb = document.querySelector('meta[name="kmmk-github-branch"]');
+  if (mb && mb.getAttribute('content')) {
+    var b = mb.getAttribute('content').trim();
+    if (/^[a-zA-Z0-9_.-]+$/.test(b)) return b;
   }
+  return 'main';
+}
+
+function getPublishedPortfolioJsonUrl() {
+  return 'https://raw.githubusercontent.com/' + getPortfolioGithubRepo() + '/' + getPublishedPortfolioBranch() + '/published-portfolio.json';
+}
+
+function buildPortfolioCardsHtml(items) {
+  if (!items || !items.length) return '';
+  var parts = [];
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i];
+    var images = Array.isArray(item.images) ? item.images.filter(Boolean) : (item.src ? [item.src] : []);
+    var first = images[0] || '';
+    if (!first) continue;
+    var title = item.title != null ? String(item.title) : 'Egyedi bútor';
+    var category = item.category != null ? String(item.category) : '';
+    var description = item.description != null ? String(item.description) : '';
+    var material = item.material != null ? String(item.material) : '';
+    var duration = item.duration != null ? String(item.duration) : '';
+    var multi = images.length > 1;
+    var dataImagesAttr = escAttrPf(images.join(' '));
+    var navHtml = multi
+      ? '<div class="port-card-mini-nav">' +
+        '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép">‹</button>' +
+        '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép">›</button>' +
+        '</div>' +
+        '<span class="port-card-mini-count">1 / ' + images.length + '</span>'
+      : '';
+    parts.push(
+      '<div class="port-card' + (multi ? ' port-card-multi' : '') + '" data-img-index="0" data-desc="' + escAttrPf(description) + '" data-images="' + dataImagesAttr + '" data-materials="' + escAttrPf(material) + '" data-time="' + escAttrPf(duration) + '">' +
+      '<div class="port-card-img">' +
+      '<img src="' + escAttrPf(first) + '" alt="' + escHtmlPf(title) + '" loading="lazy">' +
+      navHtml +
+      '</div>' +
+      '<div class="port-card-body">' +
+      '<h3>' + escHtmlPf(title) + '</h3>' +
+      '<span>' + escHtmlPf(category) + '</span>' +
+      '<br><a href="#" class="port-card-more">Megnézem →</a>' +
+      '</div></div>'
+    );
+  }
+  return parts.join('');
+}
+
+function renderPortfolioFromLocalStorage() {
+  function escPort(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+  var grid = document.getElementById('portGrid');
+  if (!grid) return;
+  try {
+    var port = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
+    if (Array.isArray(port) && port.length > 0) {
+      imgs = port.map(function(p) { return { src: p.src || '', title: p.title || '' }; });
+      grid.innerHTML = port.map(function(item) {
+        var desc = escPort(item.description || '');
+        var title = escPort(item.title || '');
+        var cat = escPort(item.category || '');
+        var src = escPort(item.src || '');
+        var mat = escPort(item.material || '');
+        var dur = escPort(item.duration || '');
+        return '<div class="port-card" data-desc="' + desc + '" data-images="' + src + '" data-materials="' + mat + '" data-time="' + dur + '"><div class="port-card-img"><img src="' + src + '" alt="' + title + '"></div><div class="port-card-body"><h3>' + title + '</h3><span>' + cat + '</span><br><a href="#" class="port-card-more">Megnézem →</a></div></div>';
+      }).join('');
+      return;
+    }
+  } catch (e1) {}
+  try {
+    var savedImgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
+    if (Array.isArray(savedImgs) && savedImgs.length > 0) {
+      imgs = savedImgs;
+      grid.innerHTML = savedImgs.map(function(img) {
+        var t = escPort(img.title);
+        var s = escPort(img.src);
+        return '<div class="port-card" data-desc="" data-images="' + s + '" data-materials="" data-time=""><div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div><div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#" class="port-card-more">Megnézem →</a></div></div>';
+      }).join('');
+    }
+  } catch (e2) {}
+}
+
+async function loadPortfolioFromGithubMarkdown() {
+  var repo = getPortfolioGithubRepo();
+  const response = await fetch('https://api.github.com/repos/' + encodeURI(repo) + '/contents/_portfolio', {
+    headers: { Accept: 'application/vnd.github.v3+json' }
+  });
+  if (!response.ok) return;
+  const files = await response.json();
+  if (!Array.isArray(files)) return;
+
+  const mdFiles = files.filter(function(file) {
+    return file && file.type === 'file' && /\.md$/i.test(file.name || '') && file.download_url;
+  });
+  mdFiles.sort(function(a, b) { return String(a.name).localeCompare(String(b.name)); });
+
+  const cards = await Promise.all(mdFiles.map(async function(file) {
+    const fileResponse = await fetch(file.download_url);
+    const text = await fileResponse.text();
+
+    const titleMatch = text.match(/title:\s*["']?(.+?)["']?\s*\r?\n/);
+    const categoryMatch = text.match(/category:\s*["']?(.+?)["']?\s*\r?\n/);
+    const descMatch = text.match(/description:\s*["']?(.+?)["']?\s*\r?\n/);
+    const materialMatch = text.match(/material:\s*["']?(.+?)["']?\s*\r?\n/);
+    const durationMatch = text.match(/duration:\s*["']?(.+?)["']?\s*\r?\n/);
+
+    const title = titleMatch ? titleMatch[1] : 'Egyedi bútor';
+    const category = categoryMatch ? categoryMatch[1] : '';
+    const description = descMatch ? descMatch[1] : '';
+    const material = materialMatch ? materialMatch[1] : '';
+    const duration = durationMatch ? durationMatch[1] : '';
+    const imageUrls = parsePortfolioImages(text);
+    const first = imageUrls[0] || '';
+    if (!first) return '';
+    const multi = imageUrls.length > 1;
+    const dataImagesAttr = escAttrPf(imageUrls.join(' '));
+    const navHtml = multi
+      ? '<div class="port-card-mini-nav">' +
+        '<button type="button" class="port-card-mini-btn port-card-mini-prev" aria-label="Előző kép">‹</button>' +
+        '<button type="button" class="port-card-mini-btn port-card-mini-next" aria-label="Következő kép">›</button>' +
+        '</div>' +
+        '<span class="port-card-mini-count">1 / ' + imageUrls.length + '</span>'
+      : '';
+    const image = first;
+
+    return (
+      '<div class="port-card' + (multi ? ' port-card-multi' : '') + '" data-img-index="0" data-desc="' + escAttrPf(description) + '" data-images="' + dataImagesAttr + '" data-materials="' + escAttrPf(material) + '" data-time="' + escAttrPf(duration) + '">' +
+      '<div class="port-card-img">' +
+      '<img src="' + escAttrPf(image) + '" alt="' + escHtmlPf(title) + '" loading="lazy">' +
+      navHtml +
+      '</div>' +
+      '<div class="port-card-body">' +
+      '<h3>' + escHtmlPf(title) + '</h3>' +
+      '<span>' + escHtmlPf(category) + '</span>' +
+      '<br><a href="#" class="port-card-more">Megnézem →</a>' +
+      '</div></div>'
+    );
+  }));
+
+  const html = cards.filter(Boolean).join('');
+  if (html) {
+    document.getElementById('portGrid').innerHTML = html;
+    if (window.updatePortCarousel) window.updatePortCarousel();
+  }
+}
+
+async function loadPortfolio() {
+  try {
+    var url = getPublishedPortfolioJsonUrl() + '?t=' + Date.now();
+    var r = await fetch(url, { cache: 'no-store' });
+    if (r.ok) {
+      var data = await r.json();
+      if (data && data.useAdminPortfolio === true && Array.isArray(data.items)) {
+        var grid = document.getElementById('portGrid');
+        if (grid) {
+          grid.innerHTML = buildPortfolioCardsHtml(data.items);
+          if (window.updatePortCarousel) window.updatePortCarousel();
+        }
+        if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
+        return;
+      }
+    }
+  } catch (e) {
+    console.warn('published-portfolio.json:', e);
+  }
+
+  if (hasLocalPortfolioOverride()) {
+    renderPortfolioFromLocalStorage();
+    if (window.updatePortCarousel) window.updatePortCarousel();
+    if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
+    return;
+  }
+
+  try {
+    await loadPortfolioFromGithubMarkdown();
+  } catch (e) {
+    console.log('Portfolio load error:', e);
+  }
+  if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
 }
 
 if (document.readyState === 'loading') {
