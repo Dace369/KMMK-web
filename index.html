@@ -1647,30 +1647,16 @@ try {
 } catch (e) { portfolioItems = []; }
 
 function openAdm() {
-  document.getElementById('admOverlay').classList.add('open');
-  refreshAdminPanelAuth();
-}
-function closeAdm() { document.getElementById('admOverlay').classList.remove('open'); }
-document.getElementById('admOverlay').addEventListener('click', e => { if(e.target.id==='admOverlay') closeAdm(); });
-
-async function refreshAdminPanelAuth() {
   var loginEl = document.getElementById('admLogin');
   var contentEl = document.getElementById('admContent');
   var errEl = document.getElementById('admErr');
-  if (!loginEl || !contentEl) return;
+  if (loginEl) loginEl.style.display = 'block';
+  if (contentEl) contentEl.style.display = 'none';
   if (errEl) errEl.style.display = 'none';
-  try {
-    var r = await fetch('/api/admin-session', { method: 'GET', credentials: 'include' });
-    if (r.ok) {
-      loginEl.style.display = 'none';
-      contentEl.style.display = 'block';
-      loadAdmData();
-      return;
-    }
-  } catch (e) {}
-  loginEl.style.display = 'block';
-  contentEl.style.display = 'none';
+  document.getElementById('admOverlay').classList.add('open');
 }
+function closeAdm() { document.getElementById('admOverlay').classList.remove('open'); }
+document.getElementById('admOverlay').addEventListener('click', e => { if(e.target.id==='admOverlay') closeAdm(); });
 
 async function doLogin() {
   var errEl = document.getElementById('admErr');
