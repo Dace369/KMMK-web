@@ -21,7 +21,8 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const adminPw = process.env.KMMK_ADMIN_PASSWORD;
+  const adminPwRaw = process.env.KMMK_ADMIN_PASSWORD;
+  const adminPw = adminPwRaw != null ? String(adminPwRaw).trim() : "";
   if (!adminPw) {
     res.statusCode = 500;
     res.end(
@@ -42,6 +43,11 @@ module.exports = async (req, res) => {
   }
 
   const pw = body && typeof body.password === "string" ? body.password.trim() : "";
+  if (!pw) {
+    res.statusCode = 401;
+    res.end(JSON.stringify({ error: "Add meg a jelszót." }));
+    return;
+  }
   if (pw !== adminPw) {
     res.statusCode = 401;
     res.end(JSON.stringify({ error: "Hibás jelszó." }));
