@@ -568,7 +568,19 @@ footer { background: var(--teal); padding: var(--f5); }
 .adm-trigger:hover { background: var(--teal); color: white; border-color: transparent; }
 .adm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
 .adm-overlay.open { display: flex; }
-.adm-panel { background: var(--off-white); width: 92%; max-width: 660px; max-height: 88vh; overflow-y: auto; border-radius: var(--r-xl); }
+.adm-panel { background: var(--off-white); width: 92%; max-width: 720px; max-height: 88vh; overflow-y: auto; border-radius: var(--r-xl); }
+.adm-port-item { background: white; border: 1px solid rgba(0,0,0,0.08); border-radius: var(--r-lg); padding: var(--f3); margin-bottom: var(--f3); }
+.adm-port-item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--f2); }
+.adm-port-item-top span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold); }
+.adm-port-thumbs { display: flex; flex-wrap: wrap; gap: var(--f2); margin: var(--f2) 0; }
+.adm-port-thumb { width: 72px; height: 54px; border-radius: var(--r-sm); overflow: hidden; position: relative; border: 1px solid rgba(0,0,0,0.08); flex-shrink: 0; }
+.adm-port-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-port-thumb .prev-del { top: 2px; right: 2px; width: 20px; height: 20px; font-size: 0.6rem; }
+.adm-port-thumb-load { width: 72px; height: 54px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.04); border-radius: var(--r-sm); }
+.adm-port-row { display: flex; flex-wrap: wrap; gap: var(--f2); margin-top: var(--f2); align-items: flex-end; }
+.adm-port-row .ai { margin-bottom: 0; flex: 1; min-width: 120px; }
+.adm-port-lbl { font-size: 0.68rem; color: var(--text-mid); margin-bottom: 0.25rem; display: block; }
+textarea.ai { min-height: 4.5rem; resize: vertical; }
 .adm-head { display: flex; justify-content: space-between; align-items: center; padding: var(--f4); border-bottom: 1px solid rgba(0,0,0,0.08); position: sticky; top: 0; background: var(--off-white); z-index: 1; border-radius: var(--r-xl) var(--r-xl) 0 0; }
 .adm-head h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; }
 .adm-x { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-light); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 1; padding: 0; transition: background 0.2s; }
@@ -1379,45 +1391,38 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       <div id="admLogin">
         <div class="adm-sec">
           <div class="adm-sec-title">Bejelentkezés</div>
-          <input class="ai" type="password" id="admPass" placeholder="Admin jelszó" onkeydown="if(event.key==='Enter')doLogin()">
+          <input class="ai" type="password" id="admPass" placeholder="" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
           <button class="btn-save" onclick="doLogin()">Belépés</button>
-          <p class="adm-sec-hint" style="font-size:0.78rem;color:var(--text-mid);margin-top:var(--f2);">A jelszó nincs a kódban, csak a Vercelen van tárolva. A közzétételi kulcs külön, lent.</p>
           <div class="adm-err" id="admErr">Hibás jelszó vagy nincs kapcsolat a szerverrel.</div>
         </div>
       </div>
       <div id="admContent" style="display:none">
         <div class="adm-sec">
-          <div class="adm-sec-title">Portfólió képek feltöltése</div>
-          <p class="adm-sec-hint" style="font-size:0.8rem;color:var(--text-mid);margin-bottom:var(--f3);">A képek a Cloudinaryre kerülnek. A „Mentés és közzététel” a közzétételi kulccsal ugyanazt a listát írja a GitHubra – minden látogató ezt látja a portfólióban (nem csak ezen a gépen).</p>
-          <div class="upload-zone" onclick="document.getElementById('fileIn').click()">
-            <input type="file" id="fileIn" multiple accept="image/*" onchange="handleFiles(this.files)">
-            <span class="uz-icon">🖼</span>
-            <p>Kattints ide vagy húzd ide a képeket</p>
-            <small>JPG, PNG, WEBP – max. 5MB / kép</small>
-          </div>
-          <div class="prev-grid" id="prevGrid"></div>
+          <div class="adm-sec-title">Portfólió</div>
+          <input type="file" id="portfolioGlobalFileIn" multiple accept="image/*" style="display:none" onchange="handlePortfolioGlobalFiles(this.files)">
+          <div id="portfolioEditor"></div>
+          <button type="button" class="btn-save" onclick="addPortfolioItem()" style="margin-top:var(--f2);background:var(--teal);">+ Új elem</button>
         </div>
         <div class="adm-sec">
-          <div class="adm-sec-title">Közzététel a weboldalra (Vercel)</div>
-          <input class="ai" type="password" id="admPublishKey" placeholder="Közzétételi kulcs = Vercel KMMK_PUBLISH_SECRET" autocomplete="new-password">
+          <div class="adm-sec-title">Közzététel</div>
+          <input class="ai" type="password" id="admPublishKey" placeholder="" autocomplete="new-password">
           <div class="adm-err" id="admPublishErr" style="display:none;margin-top:var(--f2);"></div>
         </div>
         <div class="adm-sec">
           <div class="adm-sec-title">Katalógus linkek</div>
-          <input class="ai" type="url" id="lnkEgger" placeholder="EGGER katalógus link">
-          <input class="ai" type="url" id="lnkKronoBoards" placeholder="KRONOSPAN bútorlap katalógus link">
-          <input class="ai" type="url" id="lnkFeelwood" placeholder="Feelwood katalógus link">
-          <input class="ai" type="url" id="lnkPoszt" placeholder="Posztforming katalógus link">
-          <input class="ai" type="url" id="lnkKrono" placeholder="Kronospan Global Collection link">
+          <input class="ai" type="url" id="lnkEgger" placeholder="">
+          <input class="ai" type="url" id="lnkKronoBoards" placeholder="">
+          <input class="ai" type="url" id="lnkFeelwood" placeholder="">
+          <input class="ai" type="url" id="lnkPoszt" placeholder="">
+          <input class="ai" type="url" id="lnkKrono" placeholder="">
         </div>
         <div class="adm-sec">
           <div class="adm-sec-title">Elérhetőségek</div>
-          <input class="ai" type="tel" id="admPhone" placeholder="Telefonszám (pl. +36 30 123 4567)">
-          <input class="ai" type="email" id="admEmail" placeholder="Email cím">
+          <input class="ai" type="tel" id="admPhone" placeholder="">
+          <input class="ai" type="email" id="admEmail" placeholder="">
         </div>
         <div class="adm-sec">
           <div class="adm-sec-title">Vélemények</div>
-          <p class="adm-sec-hint" style="font-size:0.8rem;color:var(--text-mid);margin-bottom:var(--f3);">Itt tudsz új véleményt hozzáadni. A mezők változása a „Mentés” után jelenik meg az oldalon.</p>
           <div id="admReviewsList"></div>
           <button type="button" class="btn-rev-add" onclick="addReviewRow()" style="margin-top:var(--f2);padding:var(--f2) var(--f3);background:var(--warm-white);border:1px solid rgba(0,0,0,0.12);border-radius:var(--r-md);cursor:pointer;font-size:0.82rem;">+ Új vélemény</button>
         </div>
@@ -1524,11 +1529,81 @@ window.ensurePortCardImageNav = function(card) {
   imgWrap.appendChild(cnt);
 };
 
-// ADMIN – belépés: POST /api/admin-login (jelszó csak Vercel: KMMK_ADMIN_PASSWORD), HttpOnly süti
+// ADMIN – belépés: POST /api/admin-login, HttpOnly süti
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/djguaaz7z/image/upload';
 const CLOUDINARY_UPLOAD_PRESET = 'KMMK uploads';
-let imgs = [];
+let portfolioItems = [];
 let imgUploadSeq = 0;
+var portfolioUploadTargetIndex = -1;
+
+function migratePortfolioStorage(raw) {
+  if (!Array.isArray(raw) || raw.length === 0) return [];
+  var first = raw[0];
+  if (!first || typeof first !== 'object') return [];
+  if (Array.isArray(first.images)) {
+    return raw.map(function(p) {
+      return {
+        title: String(p.title != null ? p.title : ''),
+        category: String(p.category != null ? p.category : ''),
+        description: String(p.description != null ? p.description : ''),
+        material: String(p.material != null ? p.material : ''),
+        duration: String(p.duration != null ? p.duration : ''),
+        images: (p.images || []).filter(function(x) { return typeof x === 'string' && x.trim(); })
+      };
+    });
+  }
+  if (first && (first.src != null && first.src !== '')) {
+    return raw.map(function(p) {
+      return {
+        title: String(p.title != null ? p.title : ''),
+        category: String(p.category != null ? p.category : 'Egyedi bútor'),
+        description: String(p.description != null ? p.description : ''),
+        material: String(p.material != null ? p.material : ''),
+        duration: String(p.duration != null ? p.duration : ''),
+        images: p.src ? [String(p.src)] : []
+      };
+    });
+  }
+  if (first && Object.prototype.hasOwnProperty.call(first, 'src')) {
+    return raw.map(function(p) {
+      return {
+        title: String(p.title != null ? p.title : ''),
+        category: 'Egyedi bútor',
+        description: '',
+        material: '',
+        duration: '',
+        images: p.src ? [String(p.src)] : []
+      };
+    });
+  }
+  return [];
+}
+
+function newEmptyPortfolioItem() {
+  return { title: '', category: '', description: '', material: '', duration: '', images: [] };
+}
+
+function portfolioItemsToPayload() {
+  return portfolioItems.map(function(it) {
+    var urls = (it.images || []).filter(function(x) {
+      return typeof x === 'string' && x.trim();
+    });
+    return {
+      title: String(it.title != null ? it.title : ''),
+      category: String(it.category != null ? it.category : ''),
+      description: String(it.description != null ? it.description : ''),
+      material: String(it.material != null ? it.material : ''),
+      duration: String(it.duration != null ? it.duration : ''),
+      images: urls
+    };
+  }).filter(function(it) {
+    return it.images.length > 0;
+  });
+}
+
+function escAdmAttr(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
 
 var REVIEWS_DEFAULT = [
   { name: 'Kovács Annamária', location: 'Budapest · Konyhabútor', text: 'Teljesen el voltam ragadtatva a végeredménytől. Pontosan olyan lett a konyha, ahogy elképzeltem – sőt, még szebb is.', stars: 5 },
@@ -1563,13 +1638,13 @@ var hasSavedReviews = !!_parsedReviews;
 
 try {
   var portInit = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
-  if (Array.isArray(portInit) && portInit.length > 0) {
-    imgs = portInit.map(function(p) { return { src: p.src || '', title: p.title || '' }; });
-  } else {
-    imgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
-    if (!Array.isArray(imgs)) imgs = [];
+  var migrated = migratePortfolioStorage(portInit);
+  if (migrated.length) portfolioItems = migrated;
+  else {
+    var oldImgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
+    portfolioItems = migratePortfolioStorage(oldImgs);
   }
-} catch (e) { imgs = []; }
+} catch (e) { portfolioItems = []; }
 
 function openAdm() {
   document.getElementById('admOverlay').classList.add('open');
@@ -1657,13 +1732,13 @@ function loadAdmData() {
   } catch(e) {}
   try {
     var portAdm = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
-    if (Array.isArray(portAdm) && portAdm.length > 0) {
-      imgs = portAdm.map(function(p) { return { src: p.src || '', title: p.title || '' }; });
-    } else {
-      imgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
-      if (!Array.isArray(imgs)) imgs = [];
+    var mig = migratePortfolioStorage(portAdm);
+    if (mig.length) portfolioItems = mig;
+    else {
+      var oi = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
+      portfolioItems = migratePortfolioStorage(oi);
     }
-  } catch (e2) { imgs = []; }
+  } catch (e2) { portfolioItems = []; }
   try {
     var pk = localStorage.getItem('kmmk_publish_secret');
     var pke = document.getElementById('admPublishKey');
@@ -1672,7 +1747,7 @@ function loadAdmData() {
   var pr = loadParsedReviews();
   if (pr) { reviews = pr.slice(); hasSavedReviews = true; }
   else { reviews = REVIEWS_DEFAULT.slice(); hasSavedReviews = false; }
-  renderPrev();
+  renderPortfolioEditor();
   renderAdmReviews();
 }
 
@@ -1810,9 +1885,9 @@ function renderAdmReviews() {
     var starOpts = '';
     for (var s = 1; s <= 5; s++) starOpts += '<option value="' + s + '"' + (stars === s ? ' selected' : '') + '>' + s + ' csillag</option>';
     return '<div class="rev-adm-row" data-idx="' + i + '" style="margin-bottom:var(--f4);padding:var(--f3);background:white;border-radius:var(--r-md);border:1px solid rgba(0,0,0,0.08);">' +
-      '<textarea class="ai" data-rev-ta rows="2" placeholder="Vélemény szövege" style="margin-bottom:var(--f2);">' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;') + '</textarea>' +
-      '<input type="text" class="ai" data-rev-name placeholder="Név" value="' + name.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" style="margin-bottom:var(--f2);">' +
-      '<input type="text" class="ai" data-rev-loc placeholder="Helyszín / projekt (pl. Budapest · Konyha)" value="' + loc.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" style="margin-bottom:var(--f2);">' +
+      '<textarea class="ai" data-rev-ta rows="2" placeholder="" style="margin-bottom:var(--f2);">' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;') + '</textarea>' +
+      '<input type="text" class="ai" data-rev-name placeholder="" value="' + name.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" style="margin-bottom:var(--f2);">' +
+      '<input type="text" class="ai" data-rev-loc placeholder="" value="' + loc.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" style="margin-bottom:var(--f2);">' +
       '<div style="display:flex;align-items:center;gap:var(--f2);flex-wrap:wrap;">' +
       '<select class="ai" data-rev-stars style="padding:var(--f1) var(--f2);font-size:0.85rem;border-radius:var(--r-sm);border:1px solid rgba(0,0,0,0.12);">' + starOpts + '</select>' +
       '<button type="button" onclick="delReview(' + i + ')" style="padding:var(--f1) var(--f2);background:#b44;color:white;border:none;border-radius:var(--r-sm);cursor:pointer;font-size:0.75rem;">Törlés</button></div></div>';
@@ -1829,13 +1904,47 @@ function delReview(i) {
   renderAdmReviews();
 }
 
-function handleFiles(files) {
-  Array.from(files).forEach(function(f) {
-    if(f.size > 5*1024*1024) { alert('Max 5MB!'); return; }
+function addPortfolioItem() {
+  portfolioItems.push(newEmptyPortfolioItem());
+  renderPortfolioEditor();
+}
+
+function removePortfolioItem(i) {
+  portfolioItems.splice(i, 1);
+  renderPortfolioEditor();
+}
+
+window.portfolioSyncField = function(i, key, val) {
+  if (!portfolioItems[i]) return;
+  portfolioItems[i][key] = val;
+};
+
+window.triggerPortfolioUpload = function(i) {
+  portfolioUploadTargetIndex = i;
+  var el = document.getElementById('portfolioGlobalFileIn');
+  if (el) el.value = '';
+  if (el) el.click();
+};
+
+function handlePortfolioGlobalFiles(files) {
+  var i = portfolioUploadTargetIndex;
+  portfolioUploadTargetIndex = -1;
+  var fi = document.getElementById('portfolioGlobalFileIn');
+  if (fi) fi.value = '';
+  if (i < 0 || !portfolioItems[i]) return;
+  handlePortfolioItemFiles(i, files);
+}
+
+function handlePortfolioItemFiles(itemIndex, files) {
+  if (!portfolioItems[itemIndex]) return;
+  Array.from(files || []).forEach(function(f) {
+    if (f.size > 5 * 1024 * 1024) {
+      alert('Max. 5 MB / kép.');
+      return;
+    }
     var uploadId = ++imgUploadSeq;
-    var title = f.name.replace(/\.[^.]+$/, '');
-    imgs.push({ src: '', title: title, uploading: true, uploadId: uploadId });
-    renderPrev();
+    portfolioItems[itemIndex].images.push({ uploading: true, uploadId: uploadId });
+    renderPortfolioEditor();
     var fd = new FormData();
     fd.append('file', f);
     fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
@@ -1847,59 +1956,106 @@ function handleFiles(files) {
         });
       })
       .then(function(data) {
-        var idx = imgs.findIndex(function(x) { return x.uploadId === uploadId; });
-        if (idx === -1) return;
-        imgs[idx] = { src: data.secure_url, title: imgs[idx].title };
-        renderPrev();
+        var slot = portfolioItems[itemIndex].images.findIndex(function(x) {
+          return x && x.uploading && x.uploadId === uploadId;
+        });
+        if (slot === -1) return;
+        portfolioItems[itemIndex].images[slot] = data.secure_url;
+        renderPortfolioEditor();
       })
       .catch(function(err) {
-        var idx = imgs.findIndex(function(x) { return x.uploadId === uploadId; });
-        if (idx !== -1) { imgs.splice(idx, 1); renderPrev(); }
+        var slot = portfolioItems[itemIndex].images.findIndex(function(x) {
+          return x && x.uploading && x.uploadId === uploadId;
+        });
+        if (slot !== -1) portfolioItems[itemIndex].images.splice(slot, 1);
+        renderPortfolioEditor();
         alert('Feltöltés sikertelen: ' + (err.message || 'hiba'));
       });
   });
-  var fi = document.getElementById('fileIn');
-  if (fi) fi.value = '';
 }
 
-function renderPrev() {
-  function escAttr(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+window.removePortfolioImage = function(itemIndex, imgIndex) {
+  if (!portfolioItems[itemIndex] || !portfolioItems[itemIndex].images) return;
+  portfolioItems[itemIndex].images.splice(imgIndex, 1);
+  renderPortfolioEditor();
+};
+
+window.addPortfolioImageUrl = function(itemIndex) {
+  var inp = document.getElementById('pfUrl_' + itemIndex);
+  if (!inp || !portfolioItems[itemIndex]) return;
+  var u = String(inp.value || '').trim();
+  if (!u) return;
+  if (!/^https?:\/\//i.test(u)) {
+    alert('Teljes kép URL kell (https://…).');
+    return;
   }
-  document.getElementById('prevGrid').innerHTML = imgs.map(function(img, i) {
-    if (img.uploading) {
-      return '<div class="prev-card">' +
-        '<div class="prev-img prev-img-loading">' +
-        '<span class="prev-loading-spin" aria-hidden="true"></span>' +
-        '<span class="prev-loading-text">Feltöltés…</span>' +
-        '<button type="button" class="prev-del" onclick="delImg(' + i + ')">✕</button>' +
-        '</div>' +
-        '<input type="text" value="' + escAttr(img.title) + '" onchange="imgs[' + i + '].title=this.value" placeholder="Megnevezés">' +
-        '</div>';
-    }
-    return '<div class="prev-card">' +
-      '<div class="prev-img">' +
-      '<img src="' + escAttr(img.src) + '" alt="">' +
-      '<button type="button" class="prev-del" onclick="delImg(' + i + ')">✕</button>' +
-      '</div>' +
-      '<input type="text" value="' + escAttr(img.title) + '" onchange="imgs[' + i + '].title=this.value" placeholder="Megnevezés">' +
-      '</div>';
+  portfolioItems[itemIndex].images.push(u);
+  inp.value = '';
+  renderPortfolioEditor();
+};
+
+function renderPortfolioEditor() {
+  var root = document.getElementById('portfolioEditor');
+  if (!root) return;
+  if (!portfolioItems.length) {
+    root.innerHTML = '<p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:var(--f2);">Még nincs elem.</p>';
+    return;
+  }
+  root.innerHTML = portfolioItems.map(function(it, i) {
+    var thumbs = (it.images || []).map(function(img, j) {
+      if (img && typeof img === 'object' && img.uploading) {
+        return '<div class="adm-port-thumb-load"><span class="prev-loading-spin" style="display:block;width:22px;height:22px;border:2px solid rgba(0,0,0,0.1);border-top-color:rgba(0,0,0,0.4);border-radius:50%;animation:prevUploadSpin 0.75s linear infinite;"></span></div>';
+      }
+      var src = typeof img === 'string' ? img : '';
+      if (!src) return '';
+      return '<div class="adm-port-thumb"><img src="' + escAdmAttr(src) + '" alt=""><button type="button" class="prev-del" onclick="removePortfolioImage(' + i + ',' + j + ')">✕</button></div>';
+    }).join('');
+    return '<div class="adm-port-item" data-port-idx="' + i + '">' +
+      '<div class="adm-port-item-top"><span>Elem ' + (i + 1) + '</span>' +
+      '<button type="button" onclick="removePortfolioItem(' + i + ')" style="padding:var(--f1) var(--f2);font-size:0.72rem;border:none;background:rgba(180,50,50,0.12);color:#a22;border-radius:var(--r-sm);cursor:pointer;">Törlés</button></div>' +
+      '<label class="adm-port-lbl">Cím</label>' +
+      '<input type="text" class="ai" value="' + escAdmAttr(it.title) + '" oninput="portfolioSyncField(' + i + ',\'title\',this.value)" placeholder="">' +
+      '<label class="adm-port-lbl">Kategória</label>' +
+      '<input type="text" class="ai" value="' + escAdmAttr(it.category) + '" oninput="portfolioSyncField(' + i + ',\'category\',this.value)" placeholder="">' +
+      '<label class="adm-port-lbl">Leírás</label>' +
+      '<textarea class="ai" rows="3" oninput="portfolioSyncField(' + i + ',\'description\',this.value)" placeholder="">' + escAdmAttr(it.description) + '</textarea>' +
+      '<label class="adm-port-lbl">Alapanyagok</label>' +
+      '<textarea class="ai" rows="2" oninput="portfolioSyncField(' + i + ',\'material\',this.value)" placeholder="">' + escAdmAttr(it.material) + '</textarea>' +
+      '<label class="adm-port-lbl">Elkészítési idő</label>' +
+      '<input type="text" class="ai" value="' + escAdmAttr(it.duration) + '" oninput="portfolioSyncField(' + i + ',\'duration\',this.value)" placeholder="">' +
+      '<label class="adm-port-lbl">Képek</label>' +
+      '<div class="adm-port-thumbs">' + thumbs + '</div>' +
+      '<div class="adm-port-row">' +
+      '<button type="button" class="btn-save" style="width:auto;padding:var(--f2) var(--f3);font-size:0.72rem;letter-spacing:0.06em;" onclick="triggerPortfolioUpload(' + i + ')">Feltöltés</button>' +
+      '<input type="url" class="ai" id="pfUrl_' + i + '" placeholder="">' +
+      '<button type="button" class="btn-save" style="width:auto;padding:var(--f2) var(--f3);font-size:0.72rem;background:var(--text-mid);" onclick="addPortfolioImageUrl(' + i + ')">URL</button></div></div>';
   }).join('');
-}
-
-function delImg(i) { imgs.splice(i,1); renderPrev(); }
-
-function imgsForStore() {
-  return imgs.filter(function(x) { return x.src && !x.uploading; }).map(function(x) { return { src: x.src, title: x.title }; });
 }
 
 async function saveAll() {
   var errPub = document.getElementById('admPublishErr');
   if (errPub) { errPub.style.display = 'none'; errPub.textContent = ''; }
-  try { localStorage.setItem('kmmk_imgs', JSON.stringify(imgsForStore())); } catch(e) {}
-  var imgsSaved = imgsForStore();
-  var portfolioStore = imgsSaved.map(function(x) { return { src: x.src, title: x.title, category: 'Egyedi bútor', description: '' }; });
-  try { localStorage.setItem('kmmk_portfolio', JSON.stringify(portfolioStore)); } catch(e) {}
+  var stored = portfolioItems.map(function(it) {
+    return {
+      title: it.title,
+      category: it.category,
+      description: it.description,
+      material: it.material,
+      duration: it.duration,
+      images: (it.images || []).filter(function(x) { return typeof x === 'string' && x; })
+    };
+  });
+  try { localStorage.setItem('kmmk_portfolio', JSON.stringify(stored)); } catch(e) {}
+  try {
+    var flat = [];
+    portfolioItems.forEach(function(it) {
+      (it.images || []).forEach(function(u) {
+        if (typeof u === 'string' && u) flat.push({ src: u, title: it.title || '' });
+      });
+    });
+    localStorage.setItem('kmmk_imgs', JSON.stringify(flat));
+  } catch(e2) {}
+  var imgsSaved = portfolioItemsToPayload();
   var rows = document.querySelectorAll('#admReviewsList .rev-adm-row');
   reviews = [];
   rows.forEach(function(row) {
@@ -1951,17 +2107,9 @@ async function saveAll() {
     if(el) el.innerHTML = '<a href="mailto:' + ct.email.replace(/"/g,'&quot;') + '">' + ct.email.replace(/</g,'&lt;').replace(/&/g,'&amp;') + '</a>';
   }
 
-  var imgsSaved2 = imgsForStore();
-  if (imgsSaved2.length > 0) {
-    document.getElementById('portGrid').innerHTML = imgsSaved2.map(function(img) {
-      function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
-      var t = esc(img.title);
-      var s = esc(img.src);
-      return '<div class="port-card" data-desc="" data-images="' + s + '" data-materials="" data-time="">' +
-        '<div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div>' +
-        '<div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#" class="port-card-more">Megnézem →</a></div>' +
-        '</div>';
-    }).join('');
+  var imgsSaved2 = portfolioItemsToPayload();
+  if (imgsSaved2.length > 0 && typeof buildPortfolioCardsHtml === 'function') {
+    document.getElementById('portGrid').innerHTML = buildPortfolioCardsHtml(imgsSaved2);
     if (window.updatePortCarousel) window.updatePortCarousel();
     if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
   } else {
@@ -1978,21 +2126,12 @@ async function saveAll() {
     try { publishKey = localStorage.getItem('kmmk_publish_secret') || ''; } catch (ePk2) {}
   }
 
-  var portfolioApiItems = imgsSaved.map(function(x) {
-    return {
-      title: x.title || '',
-      category: 'Egyedi bútor',
-      description: '',
-      material: '',
-      duration: '',
-      images: x.src ? [x.src] : []
-    };
-  });
+  var portfolioApiItems = imgsSaved.slice();
 
   var ok = document.getElementById('admOk');
   if (!publishKey) {
     if (errPub) {
-      errPub.textContent = 'Közzétételhez add meg a kulcsot (Vercel → KMMK_PUBLISH_SECRET). Addig csak ezen a böngészőben marad a szerkesztett lista.';
+      errPub.textContent = 'Közzétételhez add meg a közzétételi kulcsot.';
       errPub.style.display = 'block';
     }
     ok.textContent = '✓ Helyi mentés kész.';
@@ -2200,36 +2339,23 @@ function buildPortfolioCardsHtml(items) {
 }
 
 function renderPortfolioFromLocalStorage() {
-  function escPort(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-  }
   var grid = document.getElementById('portGrid');
   if (!grid) return;
   try {
     var port = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
-    if (Array.isArray(port) && port.length > 0) {
-      imgs = port.map(function(p) { return { src: p.src || '', title: p.title || '' }; });
-      grid.innerHTML = port.map(function(item) {
-        var desc = escPort(item.description || '');
-        var title = escPort(item.title || '');
-        var cat = escPort(item.category || '');
-        var src = escPort(item.src || '');
-        var mat = escPort(item.material || '');
-        var dur = escPort(item.duration || '');
-        return '<div class="port-card" data-desc="' + desc + '" data-images="' + src + '" data-materials="' + mat + '" data-time="' + dur + '"><div class="port-card-img"><img src="' + src + '" alt="' + title + '"></div><div class="port-card-body"><h3>' + title + '</h3><span>' + cat + '</span><br><a href="#" class="port-card-more">Megnézem →</a></div></div>';
-      }).join('');
+    var items = migratePortfolioStorage(port);
+    var withImg = items.filter(function(it) { return it.images && it.images.length > 0; });
+    if (withImg.length > 0) {
+      grid.innerHTML = buildPortfolioCardsHtml(withImg);
       return;
     }
   } catch (e1) {}
   try {
     var savedImgs = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
-    if (Array.isArray(savedImgs) && savedImgs.length > 0) {
-      imgs = savedImgs;
-      grid.innerHTML = savedImgs.map(function(img) {
-        var t = escPort(img.title);
-        var s = escPort(img.src);
-        return '<div class="port-card" data-desc="" data-images="' + s + '" data-materials="" data-time=""><div class="port-card-img"><img src="' + s + '" alt="' + t + '"></div><div class="port-card-body"><h3>' + t + '</h3><span>Egyedi bútor</span><br><a href="#" class="port-card-more">Megnézem →</a></div></div>';
-      }).join('');
+    var items2 = migratePortfolioStorage(savedImgs);
+    var withImg2 = items2.filter(function(it) { return it.images && it.images.length > 0; });
+    if (withImg2.length > 0) {
+      grid.innerHTML = buildPortfolioCardsHtml(withImg2);
     }
   } catch (e2) {}
 }
