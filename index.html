@@ -1370,15 +1370,19 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
   <div class="adm-panel">
     <div class="adm-head">
       <h2>Admin felület</h2>
-      <button class="adm-x" onclick="closeAdm()">✕</button>
+      <div style="display:flex;align-items:center;gap:var(--f2);">
+        <button type="button" class="adm-x" onclick="adminLogout()" title="Kijelentkezés" aria-label="Kijelentkezés" style="font-size:0.75rem;width:auto;padding:0 var(--f2);border-radius:var(--r-md);">Kilépés</button>
+        <button class="adm-x" onclick="closeAdm()">✕</button>
+      </div>
     </div>
     <div class="adm-body">
       <div id="admLogin">
         <div class="adm-sec">
           <div class="adm-sec-title">Bejelentkezés</div>
-          <input class="ai" type="password" id="admPass" placeholder="Jelszó" onkeydown="if(event.key==='Enter')doLogin()">
+          <input class="ai" type="password" id="admPass" placeholder="Admin jelszó" onkeydown="if(event.key==='Enter')doLogin()">
           <button class="btn-save" onclick="doLogin()">Belépés</button>
-          <div class="adm-err" id="admErr">Hibás jelszó!</div>
+          <p class="adm-sec-hint" style="font-size:0.78rem;color:var(--text-mid);margin-top:var(--f2);">A jelszó nincs a kódban, csak a Vercelen van tárolva. A közzétételi kulcs külön, lent.</p>
+          <div class="adm-err" id="admErr">Hibás jelszó vagy nincs kapcsolat a szerverrel.</div>
         </div>
       </div>
       <div id="admContent" style="display:none">
@@ -1520,8 +1524,7 @@ window.ensurePortCardImageNav = function(card) {
   imgWrap.appendChild(cnt);
 };
 
-// ADMIN
-const PASS = 'kmmk2024';
+// ADMIN – belépés: POST /api/admin-login (jelszó csak Vercel: KMMK_ADMIN_PASSWORD), HttpOnly süti
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/djguaaz7z/image/upload';
 const CLOUDINARY_UPLOAD_PRESET = 'KMMK uploads';
 let imgs = [];
@@ -1568,18 +1571,76 @@ try {
   }
 } catch (e) { imgs = []; }
 
-function openAdm() { document.getElementById('admOverlay').classList.add('open'); }
+function openAdm() {
+  document.getElementById('admOverlay').classList.add('open');
+  refreshAdminPanelAuth();
+}
 function closeAdm() { document.getElementById('admOverlay').classList.remove('open'); }
 document.getElementById('admOverlay').addEventListener('click', e => { if(e.target.id==='admOverlay') closeAdm(); });
 
-function doLogin() {
-  if(document.getElementById('admPass').value === PASS) {
-    document.getElementById('admLogin').style.display = 'none';
-    document.getElementById('admContent').style.display = 'block';
-    loadAdmData();
-  } else {
-    document.getElementById('admErr').style.display = 'block';
+async function refreshAdminPanelAuth() {
+  var loginEl = document.getElementById('admLogin');
+  var contentEl = document.getElementById('admContent');
+  var errEl = document.getElementById('admErr');
+  if (!loginEl || !contentEl) return;
+  if (errEl) errEl.style.display = 'none';
+  try {
+    var r = await fetch('/api/admin-session', { method: 'GET', credentials: 'include' });
+    if (r.ok) {
+      loginEl.style.display = 'none';
+      contentEl.style.display = 'block';
+      loadAdmData();
+      return;
+    }
+  } catch (e) {}
+  loginEl.style.display = 'block';
+  contentEl.style.display = 'none';
+}
+
+async function doLogin() {
+  var errEl = document.getElementById('admErr');
+  if (errEl) errEl.style.display = 'none';
+  var raw = document.getElementById('admPass') ? document.getElementById('admPass').value : '';
+  var v = String(raw).trim();
+  if (!v) {
+    if (errEl) { errEl.textContent = 'Add meg a jelszót.'; errEl.style.display = 'block'; }
+    return;
   }
+  try {
+    var r = await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ password: v })
+    });
+    var j = await r.json().catch(function() { return {}; });
+    if (r.ok) {
+      document.getElementById('admLogin').style.display = 'none';
+      document.getElementById('admContent').style.display = 'block';
+      loadAdmData();
+      return;
+    }
+    if (errEl) {
+      errEl.textContent = j.error || 'Hibás jelszó vagy szerverhiba.';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    if (errEl) {
+      errEl.textContent = 'Nem érhető el a belépés (csak a Vercel / vercel dev URL-en működik).';
+      errEl.style.display = 'block';
+    }
+  }
+}
+
+async function adminLogout() {
+  try {
+    await fetch('/api/admin-logout', { method: 'POST', credentials: 'include' });
+  } catch (e) {}
+  var p = document.getElementById('admPass');
+  if (p) p.value = '';
+  document.getElementById('admLogin').style.display = 'block';
+  document.getElementById('admContent').style.display = 'none';
+  closeAdm();
 }
 
 function loadAdmData() {
