@@ -2272,17 +2272,27 @@ async function loadPortfolio() {
   if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
 }
 
+function initAdminFromHash() {
+  var h = (location.hash || '').replace(/^#/, '').split('?')[0];
+  if (h === 'admin' || h === '/admin') {
+    if (window.openAdm) window.openAdm();
+  }
+}
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
     runInit();
     if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
     loadPortfolio();
+    initAdminFromHash();
   });
 } else {
   runInit();
   if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
   loadPortfolio();
+  initAdminFromHash();
 }
+window.addEventListener('hashchange', initAdminFromHash);
 
 let selectedStars = 0;
 
