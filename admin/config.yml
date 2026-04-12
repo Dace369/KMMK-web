@@ -1,9 +1,14 @@
+# Decap CMS + Vercel: GitHub OAuth App „Authorization callback URL” =
+#   https://<a-te-vercel-domain-ed>/api/callback  (pontosan így, query nélkül).
+# Vercel → Settings → Environment Variables: OAUTH_GITHUB_CLIENT_ID, OAUTH_GITHUB_CLIENT_SECRET
 backend:
   name: github
   repo: Dace369/KMMK-web
   branch: main
+  # A böngésző címsorának hostja egyezzen a base_url-lel (www vs non-www), különben a Decap nem fogadja a popup üzenetét.
   base_url: https://kmmk-web.vercel.app
-  auth_endpoint: api/auth
+  # vercel.json: /auth → /api/auth (Decap így hívja a belépést; a futtatás Vercelen van, nem külön Netlify projekt).
+  auth_endpoint: auth
 
 media_library:
   name: cloudinary

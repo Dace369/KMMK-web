@@ -1,19 +1,25 @@
+function publicHost(req) {
+  const xf = (req.headers["x-forwarded-host"] || "").split(",")[0].trim();
+  const h = (req.headers.host || "").split(",")[0].trim();
+  return xf || h || "";
+}
+
 module.exports = async (req, res) => {
-  const host = req.headers.host;
-  const url = new URL(`https://${host}${req.url}`);
+  const host = publicHost(req);
+  const url = new URL(`https://${host || "localhost"}${req.url}`);
   const code = url.searchParams.get("code");
-  const provider = url.searchParams.get("provider") || "github";
+  const provider = "github";
 
   try {
+    if (!host) throw new Error("Missing Host");
     if (!code) throw new Error("Missing code");
-    if (provider !== "github") throw new Error("Unsupported provider");
 
     const clientId = process.env.OAUTH_GITHUB_CLIENT_ID;
     const clientSecret = process.env.OAUTH_GITHUB_CLIENT_SECRET;
     if (!clientId) throw new Error("Missing OAUTH_GITHUB_CLIENT_ID");
     if (!clientSecret) throw new Error("Missing OAUTH_GITHUB_CLIENT_SECRET");
 
-    const redirectUri = `https://${host}/api/callback?provider=${provider}`;
+    const redirectUri = `https://${host}/api/callback`;
 
     const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
       method: "POST",
