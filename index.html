@@ -573,8 +573,10 @@ footer { background: var(--teal); padding: var(--f5); }
 .adm-port-item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--f2); }
 .adm-port-item-top span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold); }
 .adm-port-thumbs { display: flex; flex-wrap: wrap; gap: var(--f2); margin: var(--f2) 0; }
-.adm-port-thumb { width: 72px; height: 54px; border-radius: var(--r-sm); overflow: hidden; position: relative; border: 1px solid rgba(0,0,0,0.08); flex-shrink: 0; }
-.adm-port-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-port-thumb { width: 88px; height: 66px; border-radius: var(--r-sm); overflow: hidden; position: relative; border: 1px solid rgba(0,0,0,0.08); flex-shrink: 0; background: rgba(0,0,0,0.06); }
+.adm-port-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 40px; }
+.adm-port-thumb-fail { font-size: 0.62rem; color: #a22; padding: 4px; line-height: 1.2; word-break: break-all; }
+.adm-port-thumb img.adm-thumb-bad { opacity: 0.35; }
 .adm-port-thumb .prev-del { top: 2px; right: 2px; width: 20px; height: 20px; font-size: 0.6rem; }
 .adm-port-thumb-load { width: 72px; height: 54px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.04); border-radius: var(--r-sm); }
 .adm-port-row { display: flex; flex-wrap: wrap; gap: var(--f2); margin-top: var(--f2); align-items: flex-end; }
@@ -1421,8 +1423,9 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
           <button type="button" class="btn-save" onclick="addPortfolioItem()" style="margin-top:var(--f2);background:var(--teal);">+ Új elem</button>
         </div>
         <div class="adm-sec">
-          <div class="adm-sec-title">Közzététel</div>
-          <input class="ai" type="password" id="admPublishKey" placeholder="" autocomplete="new-password">
+          <div class="adm-sec-title">Közzététel a weboldalra</div>
+          <p style="font-size:0.8rem;color:var(--text-mid);margin-bottom:var(--f2);line-height:1.45;">A <strong>Mentés és közzététel a webre</strong> gomb menti a változásokat és felírja a GitHubra (minden látogató ezt látja). Add meg a Vercelen beállított közzétételi kulcsot.</p>
+          <input class="ai" type="password" id="admPublishKey" placeholder="Közzétételi kulcs (KMMK_PUBLISH_SECRET)" autocomplete="new-password">
           <div class="adm-err" id="admPublishErr" style="display:none;margin-top:var(--f2);"></div>
         </div>
         <div class="adm-sec">
@@ -1444,7 +1447,10 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
           <div id="admReviewsList"></div>
           <button type="button" class="btn-rev-add" onclick="addReviewRow()" style="margin-top:var(--f2);padding:var(--f2) var(--f3);background:var(--warm-white);border:1px solid rgba(0,0,0,0.12);border-radius:var(--r-md);cursor:pointer;font-size:0.82rem;">+ Új vélemény</button>
         </div>
-        <button class="btn-save" onclick="saveAll()">Mentés és közzététel</button>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--f2);margin-top:var(--f3);align-items:center;">
+          <button type="button" class="btn-save" style="background:var(--text-mid);" onclick="saveAllLocalOnly()">Csak helyi mentés</button>
+          <button type="button" class="btn-save" style="background:var(--teal);" onclick="saveAndPublishToWeb()">Mentés és közzététel a webre</button>
+        </div>
         <div class="adm-ok" id="admOk">✓ Változtatások elmentve és közzétéve!</div>
       </div>
     </div>
@@ -2003,7 +2009,11 @@ function handlePortfolioItemFiles(itemIndex, files) {
           return x && x.uploading && x.uploadId === uploadId;
         });
         if (slot === -1) return;
-        portfolioItems[itemIndex].images[slot] = data.secure_url;
+        var url = (data && (data.secure_url || data.url || '')).toString().trim();
+        if (!/^https:\/\//i.test(url)) {
+          throw new Error((data && data.error && data.error.message) ? data.error.message : 'Nincs érvényes kép-URL a Cloudinary válaszban. Ellenőrizd az upload presetet (unsigned, helyes cloud name).');
+        }
+        portfolioItems[itemIndex].images[slot] = url;
         renderPortfolioEditor();
       })
       .catch(function(err) {
@@ -2051,21 +2061,21 @@ function renderPortfolioEditor() {
       }
       var src = typeof img === 'string' ? img : '';
       if (!src) return '';
-      return '<div class="adm-port-thumb"><img src="' + escAdmAttr(src) + '" alt=""><button type="button" class="prev-del" onclick="removePortfolioImage(' + i + ',' + j + ')">✕</button></div>';
+      return '<div class="adm-port-thumb"><img src=' + JSON.stringify(src) + ' alt="" referrerpolicy="no-referrer-when-downgrade" loading="eager" onerror="this.classList.add(\'adm-thumb-bad\');"><button type="button" class="prev-del" onclick="removePortfolioImage(' + i + ',' + j + ')">✕</button></div>';
     }).join('');
     return '<div class="adm-port-item" data-port-idx="' + i + '">' +
       '<div class="adm-port-item-top"><span>Elem ' + (i + 1) + '</span>' +
       '<button type="button" onclick="removePortfolioItem(' + i + ')" style="padding:var(--f1) var(--f2);font-size:0.72rem;border:none;background:rgba(180,50,50,0.12);color:#a22;border-radius:var(--r-sm);cursor:pointer;">Törlés</button></div>' +
       '<label class="adm-port-lbl">Cím</label>' +
-      '<input type="text" class="ai" value="' + escAdmAttr(it.title) + '" oninput="portfolioSyncField(' + i + ',\'title\',this.value)" placeholder="">' +
+      '<input type="text" class="ai" data-pf-key="title" value="' + escAdmAttr(it.title) + '" oninput="portfolioSyncField(' + i + ',\'title\',this.value)" placeholder="">' +
       '<label class="adm-port-lbl">Kategória</label>' +
-      '<input type="text" class="ai" value="' + escAdmAttr(it.category) + '" oninput="portfolioSyncField(' + i + ',\'category\',this.value)" placeholder="">' +
+      '<input type="text" class="ai" data-pf-key="category" value="' + escAdmAttr(it.category) + '" oninput="portfolioSyncField(' + i + ',\'category\',this.value)" placeholder="">' +
       '<label class="adm-port-lbl">Leírás</label>' +
-      '<textarea class="ai" rows="3" oninput="portfolioSyncField(' + i + ',\'description\',this.value)" placeholder="">' + escAdmAttr(it.description) + '</textarea>' +
+      '<textarea class="ai" data-pf-key="description" rows="3" oninput="portfolioSyncField(' + i + ',\'description\',this.value)" placeholder="">' + escAdmAttr(it.description) + '</textarea>' +
       '<label class="adm-port-lbl">Alapanyagok</label>' +
-      '<textarea class="ai" rows="2" oninput="portfolioSyncField(' + i + ',\'material\',this.value)" placeholder="">' + escAdmAttr(it.material) + '</textarea>' +
+      '<textarea class="ai" data-pf-key="material" rows="2" oninput="portfolioSyncField(' + i + ',\'material\',this.value)" placeholder="">' + escAdmAttr(it.material) + '</textarea>' +
       '<label class="adm-port-lbl">Elkészítési idő</label>' +
-      '<input type="text" class="ai" value="' + escAdmAttr(it.duration) + '" oninput="portfolioSyncField(' + i + ',\'duration\',this.value)" placeholder="">' +
+      '<input type="text" class="ai" data-pf-key="duration" value="' + escAdmAttr(it.duration) + '" oninput="portfolioSyncField(' + i + ',\'duration\',this.value)" placeholder="">' +
       '<label class="adm-port-lbl">Képek (több is feltölthető)</label>' +
       '<div class="adm-port-thumbs">' + thumbs + '</div>' +
       '<div class="adm-port-row">' +
@@ -2084,7 +2094,47 @@ function renderPortfolioEditor() {
   }).join('');
 }
 
-async function saveAll() {
+function syncPortfolioItemsFromDom() {
+  var rows = document.querySelectorAll('.adm-port-item[data-port-idx]');
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r];
+    var i = parseInt(row.getAttribute('data-port-idx'), 10);
+    if (isNaN(i) || !portfolioItems[i]) continue;
+    var elms = row.querySelectorAll('[data-pf-key]');
+    for (var e = 0; e < elms.length; e++) {
+      var el = elms[e];
+      var k = el.getAttribute('data-pf-key');
+      if (k && portfolioItems[i][k] !== undefined) portfolioItems[i][k] = el.value;
+    }
+  }
+}
+
+function touchPortfolioLocalMtime() {
+  try { localStorage.setItem('kmmk_portfolio_mtime', String(Date.now())); } catch (e) {}
+}
+
+function clearPortfolioLocalMtime() {
+  try { localStorage.removeItem('kmmk_portfolio_mtime'); } catch (e) {}
+}
+
+async function reloadPortfolioFromGithubNow() {
+  try {
+    var r = await fetch(getPublishedPortfolioJsonUrl() + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    var data = await r.json();
+    if (data && data.useAdminPortfolio === true && Array.isArray(data.items)) {
+      var grid = document.getElementById('portGrid');
+      if (grid) {
+        grid.innerHTML = buildPortfolioCardsHtml(data.items);
+        if (window.updatePortCarousel) window.updatePortCarousel();
+      }
+      if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
+    }
+  } catch (eR) {}
+}
+
+async function runAdminSavePipeline(doPublish) {
+  syncPortfolioItemsFromDom();
   var errPub = document.getElementById('admPublishErr');
   if (errPub) { errPub.style.display = 'none'; errPub.textContent = ''; }
   var stored = portfolioItems.map(function(it) {
@@ -2186,15 +2236,24 @@ async function saveAll() {
 
   var portfolioApiItems = imgsSaved.slice();
 
+  touchPortfolioLocalMtime();
+
   var ok = document.getElementById('admOk');
+  if (!doPublish) {
+    ok.textContent = '✓ Helyi mentés kész — a portfólió és vélemények frissültek ezen a gépen. A világ számára a zöld gombbal tedd közzé.';
+    ok.style.display = 'block';
+    setTimeout(function() { ok.style.display = 'none'; }, 5000);
+    return;
+  }
+
   if (!publishKey) {
     if (errPub) {
-      errPub.textContent = 'Közzétételhez add meg a közzétételi kulcsot.';
+      errPub.textContent = 'Közzétételhez add meg a közzétételi kulcsot (Vercel: KMMK_PUBLISH_SECRET), majd nyomd meg újra a zöld gombot.';
       errPub.style.display = 'block';
     }
-    ok.textContent = '✓ Helyi mentés kész.';
+    ok.textContent = '✓ Helyi mentés kész; közzétételhez kell a kulcs.';
     ok.style.display = 'block';
-    setTimeout(function() { ok.style.display = 'none'; }, 4000);
+    setTimeout(function() { ok.style.display = 'none'; }, 5000);
     return;
   }
 
@@ -2231,18 +2290,32 @@ async function saveAll() {
     }
   }
   if (pubMsgs.length === 2) {
-    ok.textContent = '✓ Portfólió és vélemények közzétéve – minden látogatónál frissül (néhány másodperc).';
+    clearPortfolioLocalMtime();
+    await reloadPortfolioFromGithubNow();
+    ok.textContent = '✓ Portfólió és vélemények közzétéve — a GitHubról frissítettük a főoldali portfóliót is.';
     ok.style.display = 'block';
-    setTimeout(function() { ok.style.display = 'none'; }, 4500);
+    setTimeout(function() { ok.style.display = 'none'; }, 5000);
   } else if (pubMsgs.length === 1) {
     ok.textContent = '✓ Közzétéve: ' + pubMsgs[0] + '. A másik rész sikertelen — nézd meg a piros hibaüzenetet.';
     ok.style.display = 'block';
     setTimeout(function() { ok.style.display = 'none'; }, 5500);
+    if (pubMsgs.indexOf('portfólió') !== -1) {
+      clearPortfolioLocalMtime();
+      await reloadPortfolioFromGithubNow();
+    }
   } else {
     ok.textContent = '✓ Helyi mentés kész; a távoli közzététel nem sikerült (lásd hibaüzenet).';
     ok.style.display = 'block';
     setTimeout(function() { ok.style.display = 'none'; }, 5000);
   }
+}
+
+async function saveAllLocalOnly() {
+  await runAdminSavePipeline(false);
+}
+
+async function saveAndPublishToWeb() {
+  await runAdminSavePipeline(true);
 }
 
 // Init: apply saved data
@@ -2307,6 +2380,10 @@ function escHtmlPf(s) {
 }
 function escAttrPf(s) {
   return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+/** Biztonságos HTML attribútum érték (pl. img src) — nem rontja a & karaktert a Cloudinary URL-ben. */
+function escUrlAttr(u) {
+  return JSON.stringify(u == null ? '' : String(u));
 }
 function parsePortfolioImages(text) {
   const fmMatch = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -2446,7 +2523,7 @@ function buildPortfolioCardsHtml(items) {
     parts.push(
       '<div class="port-card' + (multi ? ' port-card-multi' : '') + '" data-img-index="0" data-desc="' + escAttrPf(description) + '" data-images="' + dataImagesAttr + '" data-materials="' + escAttrPf(material) + '" data-time="' + escAttrPf(duration) + '">' +
       '<div class="port-card-img">' +
-      '<img src="' + escAttrPf(first) + '" alt="' + escHtmlPf(title) + '" loading="lazy">' +
+      '<img src=' + escUrlAttr(first) + ' alt=' + escUrlAttr(title) + ' loading="lazy" referrerpolicy="no-referrer-when-downgrade">' +
       navHtml +
       '</div>' +
       '<div class="port-card-body">' +
@@ -2527,7 +2604,7 @@ async function loadPortfolioFromGithubMarkdown() {
     return (
       '<div class="port-card' + (multi ? ' port-card-multi' : '') + '" data-img-index="0" data-desc="' + escAttrPf(description) + '" data-images="' + dataImagesAttr + '" data-materials="' + escAttrPf(material) + '" data-time="' + escAttrPf(duration) + '">' +
       '<div class="port-card-img">' +
-      '<img src="' + escAttrPf(image) + '" alt="' + escHtmlPf(title) + '" loading="lazy">' +
+      '<img src=' + escUrlAttr(image) + ' alt=' + escUrlAttr(title) + ' loading="lazy" referrerpolicy="no-referrer-when-downgrade">' +
       navHtml +
       '</div>' +
       '<div class="port-card-body">' +
@@ -2552,6 +2629,19 @@ async function loadPortfolio() {
     if (r.ok) {
       var data = await r.json();
       if (data && data.useAdminPortfolio === true && Array.isArray(data.items)) {
+        var localMt = 0;
+        try { localMt = parseInt(localStorage.getItem('kmmk_portfolio_mtime') || '0', 10) || 0; } catch (eL) {}
+        var remoteMt = 0;
+        if (data.updatedAt) {
+          var parsed = Date.parse(data.updatedAt);
+          if (!isNaN(parsed)) remoteMt = parsed;
+        }
+        if (hasLocalPortfolioOverride() && localMt > remoteMt) {
+          renderPortfolioFromLocalStorage();
+          if (window.updatePortCarousel) window.updatePortCarousel();
+          if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
+          return;
+        }
         var grid = document.getElementById('portGrid');
         if (grid) {
           grid.innerHTML = buildPortfolioCardsHtml(data.items);
