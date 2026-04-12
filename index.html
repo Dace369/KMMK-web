@@ -2133,6 +2133,22 @@ async function reloadPortfolioFromGithubNow() {
   } catch (eR) {}
 }
 
+async function readFetchErrMsg(res) {
+  var t = '';
+  try {
+    t = await res.text();
+  } catch (e) {
+    return 'HTTP ' + res.status;
+  }
+  try {
+    var j = JSON.parse(t);
+    return j.error || j.detail || t.slice(0, 320);
+  } catch (e2) {
+    if (res.status === 404) return 'Nincs /api közzététel (404). Az admin közzététele csak Vercelen (vagy vercel dev) működik — ne file:// vagy sima GitHub Pages nézetből próbáld.';
+    return (t && t.slice(0, 320)) || ('HTTP ' + res.status);
+  }
+}
+
 async function runAdminSavePipeline(doPublish) {
   syncPortfolioItemsFromDom();
   var errPub = document.getElementById('admPublishErr');
@@ -2257,19 +2273,42 @@ async function runAdminSavePipeline(doPublish) {
     return;
   }
 
-  var pubMsgs = [];
-  try {
-    var res = await fetch('/api/publish-portfolio', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret: publishKey, items: portfolioApiItems })
+  var stillUploading = portfolioItems.some(function(it) {
+    return (it.images || []).some(function(x) {
+      return x && typeof x === 'object' && x.uploading;
     });
-    var j = await res.json().catch(function() { return {}; });
-    if (!res.ok) throw new Error(j.error || j.detail || res.statusText);
-    pubMsgs.push('portfólió');
-  } catch (ePub) {
+  });
+  if (stillUploading) {
     if (errPub) {
-      errPub.textContent = 'Portfólió közzététele: ' + (ePub && ePub.message ? ePub.message : String(ePub));
+      errPub.textContent = 'Még tart a képfeltöltés — várj pár másodpercet, amíg minden kép befejeződik, majd nyomd meg újra a közzétételt.';
+      errPub.style.display = 'block';
+      errPub.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    ok.textContent = '✓ Helyi mentés kész; közzététel megállítva (feltöltés folyamatban).';
+    ok.style.display = 'block';
+    setTimeout(function() { ok.style.display = 'none'; }, 5000);
+    return;
+  }
+
+  var pubMsgs = [];
+  if (portfolioApiItems.length > 0) {
+    try {
+      var res = await fetch('/api/publish-portfolio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: publishKey, items: portfolioApiItems })
+      });
+      if (!res.ok) throw new Error(await readFetchErrMsg(res));
+      pubMsgs.push('portfólió');
+    } catch (ePub) {
+      if (errPub) {
+        errPub.textContent = 'Portfólió közzététele: ' + (ePub && ePub.message ? ePub.message : String(ePub));
+        errPub.style.display = 'block';
+      }
+    }
+  } else if (doPublish) {
+    if (errPub) {
+      errPub.textContent = 'Portfólió: nincs egyetlen képes projekt (üres lista nem íródik fel a repóba, hogy ne töröljük a meglévő webes portfóliót). Adj meg képet vagy URL-t minden elemhez.';
       errPub.style.display = 'block';
     }
   }
@@ -2279,8 +2318,7 @@ async function runAdminSavePipeline(doPublish) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ secret: publishKey, items: reviews })
     });
-    var jRv = await resRv.json().catch(function() { return {}; });
-    if (!resRv.ok) throw new Error(jRv.error || jRv.detail || resRv.statusText);
+    if (!resRv.ok) throw new Error(await readFetchErrMsg(resRv));
     pubMsgs.push('vélemények');
   } catch (eRv) {
     if (errPub) {
@@ -2288,6 +2326,9 @@ async function runAdminSavePipeline(doPublish) {
       errPub.textContent = (errPub.textContent || '') + extra;
       errPub.style.display = 'block';
     }
+  }
+  if (errPub && errPub.style.display === 'block') {
+    try { errPub.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (eSc) {}
   }
   if (pubMsgs.length === 2) {
     clearPortfolioLocalMtime();
@@ -2315,7 +2356,18 @@ async function saveAllLocalOnly() {
 }
 
 async function saveAndPublishToWeb() {
-  await runAdminSavePipeline(true);
+  try {
+    await runAdminSavePipeline(true);
+  } catch (eTop) {
+    var ep = document.getElementById('admPublishErr');
+    var msg = eTop && eTop.message ? eTop.message : String(eTop);
+    if (ep) {
+      ep.textContent = 'Váratlan hiba: ' + msg;
+      ep.style.display = 'block';
+      try { ep.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (eS) {}
+    }
+    alert('Közzététel: ' + msg);
+  }
 }
 
 // Init: apply saved data

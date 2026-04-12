@@ -60,7 +60,7 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const expectedSecret = process.env.KMMK_PUBLISH_SECRET;
+  const expectedSecret = String(process.env.KMMK_PUBLISH_SECRET || "").trim();
   const token = process.env.KMMK_GITHUB_TOKEN || process.env.GITHUB_TOKEN;
   const repo = (process.env.KMMK_GITHUB_REPO || "Dace369/KMMK-web").trim();
   const branch = (process.env.KMMK_GITHUB_BRANCH || "main").trim();
@@ -86,9 +86,10 @@ module.exports = async (req, res) => {
     return;
   }
 
-  if (body.secret !== expectedSecret) {
+  const incomingSecret = body && body.secret != null ? String(body.secret).trim() : "";
+  if (incomingSecret !== expectedSecret) {
     res.statusCode = 401;
-    res.end(JSON.stringify({ error: "Érvénytelen közzétételi kulcs." }));
+    res.end(JSON.stringify({ error: "Érvénytelen közzétételi kulcs (ellenőrizd a Vercel KMMK_PUBLISH_SECRET értékét — nincs-e szóköz a végén / elején)." }));
     return;
   }
 

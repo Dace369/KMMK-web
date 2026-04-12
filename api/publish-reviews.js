@@ -69,7 +69,7 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const expectedSecret = process.env.KMMK_PUBLISH_SECRET;
+  const expectedSecret = String(process.env.KMMK_PUBLISH_SECRET || "").trim();
   if (!expectedSecret) {
     res.statusCode = 500;
     res.end(JSON.stringify({ error: "Hiányzik a KMMK_PUBLISH_SECRET Vercel környezeti változó." }));
@@ -85,9 +85,16 @@ module.exports = async (req, res) => {
     return;
   }
 
-  if (body.secret !== expectedSecret) {
+  const incomingSecret = body && body.secret != null ? String(body.secret).trim() : "";
+  if (incomingSecret !== expectedSecret) {
     res.statusCode = 401;
-    res.end(JSON.stringify({ error: "Érvénytelen közzétételi kulcs." }));
+    res.end(JSON.stringify({ error: "Érvénytelen közzétételi kulcs (ellenőrizd a Vercel KMMK_PUBLISH_SECRET értékét)." }));
+    return;
+  }
+
+  if (!Array.isArray(body.items)) {
+    res.statusCode = 400;
+    res.end(JSON.stringify({ error: "Az items tömb kötelező (vélemények JSON listája)." }));
     return;
   }
 
