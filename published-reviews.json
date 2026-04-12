@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "usePublishedReviews": true,
+  "updatedAt": "2025-01-01T12:00:00.000Z",
+  "items": [
+    {
+      "id": "r_seed_1",
+      "name": "Kovács Annamária",
+      "location": "Budapest · Konyhabútor",
+      "text": "Teljesen el voltam ragadtatva a végeredménytől. Pontosan olyan lett a konyha, ahogy elképzeltem – sőt, még szebb is.",
+      "stars": 5,
+      "createdAt": "2025-01-01T12:00:00.000Z"
+    },
+    {
+      "id": "r_seed_2",
+      "name": "Szabó Péter",
+      "location": "Győr · Nappali szekrénysor",
+      "text": "Fiatal, de nagyon profi! Segített az anyagválasztásban is. A szekrénysor tökéletesen illik a nappaliba, mindenki megkérdezi hol csináltattuk.",
+      "stars": 5,
+      "createdAt": "2025-01-01T12:00:00.000Z"
+    },
+    {
+      "id": "r_seed_3",
+      "name": "Nagy Gábor",
+      "location": "Miskolc · Irodabútor",
+      "text": "Irodai bútorokat nagyon gyorsan készített el és szerelt fel. Precíz, tiszta munka. Másodjára is nála rendeltünk.",
+      "stars": 5,
+      "createdAt": "2025-01-01T12:00:00.000Z"
+    },
+    {
+      "id": "r_seed_4",
+      "name": "Varga Eszter",
+      "location": "Debrecen · Gardrób",
+      "text": "Remek áron, kiváló minőségben készítette el a gardróbszekrényt. A méretek tökéletesek, a kivitelezés hibátlan.",
+      "stars": 5,
+      "createdAt": "2025-01-01T12:00:00.000Z"
+    }
+  ]
+}

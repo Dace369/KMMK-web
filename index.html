@@ -612,6 +612,14 @@ textarea.ai { min-height: 4.5rem; resize: vertical; }
 .adm-err { display: none; background: rgba(200,50,50,0.07); color: #b00; border: 1px solid rgba(200,50,50,0.18); padding: var(--f3); border-radius: var(--r-md); font-size: 0.82rem; margin-top: var(--f2); }
 #admLogin[hidden], #admContent[hidden] { display: none !important; }
 .adm-port-quick-upload { margin-bottom: var(--f3); cursor: pointer; }
+.adm-port-prevlabel { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-mid); margin: var(--f3) 0 var(--f2); }
+.adm-port-cardscale { overflow: hidden; border-radius: var(--r-md); border: 1px solid rgba(0,0,0,0.08); background: var(--teal); padding: var(--f3); }
+.adm-port-cardscale .port-card { max-width: 100%; flex: 0 0 auto !important; transform: scale(0.92); transform-origin: top center; margin: 0 auto; }
+.adm-port-prevhint { font-size: 0.8rem; color: var(--text-mid); margin-top: var(--f2); }
+.adm-rev-block { margin-bottom: var(--f4); padding: var(--f3); background: var(--warm-white); border-radius: var(--r-md); border: 1px solid rgba(0,0,0,0.08); }
+.adm-rev-preview { margin-bottom: var(--f3); padding: var(--f3); background: white; border-radius: var(--r-md); border: 1px solid rgba(0,0,0,0.06); }
+.adm-rev-preview .rev-card { margin: 0; box-shadow: none; }
+.adm-rev-edithead { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-bottom: var(--f2); }
 
 @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
 
@@ -1401,12 +1409,13 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       <div id="admContent" hidden>
         <div class="adm-sec">
           <div class="adm-sec-title">Portfólió</div>
+          <p style="font-size:0.8rem;color:var(--text-mid);margin-bottom:var(--f3);line-height:1.45;">Minden projekt egy blokk: <strong>cím</strong> (kártya főcíme), <strong>kategória</strong> (alcím), <strong>leírás</strong> (a nagy kártyában), <strong>alapanyagok</strong>, <strong>elkészítési idő</strong>, <strong>képek</strong> — ugyanazok, mint a weboldalon. Lent az előnézet mutatja a kártyát.</p>
           <input type="file" id="portfolioGlobalFileIn" multiple accept="image/*" style="display:none" onchange="handlePortfolioGlobalFiles(this.files)">
           <input type="file" id="portfolioQuickFileIn" multiple accept="image/*" style="display:none" onchange="handleQuickPortfolioFiles(this.files)">
           <div class="upload-zone adm-port-quick-upload" role="button" tabindex="0" onclick="document.getElementById('portfolioQuickFileIn').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('portfolioQuickFileIn').click();}">
             <span class="uz-icon" aria-hidden="true">🖼</span>
             <p style="margin:0;font-size:0.88rem;color:var(--text-dark);">Képek feltöltése</p>
-            <small style="display:block;margin-top:0.35rem;">Kattints ide, válassz fájlokat — ha még nincs elem, létrejön egy. Max. 5 MB / kép.</small>
+            <small style="display:block;margin-top:0.35rem;">Kattints ide — <strong>több kép</strong> is kijelölhető egyszerre (Ctrl+klikk). Ha még nincs projekt, létrejön egy. Max. 5 MB / kép.</small>
           </div>
           <div id="portfolioEditor"></div>
           <button type="button" class="btn-save" onclick="addPortfolioItem()" style="margin-top:var(--f2);background:var(--teal);">+ Új elem</button>
@@ -1431,6 +1440,7 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
         </div>
         <div class="adm-sec">
           <div class="adm-sec-title">Vélemények</div>
+          <p style="font-size:0.8rem;color:var(--text-mid);margin-bottom:var(--f3);line-height:1.45;">Itt ugyanúgy látod a kártyákat, mint a weboldalon. A látogatók a „Vélemény írása” gombbal küldhetnek be véleményt — azonnal megjelenik az oldalon és itt is. A <strong>Törlés</strong> gombbal vedd le a listáról, majd ments és tedd közzé.</p>
           <div id="admReviewsList"></div>
           <button type="button" class="btn-rev-add" onclick="addReviewRow()" style="margin-top:var(--f2);padding:var(--f2) var(--f3);background:var(--warm-white);border:1px solid rgba(0,0,0,0.12);border-radius:var(--r-md);cursor:pointer;font-size:0.82rem;">+ Új vélemény</button>
         </div>
@@ -1634,7 +1644,14 @@ function loadParsedReviews() {
       var name = r.name || '';
       var location = r.location != null ? String(r.location) : (r.loc || '');
       var stars = Math.max(1, Math.min(5, parseInt(r.stars, 10) || 5));
-      if (text || name || location) out.push({ name: name, location: location, text: text, stars: stars });
+      var rid = r.id != null ? String(r.id).trim() : '';
+      var cAt = r.createdAt != null ? String(r.createdAt).trim() : '';
+      if (text || name || location) {
+        var row = { name: name, location: location, text: text, stars: stars, initial: (name.charAt(0) || '?').toUpperCase() };
+        if (rid) row.id = rid;
+        if (cAt) row.createdAt = cAt;
+        out.push(row);
+      }
     }
     return out.length ? out : null;
   } catch (e) { return null; }
@@ -1766,17 +1783,22 @@ function revStarsHtml(n) {
   }
   return '<div class="rev-stars">' + parts.join('') + '</div>';
 }
+
+function buildReviewCardHtml(r) {
+  var text = r.text != null ? String(r.text) : String(r.quote || '').replace(/^"|"$/g, '');
+  var name = r.name || '';
+  var loc = r.location != null ? String(r.location) : (r.loc || '');
+  var stars = Math.max(1, Math.min(5, parseInt(r.stars, 10) || 5));
+  var init = (r.initial || name.charAt(0) || '?').toUpperCase();
+  var q = '"' + escRevHtml(text) + '"';
+  return '<div class="rev-card">' + revStarsHtml(stars) + '<p class="rev-quote">' + q + '</p><div class="rev-row"><div class="rev-av">' + escRevHtml(init) + '</div><div><div class="rev-name">' + escRevHtml(name) + '</div><div class="rev-loc">' + escRevHtml(loc) + '</div></div></div></div>';
+}
+
 function renderReviews() {
   var track = document.getElementById('revTrack');
   if (!track) return;
   track.innerHTML = reviews.map(function(r) {
-    var text = r.text != null ? String(r.text) : String(r.quote || '').replace(/^"|"$/g, '');
-    var name = r.name || '';
-    var loc = r.location != null ? String(r.location) : (r.loc || '');
-    var stars = Math.max(1, Math.min(5, parseInt(r.stars, 10) || 5));
-    var init = (r.initial || name.charAt(0) || '?').toUpperCase();
-    var q = '"' + escRevHtml(text) + '"';
-    return '<div class="rev-card">' + revStarsHtml(stars) + '<p class="rev-quote">' + q + '</p><div class="rev-row"><div class="rev-av">' + escRevHtml(init) + '</div><div><div class="rev-name">' + escRevHtml(name) + '</div><div class="rev-loc">' + escRevHtml(loc) + '</div></div></div></div>';
+    return buildReviewCardHtml(r);
   }).join('');
   revIndex = 0;
   updateRevCarousel();
@@ -1886,20 +1908,28 @@ function renderAdmReviews() {
     var name = r.name || '';
     var loc = r.location != null ? String(r.location) : (r.loc || '');
     var stars = Math.max(1, Math.min(5, parseInt(r.stars, 10) || 5));
+    var rid = String(r.id || '').trim();
+    var created = String(r.createdAt || '').trim();
     var starOpts = '';
     for (var s = 1; s <= 5; s++) starOpts += '<option value="' + s + '"' + (stars === s ? ' selected' : '') + '>' + s + ' csillag</option>';
-    return '<div class="rev-adm-row" data-idx="' + i + '" style="margin-bottom:var(--f4);padding:var(--f3);background:white;border-radius:var(--r-md);border:1px solid rgba(0,0,0,0.08);">' +
-      '<textarea class="ai" data-rev-ta rows="2" placeholder="" style="margin-bottom:var(--f2);">' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;') + '</textarea>' +
-      '<input type="text" class="ai" data-rev-name placeholder="" value="' + name.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" style="margin-bottom:var(--f2);">' +
-      '<input type="text" class="ai" data-rev-loc placeholder="" value="' + loc.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" style="margin-bottom:var(--f2);">' +
-      '<div style="display:flex;align-items:center;gap:var(--f2);flex-wrap:wrap;">' +
+    var preview = buildReviewCardHtml({ name: name, location: loc, text: text, stars: stars, initial: (name.charAt(0) || '?').toUpperCase() });
+    return '<div class="adm-rev-block rev-adm-row" data-idx="' + i + '" data-rev-id="' + escAdmAttr(rid) + '" data-rev-created="' + escAdmAttr(created) + '">' +
+      '<div class="adm-rev-preview">' + preview + '</div>' +
+      '<div class="adm-rev-edithead">Szerkesztés</div>' +
+      '<label class="adm-port-lbl">Vélemény szövege</label>' +
+      '<textarea class="ai" data-rev-ta rows="3" placeholder="">' + escAdmAttr(text) + '</textarea>' +
+      '<label class="adm-port-lbl">Név</label>' +
+      '<input type="text" class="ai" data-rev-name placeholder="" value="' + escAdmAttr(name) + '">' +
+      '<label class="adm-port-lbl">Helyszín és projekt</label>' +
+      '<input type="text" class="ai" data-rev-loc placeholder="" value="' + escAdmAttr(loc) + '">' +
+      '<div style="display:flex;align-items:center;gap:var(--f2);flex-wrap:wrap;margin-top:var(--f2);">' +
       '<select class="ai" data-rev-stars style="padding:var(--f1) var(--f2);font-size:0.85rem;border-radius:var(--r-sm);border:1px solid rgba(0,0,0,0.12);">' + starOpts + '</select>' +
-      '<button type="button" onclick="delReview(' + i + ')" style="padding:var(--f1) var(--f2);background:#b44;color:white;border:none;border-radius:var(--r-sm);cursor:pointer;font-size:0.75rem;">Törlés</button></div></div>';
+      '<button type="button" onclick="delReview(' + i + ')" style="padding:var(--f2) var(--f3);background:#b44;color:white;border:none;border-radius:var(--r-sm);cursor:pointer;font-size:0.78rem;">Törlés</button></div></div>';
   }).join('');
 }
 
 function addReviewRow() {
-  reviews.push({ name: '', location: '', text: '', stars: 5 });
+  reviews.push({ id: '', createdAt: '', name: '', location: '', text: '', stars: 5, initial: '?' });
   renderAdmReviews();
 }
 
@@ -2036,12 +2066,21 @@ function renderPortfolioEditor() {
       '<textarea class="ai" rows="2" oninput="portfolioSyncField(' + i + ',\'material\',this.value)" placeholder="">' + escAdmAttr(it.material) + '</textarea>' +
       '<label class="adm-port-lbl">Elkészítési idő</label>' +
       '<input type="text" class="ai" value="' + escAdmAttr(it.duration) + '" oninput="portfolioSyncField(' + i + ',\'duration\',this.value)" placeholder="">' +
-      '<label class="adm-port-lbl">Képek</label>' +
+      '<label class="adm-port-lbl">Képek (több is feltölthető)</label>' +
       '<div class="adm-port-thumbs">' + thumbs + '</div>' +
       '<div class="adm-port-row">' +
       '<button type="button" class="btn-save" style="width:auto;padding:var(--f2) var(--f3);font-size:0.72rem;letter-spacing:0.06em;" onclick="triggerPortfolioUpload(' + i + ')">Feltöltés</button>' +
-      '<input type="url" class="ai" id="pfUrl_' + i + '" placeholder="">' +
-      '<button type="button" class="btn-save" style="width:auto;padding:var(--f2) var(--f3);font-size:0.72rem;background:var(--text-mid);" onclick="addPortfolioImageUrl(' + i + ')">URL</button></div></div>';
+      '<input type="url" class="ai" id="pfUrl_' + i + '" placeholder="https://…">' +
+      '<button type="button" class="btn-save" style="width:auto;padding:var(--f2) var(--f3);font-size:0.72rem;background:var(--text-mid);" onclick="addPortfolioImageUrl(' + i + ')">URL hozzáadása</button></div>' +
+      (function() {
+        var urlsForPrev = (it.images || []).filter(function(x) { return typeof x === 'string' && x; });
+        if (urlsForPrev.length > 0) {
+          var one = { title: it.title, category: it.category, description: it.description, material: it.material, duration: it.duration, images: urlsForPrev };
+          return '<div class="adm-port-prevlabel">Előnézet (mint a weboldalon)</div><div class="adm-port-cardscale">' + buildPortfolioCardsHtml([one]) + '</div>';
+        }
+        return '<p class="adm-port-prevhint">Legalább egy kép kell az előnézethez — feltöltés vagy URL.</p>';
+      })() +
+      '</div>';
   }).join('');
 }
 
@@ -2080,18 +2119,24 @@ async function saveAll() {
     var name = nameIn ? nameIn.value.trim() : '';
     var loc = locIn ? locIn.value.trim() : '';
     var stars = starsSel ? (parseInt(starsSel.value, 10) || 5) : 5;
-    if (text || name || loc) reviews.push({ name: name, location: loc, text: text, stars: stars });
+    var rid = (row.getAttribute('data-rev-id') || '').trim();
+    var cAt = (row.getAttribute('data-rev-created') || '').trim();
+    if (text || name || loc) {
+      var o = {
+        name: name,
+        location: loc,
+        text: text,
+        stars: stars,
+        initial: (name.charAt(0) || '?').toUpperCase()
+      };
+      if (rid) o.id = rid;
+      if (cAt) o.createdAt = cAt;
+      reviews.push(o);
+    }
   });
   try { localStorage.setItem('kmmk_reviews', JSON.stringify(reviews)); } catch(e) {}
   hasSavedReviews = reviews.length > 0;
-  if (hasSavedReviews) {
-    renderReviews();
-  } else {
-    var emptyHold = reviews;
-    reviews = REVIEWS_DEFAULT.slice();
-    renderReviews();
-    reviews = emptyHold;
-  }
+  renderReviews();
   const lnks = {
     egger: document.getElementById('lnkEgger').value,
     kronoboards: document.getElementById('lnkKronoBoards').value,
@@ -2153,6 +2198,7 @@ async function saveAll() {
     return;
   }
 
+  var pubMsgs = [];
   try {
     var res = await fetch('/api/publish-portfolio', {
       method: 'POST',
@@ -2161,15 +2207,39 @@ async function saveAll() {
     });
     var j = await res.json().catch(function() { return {}; });
     if (!res.ok) throw new Error(j.error || j.detail || res.statusText);
-    ok.textContent = '✓ Közzétéve – a portfólió minden látogatónál frissül (néhány másodperc).';
-    ok.style.display = 'block';
-    setTimeout(function() { ok.style.display = 'none'; }, 4500);
+    pubMsgs.push('portfólió');
   } catch (ePub) {
     if (errPub) {
-      errPub.textContent = 'Közzététel sikertelen: ' + (ePub && ePub.message ? ePub.message : String(ePub));
+      errPub.textContent = 'Portfólió közzététele: ' + (ePub && ePub.message ? ePub.message : String(ePub));
       errPub.style.display = 'block';
     }
-    ok.textContent = '✓ Helyi mentés kész, a közzététel nem sikerült.';
+  }
+  try {
+    var resRv = await fetch('/api/publish-reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: publishKey, items: reviews })
+    });
+    var jRv = await resRv.json().catch(function() { return {}; });
+    if (!resRv.ok) throw new Error(jRv.error || jRv.detail || resRv.statusText);
+    pubMsgs.push('vélemények');
+  } catch (eRv) {
+    if (errPub) {
+      var extra = ' Vélemények közzététele: ' + (eRv && eRv.message ? eRv.message : String(eRv));
+      errPub.textContent = (errPub.textContent || '') + extra;
+      errPub.style.display = 'block';
+    }
+  }
+  if (pubMsgs.length === 2) {
+    ok.textContent = '✓ Portfólió és vélemények közzétéve – minden látogatónál frissül (néhány másodperc).';
+    ok.style.display = 'block';
+    setTimeout(function() { ok.style.display = 'none'; }, 4500);
+  } else if (pubMsgs.length === 1) {
+    ok.textContent = '✓ Közzétéve: ' + pubMsgs[0] + '. A másik rész sikertelen — nézd meg a piros hibaüzenetet.';
+    ok.style.display = 'block';
+    setTimeout(function() { ok.style.display = 'none'; }, 5500);
+  } else {
+    ok.textContent = '✓ Helyi mentés kész; a távoli közzététel nem sikerült (lásd hibaüzenet).';
     ok.style.display = 'block';
     setTimeout(function() { ok.style.display = 'none'; }, 5000);
   }
@@ -2311,6 +2381,44 @@ function getPublishedPortfolioBranch() {
 
 function getPublishedPortfolioJsonUrl() {
   return 'https://raw.githubusercontent.com/' + getPortfolioGithubRepo() + '/' + getPublishedPortfolioBranch() + '/published-portfolio.json';
+}
+
+function getPublishedReviewsJsonUrl() {
+  return 'https://raw.githubusercontent.com/' + getPortfolioGithubRepo() + '/' + getPublishedPortfolioBranch() + '/published-reviews.json';
+}
+
+async function loadReviewsFromPublishedJson() {
+  try {
+    var r = await fetch(getPublishedReviewsJsonUrl() + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('no published reviews');
+    var data = await r.json();
+    if (!data || !Array.isArray(data.items)) throw new Error('bad reviews json');
+    reviews = data.items.map(function(x) {
+      var name = String(x.name || '');
+      return {
+        id: String(x.id || '').trim(),
+        name: name,
+        location: String(x.location || ''),
+        text: String(x.text || ''),
+        stars: Math.max(1, Math.min(5, parseInt(x.stars, 10) || 5)),
+        createdAt: x.createdAt ? String(x.createdAt) : '',
+        initial: (name.charAt(0) || '?').toUpperCase()
+      };
+    }).filter(function(x) {
+      return x.text.trim() || x.name.trim();
+    });
+    hasSavedReviews = true;
+    try { localStorage.setItem('kmmk_reviews', JSON.stringify(reviews)); } catch (e) {}
+  } catch (e) {
+    var pr = loadParsedReviews();
+    if (pr) {
+      reviews = pr;
+      hasSavedReviews = true;
+    } else {
+      reviews = REVIEWS_DEFAULT.slice();
+      hasSavedReviews = false;
+    }
+  }
 }
 
 function buildPortfolioCardsHtml(items) {
@@ -2479,24 +2587,35 @@ function initAdminFromHash() {
   }
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', function() {
-    runInit();
-    if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
-    loadPortfolio();
-    initAdminFromHash();
-  });
-} else {
+function kmmkBoot() {
   runInit();
   if (window.initPortfolioExpandPanels) window.initPortfolioExpandPanels();
   loadPortfolio();
   initAdminFromHash();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    loadReviewsFromPublishedJson().then(function() {
+      renderReviews();
+      initRevCarousel();
+      kmmkBoot();
+    });
+  });
+} else {
+  loadReviewsFromPublishedJson().then(function() {
+    renderReviews();
+    initRevCarousel();
+    kmmkBoot();
+  });
 }
 window.addEventListener('hashchange', initAdminFromHash);
 
 let selectedStars = 0;
 
 function openReviewForm() {
+  var hp = document.getElementById('revHp');
+  if (hp) hp.value = '';
   document.getElementById('revModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2516,44 +2635,81 @@ function selectStar(n) {
   });
 }
 
-function submitReview() {
+async function submitReview() {
+  var hp = document.getElementById('revHp');
+  if (hp && hp.value) return;
+
   var name = document.getElementById('revName').value.trim();
   var revLoc = document.getElementById('revLocation').value.trim();
   var text = document.getElementById('revText').value.trim();
 
   if (!name || !text || selectedStars === 0) {
-    alert('Kérjük töltse ki a nevet, véleményt és adjon értékelést!');
+    alert('Kérjük töltsd ki a nevet, a véleményt és válassz csillagot (1–5).');
     return;
   }
 
-  // Azonnali megjelenítés: hozzáadjuk a helyi listához, és el is mentjük.
+  var btn = document.querySelector('#revModal .rev-modal-inner .btn-save');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Küldés…';
+  }
   try {
+    var res = await fetch('/api/submit-review', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        location: revLoc,
+        text: text,
+        stars: selectedStars,
+        website: hp ? hp.value : ''
+      })
+    });
+    var j = await res.json().catch(function() { return {}; });
+    if (!res.ok) throw new Error(j.error || res.statusText || 'Szerverhiba');
+
+    var rv = j.review;
+    if (!rv || !rv.id) throw new Error('Érvénytelen válasz a szervertől.');
+
     if (!Array.isArray(reviews)) reviews = [];
     reviews.unshift({
-      name: name,
-      location: revLoc,
-      text: text,
-      stars: selectedStars,
-      initial: (name.charAt(0) || '?').toUpperCase()
+      id: rv.id,
+      name: rv.name,
+      location: rv.location != null ? rv.location : revLoc,
+      text: rv.text,
+      stars: Math.max(1, Math.min(5, parseInt(rv.stars, 10) || selectedStars)),
+      createdAt: rv.createdAt || '',
+      initial: (String(rv.name || name).charAt(0) || '?').toUpperCase()
     });
-    localStorage.setItem('kmmk_reviews', JSON.stringify(reviews));
+    try {
+      localStorage.setItem('kmmk_reviews', JSON.stringify(reviews));
+    } catch (eLs) {}
     hasSavedReviews = true;
     renderReviews();
-  } catch (e) {
-    // Ha a localStorage le van tiltva, akkor is megpróbáljuk kirenderelni.
-    try { renderReviews(); } catch (e2) {}
-  }
+    initRevCarousel();
 
-  document.getElementById('revSuccess').style.display = 'block';
-  setTimeout(function() {
-    closeRevModal();
-    document.getElementById('revSuccess').style.display = 'none';
-    document.getElementById('revName').value = '';
-    document.getElementById('revLocation').value = '';
-    document.getElementById('revText').value = '';
-    selectedStars = 0;
-    document.querySelectorAll('#revStars span').forEach(function(s) { s.classList.remove('active'); });
-  }, 2500);
+    var okEl = document.getElementById('revSuccess');
+    okEl.textContent = '✓ Köszönjük! A véleményed megjelent az oldalon, és a GitHubon is rögzült.';
+    okEl.style.display = 'block';
+    setTimeout(function() {
+      closeRevModal();
+      okEl.style.display = 'none';
+      okEl.textContent = '✓ Köszönjük! Hamarosan megjelenik az oldalon.';
+      document.getElementById('revName').value = '';
+      document.getElementById('revLocation').value = '';
+      document.getElementById('revText').value = '';
+      if (hp) hp.value = '';
+      selectedStars = 0;
+      document.querySelectorAll('#revStars span').forEach(function(s) { s.classList.remove('active'); });
+    }, 2200);
+  } catch (e) {
+    alert('Nem sikerült elküldeni a véleményt: ' + (e && e.message ? e.message : String(e)) + '\n\nCsak az éles (Vercel) oldalon működik a közzététel, ha be van állítva a GitHub token.');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Elküldés';
+    }
+  }
 }
 </script>
 
@@ -2561,6 +2717,7 @@ function submitReview() {
   <div class="rev-modal-inner">
     <button type="button" class="rev-modal-close" onclick="closeRevModal()">✕</button>
     <h2>Ossza meg véleményét</h2>
+    <input type="text" id="revHp" name="website" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
     <div class="rev-form-group">
       <label>Név</label>
       <input class="ai" type="text" id="revName" placeholder="Pl. Kovács Anna">
