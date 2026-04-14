@@ -568,10 +568,24 @@ footer { background: var(--teal); padding: var(--f5); }
 .adm-trigger:hover { background: var(--teal); color: white; border-color: transparent; }
 .adm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
 .adm-overlay.open { display: flex; }
-.adm-panel { background: var(--off-white); width: 92%; max-width: 720px; max-height: 88vh; overflow-y: auto; border-radius: var(--r-xl); }
-.adm-port-item { background: white; border: 1px solid rgba(0,0,0,0.08); border-radius: var(--r-lg); padding: var(--f3); margin-bottom: var(--f3); }
-.adm-port-item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--f2); }
-.adm-port-item-top span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold); }
+.adm-panel { background: var(--off-white); width: 92%; max-width: min(960px, 98vw); max-height: 92vh; overflow-y: auto; border-radius: var(--r-xl); }
+.adm-port-workspace { margin-bottom: var(--f4); }
+.adm-port-workspace-head { margin-bottom: var(--f3); }
+.adm-port-workspace-head h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 600; color: var(--text-dark); margin: 0 0 var(--f2); }
+.adm-port-workspace-head p { font-size: 0.82rem; color: var(--text-mid); line-height: 1.55; margin: 0; }
+.adm-port-one-sheet { background: #f5f1eb; border: 1px solid rgba(0,0,0,0.1); border-radius: var(--r-xl); padding: var(--f4); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+.adm-port-item { background: white; border: 1px solid rgba(0,0,0,0.1); border-radius: var(--r-lg); padding: var(--f4); margin-bottom: var(--f4); }
+.adm-port-item:last-child { margin-bottom: 0; }
+.adm-port-item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--f3); padding-bottom: var(--f2); border-bottom: 1px solid rgba(0,0,0,0.08); }
+.adm-port-item-top span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold); font-weight: 600; }
+.adm-port-block { margin-bottom: var(--f4); }
+.adm-port-block:last-of-type { margin-bottom: 0; }
+.adm-port-block-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-mid); margin: 0 0 var(--f2); font-weight: 600; }
+.adm-port-two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--f3); }
+@media (max-width: 600px) { .adm-port-two { grid-template-columns: 1fr; } }
+#admContent .adm-port-one-sheet .ai { display: block; width: 100%; opacity: 1; visibility: visible; min-height: 2.75rem; }
+#admContent .adm-port-item textarea.ai { min-height: 5.5rem; }
+.adm-port-global-upload { margin-bottom: var(--f4) !important; }
 .adm-port-thumbs { display: flex; flex-wrap: wrap; gap: var(--f2); margin: var(--f2) 0; }
 .adm-port-thumb { width: 88px; height: 66px; border-radius: var(--r-sm); overflow: hidden; position: relative; border: 1px solid rgba(0,0,0,0.08); flex-shrink: 0; background: rgba(0,0,0,0.06); }
 .adm-port-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 40px; }
@@ -614,6 +628,7 @@ textarea.ai { min-height: 4.5rem; resize: vertical; }
 .adm-err { display: none; background: rgba(200,50,50,0.07); color: #b00; border: 1px solid rgba(200,50,50,0.18); padding: var(--f3); border-radius: var(--r-md); font-size: 0.82rem; margin-top: var(--f2); }
 #admLogin[hidden], #admContent[hidden] { display: none !important; }
 .adm-port-quick-upload { margin-bottom: var(--f3); cursor: pointer; }
+.adm-port-cards-stack { margin-top: var(--f2); }
 .adm-port-prevlabel { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-mid); margin: var(--f3) 0 var(--f2); }
 .adm-port-cardscale { overflow: hidden; border-radius: var(--r-md); border: 1px solid rgba(0,0,0,0.08); background: var(--teal); padding: var(--f3); }
 .adm-port-cardscale .port-card { max-width: 100%; flex: 0 0 auto !important; transform: scale(0.92); transform-origin: top center; margin: 0 auto; }
@@ -1410,17 +1425,16 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       </div>
       <div id="admContent" hidden>
         <div class="adm-sec">
-          <div class="adm-sec-title">Portfólió</div>
-          <p style="font-size:0.8rem;color:var(--text-mid);margin-bottom:var(--f3);line-height:1.45;">Minden projekt egy blokk: <strong>cím</strong> (kártya főcíme), <strong>kategória</strong> (alcím), <strong>leírás</strong> (a nagy kártyában), <strong>alapanyagok</strong>, <strong>elkészítési idő</strong>, <strong>képek</strong> — ugyanazok, mint a weboldalon. Lent az előnézet mutatja a kártyát.</p>
-          <input type="file" id="portfolioGlobalFileIn" multiple accept="image/*" style="display:none" onchange="handlePortfolioGlobalFiles(this.files)">
-          <input type="file" id="portfolioQuickFileIn" multiple accept="image/*" style="display:none" onchange="handleQuickPortfolioFiles(this.files)">
-          <div class="upload-zone adm-port-quick-upload" role="button" tabindex="0" onclick="document.getElementById('portfolioQuickFileIn').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('portfolioQuickFileIn').click();}">
-            <span class="uz-icon" aria-hidden="true">🖼</span>
-            <p style="margin:0;font-size:0.88rem;color:var(--text-dark);">Képek feltöltése</p>
-            <small style="display:block;margin-top:0.35rem;">Kattints ide — <strong>több kép</strong> is kijelölhető egyszerre (Ctrl+klikk). Ha még nincs projekt, létrejön egy. Max. 5 MB / kép.</small>
+          <div class="adm-port-workspace">
+            <div class="adm-port-workspace-head">
+              <h3>Portfólió</h3>
+              <p>Minden projekt egy blokk: <strong>cím</strong> (kártya főcíme), <strong>kategória</strong> (alcím), <strong>leírás</strong> (a nagy kártyában), <strong>alapanyagok</strong>, <strong>elkészítési idő</strong>, <strong>képek</strong> — ugyanazok, mint a weboldalon. Az egy nagy panelen szerkeszthető; felül a közös feltöltés, alatta minden elem és az előnézet.</p>
+            </div>
+            <input type="file" id="portfolioGlobalFileIn" multiple accept="image/*" style="display:none" onchange="handlePortfolioGlobalFiles(this.files)">
+            <input type="file" id="portfolioQuickFileIn" multiple accept="image/*" style="display:none" onchange="handleQuickPortfolioFiles(this.files)">
+            <div id="portfolioEditor"></div>
+            <button type="button" class="btn-save" onclick="addPortfolioItem()" style="margin-top:var(--f2);background:var(--teal);">+ &#218;j elem</button>
           </div>
-          <div id="portfolioEditor"></div>
-          <button type="button" class="btn-save" onclick="addPortfolioItem()" style="margin-top:var(--f2);background:var(--teal);">+ Új elem</button>
         </div>
         <div class="adm-sec">
           <div class="adm-sec-title">Közzététel a weboldalra</div>
@@ -2050,48 +2064,59 @@ window.addPortfolioImageUrl = function(itemIndex) {
 function renderPortfolioEditor() {
   var root = document.getElementById('portfolioEditor');
   if (!root) return;
+  var uploadTop = '<div class="upload-zone adm-port-global-upload adm-port-quick-upload" role="button" tabindex="0" onclick="document.getElementById(\'portfolioQuickFileIn\').click()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();document.getElementById(\'portfolioQuickFileIn\').click();}">' +
+    '<span class="uz-icon" aria-hidden="true">\uD83D\uDDBC</span>' +
+    '<p style="margin:0;font-size:0.88rem;color:var(--text-dark);">Képek feltöltése</p>' +
+    '<small style="display:block;margin-top:0.35rem;">Kattints ide — <strong>több kép</strong> is kijelölhető egyszerre (Ctrl+klikk). A képek az <strong>utolsó</strong> projekthez kerülnek; ha még nincs elem, létrejön egy. Max. 5 MB / kép.</small></div>';
   if (!portfolioItems.length) {
-    root.innerHTML = '<p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:var(--f2);">Még nincs elem.</p>';
+    root.innerHTML = '<div class="adm-port-one-sheet">' + uploadTop +
+      '<p class="adm-port-prevhint" style="margin:0;">Még nincs projekt. Tölts fel képet fent, vagy kattints az „Új elem” gombra — utána minden mezőt kitölthetsz.</p></div>';
     return;
   }
-  root.innerHTML = portfolioItems.map(function(it, i) {
+  var blocks = portfolioItems.map(function(it, i) {
     var thumbs = (it.images || []).map(function(img, j) {
       if (img && typeof img === 'object' && img.uploading) {
         return '<div class="adm-port-thumb-load"><span class="prev-loading-spin" style="display:block;width:22px;height:22px;border:2px solid rgba(0,0,0,0.1);border-top-color:rgba(0,0,0,0.4);border-radius:50%;animation:prevUploadSpin 0.75s linear infinite;"></span></div>';
       }
       var src = typeof img === 'string' ? img : '';
       if (!src) return '';
-      return '<div class="adm-port-thumb"><img src=' + JSON.stringify(src) + ' alt="" referrerpolicy="no-referrer-when-downgrade" loading="eager" onerror="this.classList.add(\'adm-thumb-bad\');"><button type="button" class="prev-del" onclick="removePortfolioImage(' + i + ',' + j + ')">✕</button></div>';
+      return '<div class="adm-port-thumb"><img src=' + JSON.stringify(src) + ' alt="" referrerpolicy="no-referrer-when-downgrade" loading="eager" onerror="this.classList.add(\'adm-thumb-bad\');"><button type="button" class="prev-del" onclick="removePortfolioImage(' + i + ',' + j + ')">\u2715</button></div>';
     }).join('');
+    var prevBlock = (function() {
+      var urlsForPrev = (it.images || []).filter(function(x) { return typeof x === 'string' && x; });
+      if (urlsForPrev.length > 0) {
+        var one = { title: it.title, category: it.category, description: it.description, material: it.material, duration: it.duration, images: urlsForPrev };
+        return '<div class="adm-port-cardscale">' + buildPortfolioCardsHtml([one]) + '</div>';
+      }
+      return '<p class="adm-port-prevhint">Legalább egy kép kell az előnézethez — feltöltés vagy URL.</p>';
+    })();
     return '<div class="adm-port-item" data-port-idx="' + i + '">' +
       '<div class="adm-port-item-top"><span>Elem ' + (i + 1) + '</span>' +
       '<button type="button" onclick="removePortfolioItem(' + i + ')" style="padding:var(--f1) var(--f2);font-size:0.72rem;border:none;background:rgba(180,50,50,0.12);color:#a22;border-radius:var(--r-sm);cursor:pointer;">Törlés</button></div>' +
-      '<label class="adm-port-lbl">Cím</label>' +
-      '<input type="text" class="ai" data-pf-key="title" value="' + escAdmAttr(it.title) + '" oninput="portfolioSyncField(' + i + ',\'title\',this.value)" placeholder="">' +
-      '<label class="adm-port-lbl">Kategória</label>' +
-      '<input type="text" class="ai" data-pf-key="category" value="' + escAdmAttr(it.category) + '" oninput="portfolioSyncField(' + i + ',\'category\',this.value)" placeholder="">' +
+      '<div class="adm-port-block"><p class="adm-port-block-title">Szövegek a kártyán</p>' +
+      '<div class="adm-port-two">' +
+      '<div><label class="adm-port-lbl">Cím</label>' +
+      '<input type="text" class="ai" data-pf-key="title" value="' + escAdmAttr(it.title) + '" oninput="portfolioSyncField(' + i + ',\'title\',this.value)" placeholder="Pl. Egyedi étkezőasztal"></div>' +
+      '<div><label class="adm-port-lbl">Kategória (alcím)</label>' +
+      '<input type="text" class="ai" data-pf-key="category" value="' + escAdmAttr(it.category) + '" oninput="portfolioSyncField(' + i + ',\'category\',this.value)" placeholder="Pl. Étkező"></div></div>' +
       '<label class="adm-port-lbl">Leírás</label>' +
-      '<textarea class="ai" data-pf-key="description" rows="3" oninput="portfolioSyncField(' + i + ',\'description\',this.value)" placeholder="">' + escAdmAttr(it.description) + '</textarea>' +
-      '<label class="adm-port-lbl">Alapanyagok</label>' +
-      '<textarea class="ai" data-pf-key="material" rows="2" oninput="portfolioSyncField(' + i + ',\'material\',this.value)" placeholder="">' + escAdmAttr(it.material) + '</textarea>' +
-      '<label class="adm-port-lbl">Elkészítési idő</label>' +
-      '<input type="text" class="ai" data-pf-key="duration" value="' + escAdmAttr(it.duration) + '" oninput="portfolioSyncField(' + i + ',\'duration\',this.value)" placeholder="">' +
-      '<label class="adm-port-lbl">Képek (több is feltölthető)</label>' +
+      '<textarea class="ai" data-pf-key="description" rows="3" oninput="portfolioSyncField(' + i + ',\'description\',this.value)" placeholder="A nagy kártyában megjelenő szöveg\u2026">' + escAdmAttr(it.description) + '</textarea></div>' +
+      '<div class="adm-port-block"><p class="adm-port-block-title">Alapanyag és idő</p>' +
+      '<div class="adm-port-two">' +
+      '<div><label class="adm-port-lbl">Alapanyagok</label>' +
+      '<textarea class="ai" data-pf-key="material" rows="2" oninput="portfolioSyncField(' + i + ',\'material\',this.value)" placeholder="Pl. tölgy, olajozott felület">' + escAdmAttr(it.material) + '</textarea></div>' +
+      '<div><label class="adm-port-lbl">Elkészítési idő</label>' +
+      '<input type="text" class="ai" data-pf-key="duration" value="' + escAdmAttr(it.duration) + '" oninput="portfolioSyncField(' + i + ',\'duration\',this.value)" placeholder="Pl. 6\u20138 hét"></div></div></div>' +
+      '<div class="adm-port-block"><p class="adm-port-block-title">Képek</p>' +
       '<div class="adm-port-thumbs">' + thumbs + '</div>' +
       '<div class="adm-port-row">' +
-      '<button type="button" class="btn-save" style="width:auto;padding:var(--f2) var(--f3);font-size:0.72rem;letter-spacing:0.06em;" onclick="triggerPortfolioUpload(' + i + ')">Feltöltés</button>' +
-      '<input type="url" class="ai" id="pfUrl_' + i + '" placeholder="https://…">' +
-      '<button type="button" class="btn-save" style="width:auto;padding:var(--f2) var(--f3);font-size:0.72rem;background:var(--text-mid);" onclick="addPortfolioImageUrl(' + i + ')">URL hozzáadása</button></div>' +
-      (function() {
-        var urlsForPrev = (it.images || []).filter(function(x) { return typeof x === 'string' && x; });
-        if (urlsForPrev.length > 0) {
-          var one = { title: it.title, category: it.category, description: it.description, material: it.material, duration: it.duration, images: urlsForPrev };
-          return '<div class="adm-port-prevlabel">Előnézet (mint a weboldalon)</div><div class="adm-port-cardscale">' + buildPortfolioCardsHtml([one]) + '</div>';
-        }
-        return '<p class="adm-port-prevhint">Legalább egy kép kell az előnézethez — feltöltés vagy URL.</p>';
-      })() +
+      '<button type="button" class="btn-save" style="width:auto;padding:var(--f2) var(--f3);font-size:0.72rem;letter-spacing:0.06em;" onclick="triggerPortfolioUpload(' + i + ')">Feltöltés ehhez az elemhez</button>' +
+      '<input type="url" class="ai" id="pfUrl_' + i + '" placeholder="https://\u2026 kép URL">' +
+      '<button type="button" class="btn-save" style="width:auto;padding:var(--f2) var(--f3);font-size:0.72rem;background:var(--text-mid);" onclick="addPortfolioImageUrl(' + i + ')">URL hozzáadása</button></div></div>' +
+      '<div class="adm-port-block"><p class="adm-port-block-title">Előnézet (mint a weboldalon)</p>' + prevBlock + '</div>' +
       '</div>';
   }).join('');
+  root.innerHTML = '<div class="adm-port-one-sheet">' + uploadTop + '<div class="adm-port-cards-stack">' + blocks + '</div></div>';
 }
 
 function syncPortfolioItemsFromDom() {
