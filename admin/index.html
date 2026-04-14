@@ -259,8 +259,8 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
   <div class="login-box">
     <div style="font-size:2.5rem;margin-bottom:1rem;">🔐</div>
     <h1>KMMK <span style="color:var(--gold)">Admin</span></h1>
-    <p>Adja meg a jelszót a belépéshez</p>
-    <input type="password" id="passInput" placeholder="Jelszó" onkeydown="if(event.key==='Enter')doLogin()">
+    <p>Az éles jelszó a Vercel <strong>KMMK_ADMIN_PASSWORD</strong> értéke (nem böngészős „kód”).</p>
+    <input type="password" id="passInput" placeholder="Admin jelszó" onkeydown="if(event.key==='Enter')doLogin()">
     <button onclick="doLogin()">Belépés</button>
     <div class="login-err" id="loginErr">Hibás jelszó!</div>
   </div>
@@ -275,8 +275,8 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
     <button class="nav-item active" onclick="showPage('portfolio', this)">
       <span class="icon">🖼</span> Portfólió
     </button>
-    <button class="nav-item" onclick="showPage('reviews', this)" id="navReviews">
-      <span class="icon">⭐</span> Vélemények
+    <button class="nav-item" onclick="showPage('reviews', this)" id="navReviews" type="button">
+      <span class="icon">⭐</span> Vélemények <span class="badge" id="navRevBadge" style="display:none;"></span>
     </button>
     <button class="nav-item" onclick="showPage('settings', this)">
       <span class="icon">⚙️</span> Beállítások
@@ -336,9 +336,14 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
 
       <div class="settings-section">
         <h3>Katalógus linkek</h3>
+        <p class="form-hint" style="margin-bottom:1rem;">Ugyanaz, mint a főoldali admin: <code>kmmk_links</code>.</p>
         <div class="form-group">
-          <label class="form-label">EGGER / KRONOSPAN</label>
+          <label class="form-label">EGGER</label>
           <input class="form-input" type="url" id="lnkEgger" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">KRONOSPAN táblák (Boards)</label>
+          <input class="form-input" type="url" id="lnkKronoBoards" placeholder="https://...">
         </div>
         <div class="form-group">
           <label class="form-label">Feelwood</label>
@@ -352,10 +357,26 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
           <label class="form-label">Kronospan Global Collection</label>
           <input class="form-input" type="url" id="lnkKrono" placeholder="https://...">
         </div>
-        <button class="btn-save" onclick="saveLinks()">Mentés</button>
+        <button class="btn-save" type="button" onclick="saveLinks()">Linkek mentése (helyi)</button>
         <div class="save-ok" id="linksOk">✓ Linkek elmentve!</div>
       </div>
-    </div>
+
+      <div class="settings-section">
+        <h3>Közzététel (GitHub)</h3>
+        <p class="form-hint" style="margin-bottom:1rem;">Vercel: <strong>KMMK_PUBLISH_SECRET</strong>. Az <code>/api</code> csak az éles domainen fut.</p>
+        <div class="form-group">
+          <label class="form-label">Közzétételi kulcs</label>
+          <input class="form-input" type="password" id="publishSecret" placeholder="KMMK_PUBLISH_SECRET" autocomplete="new-password">
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+          <button class="btn-save" type="button" style="flex:1;min-width:160px;background:#5A5750;" onclick="saveEverythingLocal()">Csak helyi mentés</button>
+          <button class="btn-save" type="button" style="flex:1;min-width:200px;background:#2d6a4f;" onclick="saveEverythingPublish()">Mentés és közzététel</button>
+        </div>
+        <div class="login-err" id="publishErr" style="margin-top:1rem;display:none;white-space:pre-wrap;"></div>
+        <div class="save-ok" id="publishOk" style="display:none;margin-top:0.75rem;">Kész.</div>
+      </div>
+
+      <p class="form-hint" style="margin-top:0.5rem;"><a href="/" style="color:var(--gold);">← Főoldal</a></p>    </div>
 
   </div>
 </div>
@@ -391,10 +412,10 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
       <div class="form-group">
         <label class="form-label">Képek</label>
         <div class="img-upload-zone" onclick="document.getElementById('portImgIn').click()">
-          <input type="file" id="portImgIn" multiple accept="image/*" onchange="handlePortImgs(this.files)">
+          <input type="file" id="portImgIn" multiple accept="image/*">
           <div class="img-upload-icon">🖼</div>
           <p>Kattints ide vagy húzd ide a képeket</p>
-          <small>JPG, PNG, WEBP – max. 10MB / kép</small>
+          <small>JPG, PNG, WEBP – max. 5 MB / kép</small>
         </div>
         <div class="upload-progress" id="portUploadProgress">Feltöltés folyamatban...</div>
         <div class="img-preview-grid" id="portImgPreview"></div>
@@ -442,126 +463,300 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────
-const PASS = 'kmmk2024';
-const CLOUD_NAME = 'djguaaz7z';
-const UPLOAD_PRESET = 'KMMK uploads';
+// KMMK külön admin oldal — ugyanazok a tárolók / API-k, mint a főoldali /#admin
+const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/djguaaz7z/image/upload';
+const CLOUDINARY_UPLOAD_PRESET = 'KMMK uploads';
+const MAX_IMG_BYTES = 5 * 1024 * 1024;
 
-// ─── STATE ────────────────────────────────────────────────
 let portfolio = [];
 let reviews = [];
 let portEditIdx = -1;
-let revEditIdx = -1;
 let revSelectedStars = 5;
-let portCurrentImgs = []; // [{url, uploading}]
+let portCurrentImgs = [];
 
-// ─── LOGIN ────────────────────────────────────────────────
-function doLogin() {
-  const val = document.getElementById('passInput').value;
-  if (val === PASS) {
-    document.getElementById('loginWrap').style.display = 'none';
-    document.getElementById('adminWrap').style.display = 'flex';
-    loadAll();
-  } else {
-    document.getElementById('loginErr').style.display = 'block';
+function escHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/"/g, '&quot;');
+}
+
+function migratePortfolioStorage(raw) {
+  if (!Array.isArray(raw) || raw.length === 0) return [];
+  var first = raw[0];
+  if (!first || typeof first !== 'object') return [];
+  if (Array.isArray(first.images)) {
+    return raw.map(function(p) {
+      return {
+        title: String(p.title != null ? p.title : ''),
+        category: String(p.category != null ? p.category : ''),
+        description: String(p.description != null ? p.description : ''),
+        material: String(p.material != null ? p.material : ''),
+        duration: String(p.duration != null ? p.duration : ''),
+        images: (p.images || []).filter(function(x) { return typeof x === 'string' && x.trim(); })
+      };
+    });
+  }
+  if (first && (first.src != null && first.src !== '')) {
+    return raw.map(function(p) {
+      return {
+        title: String(p.title != null ? p.title : ''),
+        category: String(p.category != null ? p.category : 'Egyedi bútor'),
+        description: String(p.description != null ? p.description : ''),
+        material: String(p.material != null ? p.material : ''),
+        duration: String(p.duration != null ? p.duration : ''),
+        images: p.src ? [String(p.src)] : []
+      };
+    });
+  }
+  if (first && Object.prototype.hasOwnProperty.call(first, 'src')) {
+    return raw.map(function(p) {
+      return {
+        title: String(p.title != null ? p.title : ''),
+        category: 'Egyedi bútor',
+        description: '',
+        material: '',
+        duration: '',
+        images: p.src ? [String(p.src)] : []
+      };
+    });
+  }
+  return [];
+}
+
+function migratePendingToReviews() {
+  try {
+    var pendingRaw = localStorage.getItem('kmmk_pending_reviews');
+    if (!pendingRaw) return;
+    var pending = JSON.parse(pendingRaw || '[]');
+    if (!Array.isArray(pending) || !pending.length) return;
+    var migrated = [];
+    for (var i = 0; i < pending.length; i++) {
+      var p = pending[i];
+      if (!p) continue;
+      var nm = (p.name || '').toString().trim();
+      var lc = (p.location || '').toString().trim();
+      var tx = (p.text || '').toString().trim();
+      var st = Math.max(1, Math.min(5, parseInt(p.stars, 10) || 5));
+      if (!nm || !tx) continue;
+      migrated.push({
+        name: nm,
+        location: lc,
+        text: tx,
+        stars: st,
+        initial: (nm.charAt(0) || '?').toUpperCase()
+      });
+    }
+    if (migrated.length) {
+      reviews = migrated.concat(reviews);
+      localStorage.setItem('kmmk_reviews', JSON.stringify(reviews));
+    }
+    localStorage.removeItem('kmmk_pending_reviews');
+  } catch (e) {}
+}
+
+function loadPortfolioFromStorage() {
+  try {
+    var portAdm = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
+    var mig = migratePortfolioStorage(portAdm);
+    if (mig.length) {
+      portfolio = mig;
+      return;
+    }
+    var oi = JSON.parse(localStorage.getItem('kmmk_imgs') || '[]');
+    portfolio = migratePortfolioStorage(oi);
+  } catch (e2) {
+    portfolio = [];
   }
 }
 
-function doLogout() {
+function loadReviewsFromStorage() {
+  reviews = [];
+  try {
+    var s = localStorage.getItem('kmmk_reviews');
+    if (!s || s === '[]') return;
+    var arr = JSON.parse(s);
+    if (!Array.isArray(arr)) return;
+    for (var i = 0; i < arr.length; i++) {
+      var r = arr[i];
+      if (!r || typeof r !== 'object') continue;
+      var text = r.text != null ? String(r.text) : String(r.quote || '').replace(/^"|"$/g, '').trim();
+      var name = r.name || '';
+      var location = r.location != null ? String(r.location) : (r.loc || '');
+      var stars = Math.max(1, Math.min(5, parseInt(r.stars, 10) || 5));
+      var rid = r.id != null ? String(r.id).trim() : '';
+      var cAt = r.createdAt != null ? String(r.createdAt).trim() : '';
+      if (text || name || location) {
+        var row = {
+          name: name,
+          location: location,
+          text: text,
+          stars: stars,
+          initial: (name.charAt(0) || '?').toUpperCase()
+        };
+        if (rid) row.id = rid;
+        if (cAt) row.createdAt = cAt;
+        reviews.push(row);
+      }
+    }
+  } catch (e) {
+    reviews = [];
+  }
+}
+
+function savePortfolio() {
+  var stored = portfolio.map(function(p) {
+    return {
+      title: String(p.title || ''),
+      category: String(p.category || ''),
+      description: String(p.description || ''),
+      material: String(p.material || ''),
+      duration: String(p.duration || ''),
+      images: (p.images || []).filter(function(u) { return typeof u === 'string' && u.trim(); })
+    };
+  });
+  localStorage.setItem('kmmk_portfolio', JSON.stringify(stored));
+  var flat = [];
+  portfolio.forEach(function(p) {
+    (p.images || []).forEach(function(u) {
+      if (typeof u === 'string' && u) flat.push({ src: u, title: p.title || '' });
+    });
+  });
+  localStorage.setItem('kmmk_imgs', JSON.stringify(flat));
+  try {
+    localStorage.setItem('kmmk_portfolio_mtime', String(Date.now()));
+  } catch (e) {}
+}
+
+function saveReviews() {
+  localStorage.setItem('kmmk_reviews', JSON.stringify(reviews));
+}
+
+async function doLogin() {
+  var errEl = document.getElementById('loginErr');
+  errEl.style.display = 'none';
+  var v = String(document.getElementById('passInput').value || '').trim();
+  if (!v) {
+    errEl.textContent = 'Add meg a jelszót.';
+    errEl.style.display = 'block';
+    return;
+  }
+  try {
+    var r = await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ password: v })
+    });
+    var j = await r.json().catch(function() { return {}; });
+    if (r.ok) {
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('adminWrap').style.display = 'flex';
+      loadAll();
+      return;
+    }
+    errEl.textContent = j.error || 'Hibás jelszó vagy szerverhiba.';
+    errEl.style.display = 'block';
+  } catch (e) {
+    errEl.textContent = 'Nem érhető el a belépés (Vercel /api szükséges).';
+    errEl.style.display = 'block';
+  }
+}
+
+async function doLogout() {
+  try {
+    await fetch('/api/admin-logout', { method: 'POST', credentials: 'include' });
+  } catch (e) {}
   document.getElementById('loginWrap').style.display = 'flex';
   document.getElementById('adminWrap').style.display = 'none';
   document.getElementById('passInput').value = '';
 }
 
-// ─── NAVIGATION ───────────────────────────────────────────
-function showPage(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  btn.classList.add('active');
-  if (name === 'reviews') renderPendingReviews();
-}
-
-// ─── LOAD / SAVE ──────────────────────────────────────────
 function loadAll() {
-  try { portfolio = JSON.parse(localStorage.getItem('kmmk_portfolio_v2') || '[]'); } catch(e) { portfolio = []; }
-  try { reviews = JSON.parse(localStorage.getItem('kmmk_reviews_v2') || '[]'); } catch(e) { reviews = []; }
+  migratePendingToReviews();
+  loadPortfolioFromStorage();
+  loadReviewsFromStorage();
   renderPortCards();
   renderPubReviews();
   loadSettings();
   updatePendingBadge();
 }
 
-function savePortfolio() {
-  localStorage.setItem('kmmk_portfolio_v2', JSON.stringify(portfolio));
-}
-
-function saveReviews() {
-  localStorage.setItem('kmmk_reviews_v2', JSON.stringify(reviews));
-}
-
 function loadSettings() {
   try {
-    const ct = JSON.parse(localStorage.getItem('kmmk_ct') || '{}');
+    var ct = JSON.parse(localStorage.getItem('kmmk_ct') || '{}');
     if (ct.phone) document.getElementById('setPhone').value = ct.phone;
     if (ct.email) document.getElementById('setEmail').value = ct.email;
     if (ct.location) document.getElementById('setLocation').value = ct.location;
-    const lnks = JSON.parse(localStorage.getItem('kmmk_links') || '{}');
+    var lnks = JSON.parse(localStorage.getItem('kmmk_links') || '{}');
     if (lnks.egger) document.getElementById('lnkEgger').value = lnks.egger;
+    if (lnks.kronoboards) document.getElementById('lnkKronoBoards').value = lnks.kronoboards;
     if (lnks.feelwood) document.getElementById('lnkFeelwood').value = lnks.feelwood;
     if (lnks.poszt) document.getElementById('lnkPoszt').value = lnks.poszt;
     if (lnks.krono) document.getElementById('lnkKrono').value = lnks.krono;
-  } catch(e) {}
+    var pk = localStorage.getItem('kmmk_publish_secret');
+    if (pk) document.getElementById('publishSecret').value = pk;
+  } catch (e) {}
 }
 
 function saveSettings() {
-  const ct = {
-    phone: document.getElementById('setPhone').value,
-    email: document.getElementById('setEmail').value,
-    location: document.getElementById('setLocation').value,
+  var ct = {
+    phone: document.getElementById('setPhone').value.trim(),
+    email: document.getElementById('setEmail').value.trim(),
+    location: document.getElementById('setLocation').value.trim()
   };
   localStorage.setItem('kmmk_ct', JSON.stringify(ct));
   showOk('setOk');
 }
 
 function saveLinks() {
-  const lnks = {
-    egger: document.getElementById('lnkEgger').value,
-    feelwood: document.getElementById('lnkFeelwood').value,
-    poszt: document.getElementById('lnkPoszt').value,
-    krono: document.getElementById('lnkKrono').value,
+  var lnks = {
+    egger: document.getElementById('lnkEgger').value.trim(),
+    kronoboards: document.getElementById('lnkKronoBoards').value.trim(),
+    feelwood: document.getElementById('lnkFeelwood').value.trim(),
+    poszt: document.getElementById('lnkPoszt').value.trim(),
+    krono: document.getElementById('lnkKrono').value.trim()
   };
   localStorage.setItem('kmmk_links', JSON.stringify(lnks));
   showOk('linksOk');
 }
 
-// ─── PORTFOLIO ────────────────────────────────────────────
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'reviews') renderPendingReviews();
+}
+
 function renderPortCards() {
-  const grid = document.getElementById('portCards');
+  var grid = document.getElementById('portCards');
   if (portfolio.length === 0) {
-    grid.innerHTML = '<p style="color:var(--text-light);font-size:0.88rem;">Még nincs portfólió kártya. Hozz létre egyet!</p>';
+    grid.innerHTML = '<p style="color:var(--text-light);font-size:0.88rem;">Még nincs portfólió kártya. Adj hozzá egyet!</p>';
     return;
   }
-  grid.innerHTML = portfolio.map((p, i) => `
-    <div class="card">
-      <div class="card-img">
-        ${p.images && p.images.length > 0
-          ? `<img src="${p.images[0]}" alt="${p.title}">`
-          : `<div class="card-img-placeholder">🪵</div>`}
-      </div>
-      <div class="card-body">
-        <div class="card-title">${p.title || 'Névtelen kártya'}</div>
-        <div class="card-sub">${p.category || ''} ${p.material ? '· ' + p.material : ''}</div>
-        <div class="card-actions">
-          <button class="btn-edit" onclick="editPortCard(${i})">✏️ Szerkesztés</button>
-          <button class="btn-del" onclick="delPortCard(${i})">🗑</button>
-        </div>
-      </div>
-    </div>`).join('');
+  grid.innerHTML = portfolio.map(function(p, i) {
+    var imgs = p.images || [];
+    var first = imgs.length && typeof imgs[0] === 'string' ? imgs[0] : '';
+    var imgBlock = first
+      ? '<img src=' + JSON.stringify(first) + ' alt="">'
+      : '<div class="card-img-placeholder">\uD83E\uDEB5</div>';
+    return (
+      '<div class="card">' +
+      '<div class="card-img">' + imgBlock + '</div>' +
+      '<div class="card-body">' +
+      '<div class="card-title">' + escHtml(p.title || 'Névtelen kártya') + '</div>' +
+      '<div class="card-sub">' + escHtml(p.category || '') + (p.material ? ' · ' + escHtml(p.material) : '') + '</div>' +
+      '<div class="card-actions">' +
+      '<button type="button" class="btn-edit" onclick="editPortCard(' + i + ')">Szerkesztés</button>' +
+      '<button type="button" class="btn-del" onclick="delPortCard(' + i + ')">Törlés</button>' +
+      '</div></div></div>'
+    );
+  }).join('');
 }
 
 function openPortModal(editIdx) {
-  portEditIdx = editIdx !== undefined ? editIdx : -1;
+  portEditIdx = editIdx !== undefined && editIdx !== null ? editIdx : -1;
   portCurrentImgs = [];
   document.getElementById('portModalTitle').textContent = portEditIdx >= 0 ? 'Kártya szerkesztése' : 'Új kártya';
   document.getElementById('portTitle').value = '';
@@ -573,13 +768,15 @@ function openPortModal(editIdx) {
   document.getElementById('portSaveOk').style.display = 'none';
 
   if (portEditIdx >= 0) {
-    const p = portfolio[portEditIdx];
+    var p = portfolio[portEditIdx];
     document.getElementById('portTitle').value = p.title || '';
     document.getElementById('portCategory').value = p.category || '';
     document.getElementById('portMaterial').value = p.material || '';
     document.getElementById('portDuration').value = p.duration || '';
     document.getElementById('portDesc').value = p.description || '';
-    portCurrentImgs = (p.images || []).map(url => ({ url, uploading: false }));
+    portCurrentImgs = (p.images || []).filter(function(u) { return typeof u === 'string' && u; }).map(function(url) {
+      return { url: url, uploading: false };
+    });
     renderPortImgPreview();
   }
 
@@ -602,39 +799,49 @@ function delPortCard(i) {
 }
 
 async function handlePortImgs(files) {
-  const progress = document.getElementById('portUploadProgress');
+  var progress = document.getElementById('portUploadProgress');
+  var list = Array.from(files || []);
+  if (!list.length) return;
   progress.style.display = 'block';
-
-  for (const file of Array.from(files)) {
-    if (file.size > 10 * 1024 * 1024) { alert('Max 10MB / kép!'); continue; }
-    const idx = portCurrentImgs.length;
-    portCurrentImgs.push({ url: '', uploading: true });
-    renderPortImgPreview();
-
-    try {
-      const fd = new FormData();
-      fd.append('file', file);
-      fd.append('upload_preset', UPLOAD_PRESET);
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: fd });
-      const data = await res.json();
-      portCurrentImgs[idx] = { url: data.secure_url, uploading: false };
-    } catch(e) {
-      portCurrentImgs.splice(idx, 1);
-      alert('Feltöltési hiba: ' + e.message);
+  try {
+    for (var fi = 0; fi < list.length; fi++) {
+      var file = list[fi];
+      if (file.size > MAX_IMG_BYTES) {
+        alert('Max. 5 MB / kép.');
+        continue;
+      }
+      var idx = portCurrentImgs.length;
+      portCurrentImgs.push({ url: '', uploading: true });
+      renderPortImgPreview();
+      try {
+        var fd = new FormData();
+        fd.append('file', file);
+        fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        var res = await fetch(CLOUDINARY_UPLOAD_URL, { method: 'POST', body: fd });
+        var data = await res.json();
+        if (!res.ok) throw new Error((data.error && data.error.message) || 'Upload failed');
+        var url = (data && (data.secure_url || data.url || '')).toString().trim();
+        if (!/^https:\/\//i.test(url)) throw new Error('Nincs érvényes kép-URL.');
+        portCurrentImgs[idx] = { url: url, uploading: false };
+      } catch (err) {
+        portCurrentImgs.splice(idx, 1);
+        alert('Feltöltés: ' + (err.message || err));
+      }
+      renderPortImgPreview();
     }
-    renderPortImgPreview();
+  } finally {
+    progress.style.display = 'none';
   }
-  progress.style.display = 'none';
 }
 
 function renderPortImgPreview() {
-  document.getElementById('portImgPreview').innerHTML = portCurrentImgs.map((img, i) => `
-    <div class="img-preview-item">
-      ${img.uploading
-        ? `<div class="img-uploading">⏳ Feltöltés...</div>`
-        : `<img src="${img.url}" alt="">
-           <button class="img-preview-del" onclick="delPortImg(${i})">✕</button>`}
-    </div>`).join('');
+  document.getElementById('portImgPreview').innerHTML = portCurrentImgs.map(function(img, i) {
+    if (img.uploading) {
+      return '<div class="img-preview-item"><div class="img-uploading">Feltöltés...</div></div>';
+    }
+    return '<div class="img-preview-item"><img src=' + JSON.stringify(img.url) + ' alt="">' +
+      '<button type="button" class="img-preview-del" onclick="delPortImg(' + i + ')">\u2715</button></div>';
+  }).join('');
 }
 
 function delPortImg(i) {
@@ -643,116 +850,129 @@ function delPortImg(i) {
 }
 
 function savePortCard() {
-  const title = document.getElementById('portTitle').value.trim();
-  if (!title) { alert('A projekt neve kötelező!'); return; }
-
-  const card = {
-    title,
+  var title = document.getElementById('portTitle').value.trim();
+  if (!title) {
+    alert('A projekt neve kötelező!');
+    return;
+  }
+  if (portCurrentImgs.some(function(x) { return x.uploading; })) {
+    alert('Várj, amíg befejeződik a feltöltés.');
+    return;
+  }
+  var card = {
+    title: title,
     category: document.getElementById('portCategory').value.trim(),
     material: document.getElementById('portMaterial').value.trim(),
     duration: document.getElementById('portDuration').value.trim(),
     description: document.getElementById('portDesc').value.trim(),
-    images: portCurrentImgs.filter(i => !i.uploading).map(i => i.url),
+    images: portCurrentImgs.map(function(i) { return i.url; }).filter(Boolean)
   };
-
-  if (portEditIdx >= 0) {
-    portfolio[portEditIdx] = card;
-  } else {
-    portfolio.push(card);
-  }
-
+  if (portEditIdx >= 0) portfolio[portEditIdx] = card;
+  else portfolio.push(card);
   savePortfolio();
   renderPortCards();
   showOk('portSaveOk');
-  setTimeout(closePortModal, 1500);
+  setTimeout(closePortModal, 1200);
 }
 
-// ─── REVIEWS ──────────────────────────────────────────────
 function updatePendingBadge() {
   try {
-    const pending = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
-    const nav = document.getElementById('navReviews');
-    const existing = nav.querySelector('.badge');
-    if (existing) existing.remove();
+    var pending = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
+    var badge = document.getElementById('navRevBadge');
+    if (!badge) return;
     if (pending.length > 0) {
-      nav.innerHTML = `<span class="icon">⭐</span> Vélemények <span class="badge">${pending.length}</span>`;
+      badge.textContent = String(pending.length);
+      badge.style.display = 'inline-block';
+    } else {
+      badge.textContent = '';
+      badge.style.display = 'none';
     }
-  } catch(e) {}
+  } catch (e) {}
 }
 
 function renderPendingReviews() {
   try {
-    const pending = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
-    const section = document.getElementById('pendingSection');
-    const container = document.getElementById('pendingRevs');
-    if (pending.length === 0) { section.style.display = 'none'; return; }
+    var pending = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
+    var section = document.getElementById('pendingSection');
+    var container = document.getElementById('pendingRevs');
+    if (pending.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
     section.style.display = 'block';
-    container.innerHTML = pending.map((r, i) => `
-      <div class="rev-card-admin">
-        <div style="flex:1">
-          <div class="rev-stars-admin">${'★'.repeat(r.stars)}</div>
-          <div class="rev-text-admin">"${r.text}"</div>
-          <div class="rev-name-admin">${r.name}</div>
-          <div class="rev-loc-admin">${r.location || ''}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:0.5rem;flex-shrink:0">
-          <button class="btn-edit" onclick="approvePending(${i})" style="white-space:nowrap">✓ Jóváhagyás</button>
-          <button class="btn-del" onclick="deletePending(${i})">🗑</button>
-        </div>
-      </div>`).join('');
-  } catch(e) {}
+    container.innerHTML = pending.map(function(r, i) {
+      return (
+        '<div class="rev-card-admin">' +
+        '<div style="flex:1">' +
+        '<div class="rev-stars-admin">' + '\u2605'.repeat(r.stars || 5) + '</div>' +
+        '<div class="rev-text-admin">&quot;' + escHtml(r.text) + '&quot;</div>' +
+        '<div class="rev-name-admin">' + escHtml(r.name) + '</div>' +
+        '<div class="rev-loc-admin">' + escHtml(r.location || '') + '</div>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:0.5rem;flex-shrink:0">' +
+        '<button type="button" class="btn-edit" onclick="approvePending(' + i + ')">Jóváhagyás</button>' +
+        '<button type="button" class="btn-del" onclick="deletePending(' + i + ')">Törlés</button>' +
+        '</div></div>'
+      );
+    }).join('');
+  } catch (e) {}
 }
 
 function approvePending(i) {
   try {
-    const pending = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
-    const r = pending.splice(i, 1)[0];
-    reviews.push(r);
-    localStorage.setItem('kmmk_pending_reviews', JSON.stringify(pending));
-    saveReviews();
-    renderPendingReviews();
-    renderPubReviews();
-    updatePendingBadge();
-  } catch(e) {}
+    var pending = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
+    var r = pending.splice(i, 1)[0];
+    if (r) {
+      r.initial = (String(r.name || '').charAt(0) || '?').toUpperCase();
+      reviews.push(r);
+      localStorage.setItem('kmmk_pending_reviews', JSON.stringify(pending));
+      saveReviews();
+      renderPendingReviews();
+      renderPubReviews();
+      updatePendingBadge();
+    }
+  } catch (e) {}
 }
 
 function deletePending(i) {
   try {
-    const pending = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
+    var pending = JSON.parse(localStorage.getItem('kmmk_pending_reviews') || '[]');
     pending.splice(i, 1);
     localStorage.setItem('kmmk_pending_reviews', JSON.stringify(pending));
     renderPendingReviews();
     updatePendingBadge();
-  } catch(e) {}
+  } catch (e) {}
 }
 
 function renderPubReviews() {
-  const container = document.getElementById('pubRevs');
+  var container = document.getElementById('pubRevs');
   if (reviews.length === 0) {
-    container.innerHTML = '<p style="color:var(--text-light);font-size:0.88rem;margin-bottom:1rem;">Még nincs közzétett vélemény.</p>';
+    container.innerHTML = '<p style="color:var(--text-light);font-size:0.88rem;margin-bottom:1rem;">Még nincs közzétett vélemény (localStorage).</p>';
     return;
   }
-  container.innerHTML = reviews.map((r, i) => `
-    <div class="rev-card-admin">
-      <div style="flex:1">
-        <div class="rev-stars-admin">${'★'.repeat(r.stars || 5)}</div>
-        <div class="rev-text-admin">"${r.text}"</div>
-        <div class="rev-name-admin">${r.name}</div>
-        <div class="rev-loc-admin">${r.location || ''}</div>
-      </div>
-      <button class="btn-del" onclick="delReview(${i})">🗑</button>
-    </div>`).join('');
+  container.innerHTML = reviews.map(function(r, i) {
+    return (
+      '<div class="rev-card-admin">' +
+      '<div style="flex:1">' +
+      '<div class="rev-stars-admin">' + '\u2605'.repeat(r.stars || 5) + '</div>' +
+      '<div class="rev-text-admin">&quot;' + escHtml(r.text) + '&quot;</div>' +
+      '<div class="rev-name-admin">' + escHtml(r.name) + '</div>' +
+      '<div class="rev-loc-admin">' + escHtml(r.location || '') + '</div>' +
+      '</div>' +
+      '<button type="button" class="btn-del" onclick="delReview(' + i + ')">Törlés</button>' +
+      '</div>'
+    );
+  }).join('');
 }
 
 function openRevModal() {
-  revEditIdx = -1;
   revSelectedStars = 5;
   document.getElementById('revModalTitle').textContent = 'Új vélemény';
   document.getElementById('revName').value = '';
   document.getElementById('revLocation').value = '';
   document.getElementById('revText').value = '';
   document.getElementById('revSaveOk').style.display = 'none';
-  document.querySelectorAll('#revStarSelect span').forEach((s, i) => {
+  document.querySelectorAll('#revStarSelect span').forEach(function(s, i) {
     s.classList.toggle('active', i < 5);
   });
   document.getElementById('revModal').classList.add('open');
@@ -766,28 +986,29 @@ function closeRevModal() {
 
 function selectRevStar(n) {
   revSelectedStars = n;
-  document.querySelectorAll('#revStarSelect span').forEach((s, i) => {
+  document.querySelectorAll('#revStarSelect span').forEach(function(s, i) {
     s.classList.toggle('active', i < n);
   });
 }
 
 function saveReview() {
-  const name = document.getElementById('revName').value.trim();
-  const text = document.getElementById('revText').value.trim();
-  if (!name || !text) { alert('A név és a vélemény szövege kötelező!'); return; }
-
-  const rev = {
-    name,
+  var name = document.getElementById('revName').value.trim();
+  var text = document.getElementById('revText').value.trim();
+  if (!name || !text) {
+    alert('A név és a vélemény szövege kötelező!');
+    return;
+  }
+  reviews.push({
+    name: name,
     location: document.getElementById('revLocation').value.trim(),
-    text,
+    text: text,
     stars: revSelectedStars,
-  };
-
-  reviews.push(rev);
+    initial: (name.charAt(0) || '?').toUpperCase()
+  });
   saveReviews();
   renderPubReviews();
   showOk('revSaveOk');
-  setTimeout(closeRevModal, 1500);
+  setTimeout(closeRevModal, 1200);
 }
 
 function delReview(i) {
@@ -797,19 +1018,144 @@ function delReview(i) {
   renderPubReviews();
 }
 
-// ─── HELPERS ──────────────────────────────────────────────
 function showOk(id) {
-  const el = document.getElementById(id);
+  var el = document.getElementById(id);
+  if (!el) return;
   el.style.display = 'block';
-  setTimeout(() => el.style.display = 'none', 3000);
+  setTimeout(function() { el.style.display = 'none'; }, 3000);
 }
 
-// Close modals on backdrop click
-document.getElementById('portModal').addEventListener('click', e => {
+function showPublishErr(msg) {
+  var el = document.getElementById('publishErr');
+  if (!el) return;
+  el.textContent = msg || '';
+  el.style.display = msg ? 'block' : 'none';
+}
+
+function showPublishOk(msg) {
+  var el = document.getElementById('publishOk');
+  if (!el) return;
+  el.textContent = msg || 'Kész.';
+  el.style.display = 'block';
+  setTimeout(function() { el.style.display = 'none'; }, 5000);
+}
+
+function persistAllLocal() {
+  savePortfolio();
+  saveReviews();
+  var ct = {
+    phone: document.getElementById('setPhone').value.trim(),
+    email: document.getElementById('setEmail').value.trim(),
+    location: document.getElementById('setLocation').value.trim()
+  };
+  localStorage.setItem('kmmk_ct', JSON.stringify(ct));
+  var lnks = {
+    egger: document.getElementById('lnkEgger').value.trim(),
+    kronoboards: document.getElementById('lnkKronoBoards').value.trim(),
+    feelwood: document.getElementById('lnkFeelwood').value.trim(),
+    poszt: document.getElementById('lnkPoszt').value.trim(),
+    krono: document.getElementById('lnkKrono').value.trim()
+  };
+  localStorage.setItem('kmmk_links', JSON.stringify(lnks));
+  var pub = document.getElementById('publishSecret').value.trim();
+  if (pub) {
+    try { localStorage.setItem('kmmk_publish_secret', pub); } catch (e) {}
+  }
+}
+
+function saveEverythingLocal() {
+  showPublishErr('');
+  persistAllLocal();
+  showPublishOk('Helyi mentés kész (ugyanazok a kulcsok, mint a főoldalon).');
+}
+
+async function readFetchErrMsg(res) {
+  var t = '';
+  try { t = await res.text(); } catch (e) { return 'HTTP ' + res.status; }
+  try {
+    var j = JSON.parse(t);
+    return j.error || j.detail || t.slice(0, 320);
+  } catch (e2) {
+    if (res.status === 404) return 'Nincs /api (404) — csak Vercelen.';
+    return (t && t.slice(0, 320)) || ('HTTP ' + res.status);
+  }
+}
+
+function portfolioPayloadForApi() {
+  return portfolio.map(function(p) {
+    var urls = (p.images || []).filter(function(x) { return typeof x === 'string' && x.trim(); });
+    return {
+      title: String(p.title || ''),
+      category: String(p.category || ''),
+      description: String(p.description || ''),
+      material: String(p.material || ''),
+      duration: String(p.duration || ''),
+      images: urls
+    };
+  }).filter(function(it) { return it.images.length > 0; });
+}
+
+async function saveEverythingPublish() {
+  showPublishErr('');
+  persistAllLocal();
+  var publishKey = document.getElementById('publishSecret').value.trim();
+  if (!publishKey) {
+    try { publishKey = localStorage.getItem('kmmk_publish_secret') || ''; } catch (e) {}
+  }
+  if (!publishKey) {
+    showPublishErr('Add meg a közzétételi kulcsot (KMMK_PUBLISH_SECRET).');
+    return;
+  }
+  var items = portfolioPayloadForApi();
+  var pubMsgs = [];
+  if (items.length > 0) {
+    try {
+      var res = await fetch('/api/publish-portfolio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: publishKey, items: items })
+      });
+      if (!res.ok) throw new Error(await readFetchErrMsg(res));
+      pubMsgs.push('portfólió');
+    } catch (e) {
+      showPublishErr('Portfólió: ' + (e.message || String(e)));
+    }
+  }
+  try {
+    var resRv = await fetch('/api/publish-reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: publishKey, items: reviews })
+    });
+    if (!resRv.ok) throw new Error(await readFetchErrMsg(resRv));
+    pubMsgs.push('vélemények');
+  } catch (eRv) {
+    var extra = ' Vélemények: ' + (eRv.message || String(eRv));
+    showPublishErr((document.getElementById('publishErr').textContent || '') + extra);
+  }
+  if (pubMsgs.length === 2) {
+    try { localStorage.removeItem('kmmk_portfolio_mtime'); } catch (e) {}
+    showPublishOk('Portfólió és vélemények közzétéve.');
+  } else if (pubMsgs.length === 1) {
+    if (pubMsgs[0] === 'portfólió') {
+      try { localStorage.removeItem('kmmk_portfolio_mtime'); } catch (e2) {}
+    }
+    showPublishOk('Közzétéve: ' + pubMsgs[0] + '.');
+  } else if (!document.getElementById('publishErr').textContent) {
+    showPublishOk('Helyi mentés kész.');
+  }
+}
+
+document.getElementById('portModal').addEventListener('click', function(e) {
   if (e.target === document.getElementById('portModal')) closePortModal();
 });
-document.getElementById('revModal').addEventListener('click', e => {
+document.getElementById('revModal').addEventListener('click', function(e) {
   if (e.target === document.getElementById('revModal')) closeRevModal();
+});
+
+document.getElementById('portImgIn').addEventListener('change', function() {
+  handlePortImgs(this.files);
+  this.value = '';
 });
 </script>
 </body>
