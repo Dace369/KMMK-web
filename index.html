@@ -1420,7 +1420,7 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       <div id="admLogin">
         <div class="adm-sec">
           <div class="adm-sec-title">Bejelentkezés</div>
-          <input class="ai" type="password" id="admPass" placeholder="" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
+          <input class="ai" type="password" id="admPass" placeholder="Admin jelszó (Vercel: KMMK_ADMIN_PASSWORD)" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
           <button class="btn-save" onclick="doLogin()">Belépés</button>
           <div class="adm-err" id="admErr">Hibás jelszó vagy nincs kapcsolat a szerverrel.</div>
         </div>
@@ -1430,7 +1430,7 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
           <div class="adm-port-workspace">
             <div class="adm-port-workspace-head">
               <h3>Portfólió</h3>
-              <p>Minden projekt egy blokk: <strong>cím</strong> (kártya főcíme), <strong>kategória</strong> (alcím), <strong>leírás</strong> (a nagy kártyában), <strong>alapanyagok</strong>, <strong>elkészítési idő</strong>, <strong>képek</strong> — ugyanazok, mint a weboldalon. <strong>Először jelentkezz be</strong> (jelszó); a mezők és a feltöltés a szöveg alatt, a szürke panelben jelennek meg — <strong>görgess le</strong>, ha nem látod. Ha frissítettél az oldalt, a munkamenet visszaáll, ha még érvényes a süti.</p>
+              <p>Minden projekt egy blokk: <strong>cím</strong> (kártya főcíme), <strong>kategória</strong> (alcím), <strong>leírás</strong> (a nagy kártyában), <strong>alapanyagok</strong>, <strong>elkészítési idő</strong>, <strong>képek</strong> — ugyanazok, mint a weboldalon. A <strong>Bejelentkezés</strong> lapon add meg a jelszót; belépés után itt, lent a <strong>szürke panelben</strong> jelennek meg a mezők és a feltöltés — <strong>görgess le</strong>, ha nem látod.</p>
             </div>
             <input type="file" id="portfolioGlobalFileIn" multiple accept="image/*" style="display:none" onchange="handlePortfolioGlobalFiles(this.files)">
             <input type="file" id="portfolioQuickFileIn" multiple accept="image/*" style="display:none" onchange="handleQuickPortfolioFiles(this.files)">
@@ -1707,23 +1707,11 @@ function setAdminViewApp() {
   if (contentEl) contentEl.removeAttribute('hidden');
 }
 
-async function tryRestoreAdminSession() {
-  try {
-    var r = await fetch('/api/admin-session', { credentials: 'include', cache: 'no-store' });
-    var j = await r.json().catch(function() { return {}; });
-    if (r.ok && j && j.ok) {
-      setAdminViewApp();
-      loadAdmData();
-    }
-  } catch (e) {}
-}
-
 function openAdm() {
   var errEl = document.getElementById('admErr');
   setAdminViewLogin();
   if (errEl) errEl.style.display = 'none';
   document.getElementById('admOverlay').classList.add('open');
-  tryRestoreAdminSession();
 }
 function closeAdm() { document.getElementById('admOverlay').classList.remove('open'); }
 document.getElementById('admOverlay').addEventListener('click', e => { if(e.target.id==='admOverlay') closeAdm(); });
@@ -1772,18 +1760,24 @@ async function adminLogout() {
   closeAdm();
 }
 
+function admSetVal(id, val) {
+  if (val == null || val === '') return;
+  var el = document.getElementById(id);
+  if (el) el.value = val;
+}
+
 function loadAdmData() {
   try {
-    const lnks = JSON.parse(localStorage.getItem('kmmk_links') || '{}');
-    if(lnks.egger) document.getElementById('lnkEgger').value = lnks.egger;
-    if(lnks.kronoboards) document.getElementById('lnkKronoBoards').value = lnks.kronoboards;
-    if(lnks.feelwood) document.getElementById('lnkFeelwood').value = lnks.feelwood;
-    if(lnks.poszt) document.getElementById('lnkPoszt').value = lnks.poszt;
-    if(lnks.krono) document.getElementById('lnkKrono').value = lnks.krono;
-    const ct = JSON.parse(localStorage.getItem('kmmk_ct') || '{}');
-    if(ct.phone) document.getElementById('admPhone').value = ct.phone;
-    if(ct.email) document.getElementById('admEmail').value = ct.email;
-  } catch(e) {}
+    var lnks = JSON.parse(localStorage.getItem('kmmk_links') || '{}');
+    admSetVal('lnkEgger', lnks.egger);
+    admSetVal('lnkKronoBoards', lnks.kronoboards);
+    admSetVal('lnkFeelwood', lnks.feelwood);
+    admSetVal('lnkPoszt', lnks.poszt);
+    admSetVal('lnkKrono', lnks.krono);
+    var ct = JSON.parse(localStorage.getItem('kmmk_ct') || '{}');
+    admSetVal('admPhone', ct.phone);
+    admSetVal('admEmail', ct.email);
+  } catch (e) {}
   try {
     var portAdm = JSON.parse(localStorage.getItem('kmmk_portfolio') || '[]');
     var mig = migratePortfolioStorage(portAdm);
@@ -1795,15 +1789,26 @@ function loadAdmData() {
   } catch (e2) { portfolioItems = []; }
   try {
     var pk = localStorage.getItem('kmmk_publish_secret');
-    var pke = document.getElementById('admPublishKey');
-    if (pk && pke) pke.value = pk;
+    admSetVal('admPublishKey', pk);
   } catch (ePk) {}
   var pr = loadParsedReviews();
   if (pr) { reviews = pr.slice(); hasSavedReviews = true; }
   else { reviews = REVIEWS_DEFAULT.slice(); hasSavedReviews = false; }
   if (!portfolioItems.length) portfolioItems.push(newEmptyPortfolioItem());
-  renderPortfolioEditor();
-  renderAdmReviews();
+  try {
+    renderPortfolioEditor();
+  } catch (eR) {
+    console.error('renderPortfolioEditor', eR);
+    var pe = document.getElementById('portfolioEditor');
+    if (pe) {
+      pe.innerHTML = '<div class="adm-err" style="display:block;">Portfólió UI hiba. F12 konzol. ' + String(eR && eR.message ? eR.message : eR).replace(/</g, '&lt;') + '</div>';
+    }
+  }
+  try {
+    renderAdmReviews();
+  } catch (eRev) {
+    console.error('renderAdmReviews', eRev);
+  }
 }
 
 function escRevHtml(s) {
