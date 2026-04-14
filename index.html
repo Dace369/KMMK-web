@@ -583,7 +583,9 @@ footer { background: var(--teal); padding: var(--f5); }
 .adm-port-block-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-mid); margin: 0 0 var(--f2); font-weight: 600; }
 .adm-port-two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--f3); }
 @media (max-width: 600px) { .adm-port-two { grid-template-columns: 1fr; } }
-#admContent .adm-port-one-sheet .ai { display: block; width: 100%; opacity: 1; visibility: visible; min-height: 2.75rem; }
+#admContent .adm-port-one-sheet .ai,
+#admContent .adm-port-item input.ai,
+#admContent .adm-port-item textarea.ai { display: block; width: 100%; opacity: 1; visibility: visible; min-height: 2.75rem; box-sizing: border-box; }
 #admContent .adm-port-item textarea.ai { min-height: 5.5rem; }
 .adm-port-global-upload { margin-bottom: var(--f4) !important; }
 .adm-port-thumbs { display: flex; flex-wrap: wrap; gap: var(--f2); margin: var(--f2) 0; }
@@ -1705,11 +1707,23 @@ function setAdminViewApp() {
   if (contentEl) contentEl.removeAttribute('hidden');
 }
 
+async function tryRestoreAdminSession() {
+  try {
+    var r = await fetch('/api/admin-session', { credentials: 'include', cache: 'no-store' });
+    var j = await r.json().catch(function() { return {}; });
+    if (r.ok && j && j.ok) {
+      setAdminViewApp();
+      loadAdmData();
+    }
+  } catch (e) {}
+}
+
 function openAdm() {
   var errEl = document.getElementById('admErr');
   setAdminViewLogin();
   if (errEl) errEl.style.display = 'none';
   document.getElementById('admOverlay').classList.add('open');
+  tryRestoreAdminSession();
 }
 function closeAdm() { document.getElementById('admOverlay').classList.remove('open'); }
 document.getElementById('admOverlay').addEventListener('click', e => { if(e.target.id==='admOverlay') closeAdm(); });
@@ -2068,6 +2082,7 @@ function renderPortfolioEditor() {
     '<span class="uz-icon" aria-hidden="true">\uD83D\uDDBC</span>' +
     '<p style="margin:0;font-size:0.88rem;color:var(--text-dark);">Képek feltöltése</p>' +
     '<small style="display:block;margin-top:0.35rem;">Kattints ide — <strong>több kép</strong> is kijelölhető egyszerre (Ctrl+klikk). A képek az <strong>utolsó</strong> projekthez kerülnek; ha még nincs elem, létrejön egy. Max. 5 MB / kép.</small></div>';
+  try {
   if (!portfolioItems.length) {
     root.innerHTML = '<div class="adm-port-one-sheet">' + uploadTop +
       '<p class="adm-port-prevhint" style="margin:0;">Még nincs projekt. Tölts fel képet fent, vagy kattints az „Új elem” gombra — utána minden mezőt kitölthetsz.</p></div>';
@@ -2117,6 +2132,11 @@ function renderPortfolioEditor() {
       '</div>';
   }).join('');
   root.innerHTML = '<div class="adm-port-one-sheet">' + uploadTop + '<div class="adm-port-cards-stack">' + blocks + '</div></div>';
+  } catch (err) {
+    console.error('renderPortfolioEditor', err);
+    root.innerHTML = '<div class="adm-err" style="display:block;margin:0;">A portfólió szerkesztő nem töltődött be. Frissíts (Ctrl+F5), nyisd meg a konzolt (F12), és ellenőrizd, hogy be vagy-e jelentkezve. Részlet: ' +
+      String(err && err.message ? err.message : err).replace(/</g, '&lt;') + '</div>';
+  }
 }
 
 function syncPortfolioItemsFromDom() {
