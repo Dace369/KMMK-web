@@ -464,8 +464,7 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
 
 <script>
 // KMMK külön admin oldal — ugyanazok a tárolók / API-k, mint a főoldali /#admin
-const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/djguaaz7z/image/upload';
-const CLOUDINARY_UPLOAD_PRESET = 'KMMK uploads';
+// Képfeltöltés: POST /api/cloudinary-upload (aláírt, admin süti szükséges — CLOUDINARY_API_SECRET a Vercelen)
 const MAX_IMG_BYTES = 5 * 1024 * 1024;
 
 let portfolio = [];
@@ -816,10 +815,9 @@ async function handlePortImgs(files) {
       try {
         var fd = new FormData();
         fd.append('file', file);
-        fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-        var res = await fetch(CLOUDINARY_UPLOAD_URL, { method: 'POST', body: fd });
+        var res = await fetch('/api/cloudinary-upload', { method: 'POST', body: fd, credentials: 'include' });
         var data = await res.json();
-        if (!res.ok) throw new Error((data.error && data.error.message) || 'Upload failed');
+        if (!res.ok) throw new Error(data.error || data.detail || 'Upload failed');
         var url = (data && (data.secure_url || data.url || '')).toString().trim();
         if (!/^https:\/\//i.test(url)) throw new Error('Nincs érvényes kép-URL.');
         portCurrentImgs[idx] = { url: url, uploading: false };

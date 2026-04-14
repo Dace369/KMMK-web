@@ -1570,8 +1570,6 @@ window.ensurePortCardImageNav = function(card) {
 };
 
 // ADMIN – belépés: POST /api/admin-login, HttpOnly süti
-const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/djguaaz7z/image/upload';
-const CLOUDINARY_UPLOAD_PRESET = 'KMMK uploads';
 let portfolioItems = [];
 let imgUploadSeq = 0;
 var portfolioUploadTargetIndex = -1;
@@ -2029,11 +2027,10 @@ function handlePortfolioItemFiles(itemIndex, files) {
     renderPortfolioEditor();
     var fd = new FormData();
     fd.append('file', f);
-    fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    fetch(CLOUDINARY_UPLOAD_URL, { method: 'POST', body: fd })
+    fetch('/api/cloudinary-upload', { method: 'POST', body: fd, credentials: 'include' })
       .then(function(res) {
         return res.json().then(function(j) {
-          if (!res.ok) throw new Error(j.error && j.error.message ? j.error.message : 'Upload failed');
+          if (!res.ok) throw new Error(j.error || j.detail || (j.message ? j.message : 'Upload failed'));
           return j;
         });
       })
@@ -2044,7 +2041,7 @@ function handlePortfolioItemFiles(itemIndex, files) {
         if (slot === -1) return;
         var url = (data && (data.secure_url || data.url || '')).toString().trim();
         if (!/^https:\/\//i.test(url)) {
-          throw new Error((data && data.error && data.error.message) ? data.error.message : 'Nincs érvényes kép-URL a Cloudinary válaszban. Ellenőrizd az upload presetet (unsigned, helyes cloud name).');
+          throw new Error((data && data.error && data.error.message) ? data.error.message : 'Nincs érvényes kép-URL. Ellenőrizd a Vercel CLOUDINARY_API_SECRET / CLOUDINARY_API_KEY beállításokat, vagy a Cloudinary presetet.');
         }
         portfolioItems[itemIndex].images[slot] = url;
         renderPortfolioEditor();
