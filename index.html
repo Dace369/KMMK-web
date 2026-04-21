@@ -762,6 +762,144 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
   background: rgba(15,33,43,0.08);
   padding: var(--f3); border-radius: var(--r-md);
 }
+
+/* MATERIALS REDESIGN */
+#materials {
+  background: var(--off-white);
+  padding: var(--f6) var(--f5);
+}
+.mat-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto var(--f5);
+}
+.mat-header-label {
+  font-size: 0.72rem; text-transform: uppercase;
+  letter-spacing: 0.2em; color: var(--gold);
+  margin-bottom: var(--f2);
+}
+.mat-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 400; color: var(--text-dark);
+  line-height: 1.2; margin-bottom: var(--f2);
+}
+.mat-header-sub {
+  font-size: 0.88rem; line-height: 1.618;
+  color: var(--text-mid);
+}
+.mat-brands {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--f4);
+  max-width: 1000px;
+  margin: 0 auto var(--f5);
+}
+.mat-brand-card {
+  background: white;
+  border-radius: var(--r-xl);
+  padding: var(--f4);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: var(--f3);
+}
+.mat-brand-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+}
+.mat-brand-top {
+  display: flex;
+  align-items: center;
+  gap: var(--f3);
+  padding-bottom: var(--f3);
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+.mat-brand-icon {
+  width: 52px; height: 52px;
+  background: var(--off-white);
+  border-radius: var(--r-lg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; flex-shrink: 0;
+}
+.mat-brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600;
+  color: var(--text-dark); margin-bottom: 0.2rem;
+}
+.mat-brand-tagline {
+  font-size: 0.78rem; color: var(--text-light);
+}
+.mat-brand-desc {
+  font-size: 0.87rem; line-height: 1.618;
+  color: var(--text-mid);
+}
+.mat-brand-tags {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+}
+.mat-brand-tags span {
+  background: var(--off-white);
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--r-pill);
+  font-size: 0.72rem;
+  color: var(--text-mid);
+  letter-spacing: 0.05em;
+}
+.mat-brand-links {
+  display: flex;
+  flex-direction: column; gap: 0.75rem;
+  margin-top: auto;
+}
+.mat-link-primary {
+  display: inline-block;
+  background: var(--black); color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--r-pill);
+  font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.3s;
+  text-align: center;
+}
+.mat-link-primary:hover { background: var(--gold); }
+.mat-link-secondary {
+  display: inline-block;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  color: var(--text-mid);
+  padding: 0.65rem 1.5rem;
+  border-radius: var(--r-pill);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: all 0.3s;
+  text-align: center;
+}
+.mat-link-secondary:hover { border-color: var(--gold); color: var(--gold); }
+.mat-note {
+  max-width: 700px; margin: 0 auto;
+  background: var(--teal);
+  border-radius: var(--r-xl);
+  padding: var(--f4) var(--f5);
+  display: flex; align-items: center; gap: var(--f4);
+  flex-wrap: wrap;
+}
+.mat-note-icon { font-size: 1.5rem; flex-shrink: 0; }
+.mat-note p {
+  font-size: 0.88rem; line-height: 1.618;
+  color: rgba(255,255,255,0.7); flex: 1;
+}
+.mat-note .btn-dark {
+  background: white; color: var(--black);
+  white-space: nowrap; flex-shrink: 0;
+}
+.mat-note .btn-dark:hover { background: var(--gold); color: white; }
+
+@media (max-width: 768px) {
+  .mat-brands { grid-template-columns: 1fr; }
+  .mat-note { flex-direction: column; text-align: center; }
+}
 </style>
 </head>
 <body>
@@ -808,6 +946,20 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       mat3_tag: 'Lekerekített élű munkalapok', mat3_title: 'Posztforming munkalapok',
       mat3_text: 'Klasszikus, lekerekített élű munkalapok nagy tartósságú és könnyen tisztítható felülettel. Letisztult, tartós megoldás.',
       mat_cta: 'Katalógus megtekintése',
+      mat_label: 'Anyagválasztás',
+      mat_header_title: 'Válassza ki az Önnek<br>megfelelő alapanyagot',
+      mat_header_sub: 'Prémium gyártók, széles választék – minden projekthez megtaláljuk a tökéletes megoldást.',
+      egger_tag: 'Európa vezető laminált bútorlapja',
+      egger_desc: 'Az EGGER lapok kiemelkedő tartóssággal, gazdag dekórválasztékkal és precíz felületi minőséggel rendelkeznek. Ideális konyhabútorokhoz, szekrénysorokhoz és irodabútorokhoz.',
+      tag_durable: 'Tartós', tag_wide: 'Széles választék', tag_eco: 'Környezetbarát', tag_eu: 'EU gyártás',
+      mat_browse: 'Kollekció böngészése →',
+      mat_catalog: 'EDC 2020-22 katalógus',
+      krono_tag: 'Prémium kollekció, modern trendek',
+      krono_desc: 'A Kronospan Global Collection a legújabb belsőépítészeti trendeket követi – fás, beton, semleges, matt és fényes felületekkel. Tökéletes választás, ha egyedi, modern esztétikát keres.',
+      tag_modern: 'Modern design', tag_matte: 'Matt & fényes', tag_wood: 'Fa hatású', tag_concrete: 'Beton hatású',
+      mat_global: 'Global Collection 3.0',
+      mat_note: 'Nem tudja melyiket válassza? Segítünk megtalálni a tökéletes anyagot az elképzeléséhez – vegye fel velünk a kapcsolatot!',
+      mat_contact_btn: 'Tanácsadást kérek',
       krono_title: 'Kronospan Global Collection', krono_text: 'A legújabb trendeket követő bútorlapok széles szín- és dekórkínálattal – fás, beton, semleges, matt és fényes felületekkel.',
       krono_btn: 'Kollekció megtekintése',
       rev_title: 'Mit mondanak a megrendelőink?', rev_sub: 'Röviden arról, milyen velünk együtt dolgozni.',
@@ -837,7 +989,22 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       mat1_tag: 'Laminátové nábytokové dosky', mat1_title: 'Vyber si štýl a povrch svojho nábytku',
       mat2_tag: 'Prémiové pracovné dosky s rovnou hranou', mat2_title: 'Feelwood prémiové pracovné dosky s rovnou hranou',
       mat3_tag: 'Pracovné dosky so zaoblenou hranou', mat3_title: 'Postforming pracovné dosky',
-      mat_cta: 'Zobraziť katalóg', krono_title: 'Kronospan Global Collection', krono_btn: 'Zobraziť kolekciu',
+      mat_cta: 'Zobraziť katalóg',
+      mat_label: 'Výber materiálov',
+      mat_header_title: 'Vyberte si materiál,<br>ktorý vám vyhovuje',
+      mat_header_sub: 'Prémioví výrobcovia, široká ponuka – pre každý projekt nájdeme perfektné riešenie.',
+      egger_tag: 'Vedúca európska laminovaná nábytková doska',
+      egger_desc: 'Dosky EGGER vynikajú odolnosťou, bohatým výberom dekorov a presnou kvalitou povrchu. Ideálne do kuchýň, obývacích stien a kancelárskeho nábytku.',
+      tag_durable: 'Odolné', tag_wide: 'Široký výber', tag_eco: 'Ekologické', tag_eu: 'Výroba v EÚ',
+      mat_browse: 'Prezrieť kolekciu →',
+      mat_catalog: 'Katalóg EDC 2020-22',
+      krono_tag: 'Prémiová kolekcia, moderné trendy',
+      krono_desc: 'Kolekcia Kronospan Global Collection sleduje najnovšie trendy interiérového dizajnu – drevené, betónové, neutrálne, matné a lesklé povrchy. Perfektná voľba pre jedinečnú modernú estetiku.',
+      tag_modern: 'Moderný dizajn', tag_matte: 'Matné a lesklé', tag_wood: 'Drevený vzhľad', tag_concrete: 'Betónový vzhľad',
+      mat_global: 'Global Collection 3.0',
+      mat_note: 'Neviete, čo si vybrať? Pomôžeme nájsť perfektný materiál podľa vašej predstavy – kontaktujte nás!',
+      mat_contact_btn: 'Chcem konzultáciu',
+      krono_title: 'Kronospan Global Collection', krono_btn: 'Zobraziť kolekciu',
       rev_title: 'Čo hovoria naši zákazníci?', rev_sub: 'Stručne o tom, aké je s nami spolupracovať.',
       faq_label: 'Otázky', faq_title: 'Zistite všetko<br>predtým, ako nás kontaktujete.',
       faq1_q: 'Ako vás môžem kontaktovať? <span class="faq-icon">+</span>', faq1_a: 'Môžete nás kedykoľvek osloviť cez kontaktný formulár na stránke, e-mailom alebo telefonicky. Zvyčajne odpovedáme do 24 hodín.',
@@ -866,7 +1033,22 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       mat1_tag: 'Laminated boards', mat1_title: 'Choose your furniture style and surface', mat1_text: 'Explore colours, wood décors and surfaces, and find the style that fits your home best.',
       mat2_tag: 'Premium worktops with straight edge', mat2_title: 'Feelwood premium straight-edge worktops', mat2_text: 'Worktops with natural wood appearance. Natural surface, modern aesthetics, custom design.',
       mat3_tag: 'Worktops with rounded edge', mat3_title: 'Postforming worktops', mat3_text: 'Classic worktops with rounded edge, highly durable and easy to clean. Clean, durable solution.',
-      mat_cta: 'View catalogue', krono_title: 'Kronospan Global Collection', krono_text: 'Board collections following the latest trends with a wide range of colours and decors – wood, concrete, neutral, matt and glossy surfaces.', krono_btn: 'View collection',
+      mat_cta: 'View catalogue',
+      mat_label: 'Material selection',
+      mat_header_title: 'Choose the material<br>that suits you',
+      mat_header_sub: 'Premium manufacturers, wide range – we find the perfect solution for every project.',
+      egger_tag: 'Europe\'s leading laminated furniture board',
+      egger_desc: 'EGGER boards offer outstanding durability, rich décor choice and precise surface quality. Ideal for kitchens, wall units and office furniture.',
+      tag_durable: 'Durable', tag_wide: 'Wide range', tag_eco: 'Eco-friendly', tag_eu: 'EU manufacturing',
+      mat_browse: 'Browse collection →',
+      mat_catalog: 'EDC 2020-22 catalogue',
+      krono_tag: 'Premium collection, modern trends',
+      krono_desc: 'Kronospan Global Collection follows the latest interior design trends – wood, concrete, neutral, matt and glossy surfaces. Perfect if you want a distinctive modern look.',
+      tag_modern: 'Modern design', tag_matte: 'Matt & glossy', tag_wood: 'Wood effect', tag_concrete: 'Concrete effect',
+      mat_global: 'Global Collection 3.0',
+      mat_note: 'Not sure which to choose? We\'ll help you find the perfect material for your vision – get in touch!',
+      mat_contact_btn: 'Request advice',
+      krono_title: 'Kronospan Global Collection', krono_text: 'Board collections following the latest trends with a wide range of colours and decors – wood, concrete, neutral, matt and glossy surfaces.', krono_btn: 'View collection',
       rev_title: 'What do our customers say?', rev_sub: 'Briefly about what it\'s like to work with us.',
       faq_label: 'Questions', faq_title: 'Learn everything<br>before you get in touch.',
       faq1_q: 'How can I get in touch? <span class="faq-icon">+</span>', faq1_a: 'You can reach us anytime via the contact form on the site, by email or phone. We usually respond within 24 hours.',
@@ -1224,43 +1406,64 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
 
 <!-- MATERIALS -->
 <section id="materials">
-  <div class="mat-row">
-    <div class="mat-img-wrap">
-      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="EGGER KRONOSPAN">
-    </div>
-    <div class="mat-body">
-      <p class="mat-tag" data-i18n="mat1_tag">Laminált bútorlapok</p>
-      <h3 data-i18n="mat1_title">Válaszd ki a bútorod stílusát és felületét</h3>
-      <p data-i18n="mat1_text">Fedezd fel a különböző színeket, fa mintákat és felületeket, és találd meg azt a stílust, ami leginkább illik az otthonodhoz.</p>
-      <div class="mat-cta-row" role="group" aria-label="Katalógusok">
-        <a href="https://www.drevina.sk/egger" class="mat-cta" id="eggerLink">EGGER katalógus</a>
-        <a href="https://www.drevina.sk/kronospan" class="mat-cta mat-cta-alt" id="kronospanBoardsLink">KRONOSPAN katalógus</a>
+  <div class="mat-header">
+    <p class="mat-header-label" data-i18n="mat_label">Anyagválasztás</p>
+    <h2 data-i18n="mat_header_title">Válassza ki az Önnek<br>megfelelő alapanyagot</h2>
+    <p class="mat-header-sub" data-i18n="mat_header_sub">Prémium gyártók, széles választék – minden projekthez megtaláljuk a tökéletes megoldást.</p>
+  </div>
+
+  <div class="mat-brands">
+
+    <!-- EGGER -->
+    <div class="mat-brand-card">
+      <div class="mat-brand-top">
+        <div class="mat-brand-icon">🪵</div>
+        <div>
+          <h3 class="mat-brand-name">EGGER</h3>
+          <p class="mat-brand-tagline" data-i18n="egger_tag">Európa vezető laminált bútorlapja</p>
+        </div>
+      </div>
+      <p class="mat-brand-desc" data-i18n="egger_desc">Az EGGER lapok kiemelkedő tartóssággal, gazdag dekórválasztékkal és precíz felületi minőséggel rendelkeznek. Ideális konyhabútorokhoz, szekrénysorokhoz és irodabútorokhoz.</p>
+      <div class="mat-brand-tags">
+        <span data-i18n="tag_durable">Tartós</span>
+        <span data-i18n="tag_wide">Széles választék</span>
+        <span data-i18n="tag_eco">Környezetbarát</span>
+        <span data-i18n="tag_eu">EU gyártás</span>
+      </div>
+      <div class="mat-brand-links">
+        <a href="https://www.drevina.sk/egger" target="_blank" class="mat-link-primary" id="eggerLink" data-i18n="mat_browse">Kollekció böngészése →</a>
+        <a href="https://www.drevina.sk/egger-kolekcia-edc2020-22" target="_blank" class="mat-link-secondary" data-i18n="mat_catalog">EDC 2020-22 katalógus</a>
       </div>
     </div>
+
+    <!-- KRONOSPAN -->
+    <div class="mat-brand-card">
+      <div class="mat-brand-top">
+        <div class="mat-brand-icon">✨</div>
+        <div>
+          <h3 class="mat-brand-name">KRONOSPAN</h3>
+          <p class="mat-brand-tagline" data-i18n="krono_tag">Prémium kollekció, modern trendek</p>
+        </div>
+      </div>
+      <p class="mat-brand-desc" data-i18n="krono_desc">A Kronospan Global Collection a legújabb belsőépítészeti trendeket követi – fás, beton, semleges, matt és fényes felületekkel. Tökéletes választás, ha egyedi, modern esztétikát keres.</p>
+      <div class="mat-brand-tags">
+        <span data-i18n="tag_modern">Modern design</span>
+        <span data-i18n="tag_matte">Matt & fényes</span>
+        <span data-i18n="tag_wood">Fa hatású</span>
+        <span data-i18n="tag_concrete">Beton hatású</span>
+      </div>
+      <div class="mat-brand-links">
+        <a href="https://www.drevina.sk/kronospan" target="_blank" class="mat-link-primary" id="kronospanBoardsLink" data-i18n="mat_browse">Kollekció böngészése →</a>
+        <a href="https://www.drevina.sk/kronospan-global-collection-3-0" target="_blank" class="mat-link-secondary" data-i18n="mat_global">Global Collection 3.0</a>
+      </div>
+    </div>
+
   </div>
 
-  <div class="mat-row mat-row-feelwood">
-    <div class="mat-img-wrap mat-img-wrap-feelwood">
-      <img src="assets/5.png" alt="Feelwood egyenes élű prémium munkalapok">
-    </div>
-    <div class="mat-body dk">
-      <p class="mat-tag" data-i18n="mat2_tag">Egyenes éli prémium munkalapok</p>
-      <h3 data-i18n="mat2_title">Feelwood egyenes éli prémium munkalapok</h3>
-      <p data-i18n="mat2_text">Természetes fa hatású, prémium minőségű munkalapok. Természetes felület, modern esztétika, egyedi kialakítás.</p>
-      <a href="#" class="mat-cta" id="matLink2" data-i18n="mat_cta">Katalógus megtekintése</a>
-    </div>
-  </div>
-
-  <div class="mat-row mat-row-poszt">
-    <div class="mat-img-wrap mat-img-wrap-poszt">
-      <img src="assets/6.png" alt="Posztforming munkalapok">
-    </div>
-    <div class="mat-body">
-      <p class="mat-tag" data-i18n="mat3_tag">Lekerekített élű munkalapok</p>
-      <h3 data-i18n="mat3_title">Posztforming munkalapok</h3>
-      <p data-i18n="mat3_text">Klasszikus, lekerekített élű munkalapok nagy tartósságú és könnyen tisztítható felülettel. Letisztult, tartós megoldás.</p>
-      <a href="#" class="mat-cta" id="matLink3" data-i18n="mat_cta">Katalógus megtekintése</a>
-    </div>
+  <div class="mat-note">
+    <span class="mat-note-icon">💡</span>
+    <p data-i18n="mat_note">Nem tudja melyiket válassza? Segítünk megtalálni a tökéletes anyagot az elképzeléséhez – vegye fel velünk a kapcsolatot!</p>
+    <a href="#contact" class="btn-dark" data-i18n="mat_contact_btn">Tanácsadást kérek</a>
   </div>
 </section>
 
@@ -2229,11 +2432,11 @@ async function runAdminSavePipeline(doPublish) {
   const ct = { phone: document.getElementById('admPhone').value, email: document.getElementById('admEmail').value };
   try { localStorage.setItem('kmmk_ct', JSON.stringify(ct)); } catch(e) {}
 
-  if(lnks.egger) document.getElementById('eggerLink').href = lnks.egger;
-  if(lnks.kronoboards) document.getElementById('kronospanBoardsLink').href = lnks.kronoboards;
-  if(lnks.feelwood) document.getElementById('matLink2').href = lnks.feelwood;
-  if(lnks.poszt) document.getElementById('matLink3').href = lnks.poszt;
-  if(lnks.krono) document.getElementById('kronospanLink').href = lnks.krono;
+  if(lnks.egger) { var elEg = document.getElementById('eggerLink'); if(elEg) elEg.href = lnks.egger; }
+  if(lnks.kronoboards) { var elKb = document.getElementById('kronospanBoardsLink'); if(elKb) elKb.href = lnks.kronoboards; }
+  if(lnks.feelwood) { var elFw = document.getElementById('matLink2'); if(elFw) elFw.href = lnks.feelwood; }
+  if(lnks.poszt) { var elPz = document.getElementById('matLink3'); if(elPz) elPz.href = lnks.poszt; }
+  if(lnks.krono) { var elKr = document.getElementById('kronospanLink'); if(elKr) elKr.href = lnks.krono; }
   if(ct.phone) {
       var p = document.getElementById('ctaPhone');
       var b = document.getElementById('ctaCallBtn');
@@ -2420,11 +2623,11 @@ function runInit() {
     renderReviews();
     initRevCarousel();
     const lnks = JSON.parse(localStorage.getItem('kmmk_links') || '{}');
-    if(lnks.egger) document.getElementById('eggerLink').href = lnks.egger;
-    if(lnks.kronoboards) document.getElementById('kronospanBoardsLink').href = lnks.kronoboards;
-    if(lnks.feelwood) document.getElementById('matLink2').href = lnks.feelwood;
-    if(lnks.poszt) document.getElementById('matLink3').href = lnks.poszt;
-    if(lnks.krono) document.getElementById('kronospanLink').href = lnks.krono;
+    if(lnks.egger) { var elEg2 = document.getElementById('eggerLink'); if(elEg2) elEg2.href = lnks.egger; }
+    if(lnks.kronoboards) { var elKb2 = document.getElementById('kronospanBoardsLink'); if(elKb2) elKb2.href = lnks.kronoboards; }
+    if(lnks.feelwood) { var elFw2 = document.getElementById('matLink2'); if(elFw2) elFw2.href = lnks.feelwood; }
+    if(lnks.poszt) { var elPz2 = document.getElementById('matLink3'); if(elPz2) elPz2.href = lnks.poszt; }
+    if(lnks.krono) { var elKr2 = document.getElementById('kronospanLink'); if(elKr2) elKr2.href = lnks.krono; }
     const ct = JSON.parse(localStorage.getItem('kmmk_ct') || '{}');
     var elPhone = document.getElementById('ctaPhone'); var elEmail = document.getElementById('ctaEmail');
     if(ct.phone) {
