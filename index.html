@@ -443,6 +443,7 @@ nav ul a:hover { color: white; }
   transition: all 0.3s; width: fit-content; line-height: 1.15; text-align: center;
 }
 .mat-cta::after { content: '→'; }
+.mat-cta.no-arrow::after { content: none; }
 .mat-cta:hover { background: var(--gold); color: white; border-color: var(--gold); }
 .mat-cta-row { display: flex; gap: var(--f3); flex-wrap: wrap; margin-top: var(--f4); }
 .mat-cta-row .mat-cta { margin-top: 0; }
@@ -458,12 +459,27 @@ nav ul a:hover { color: white; }
 
 /* Tanácsadás – kizárólag a Kronospan Global blokk után, vélemények előtt */
 .consult-strip {
+  --consult-rule: 1px solid rgba(26, 26, 24, 0.1);
   background: var(--off-white);
-  border-top: 1px solid rgba(26, 26, 24, 0.1);
+  border-top: var(--consult-rule);
   margin-top: 0;
-  padding: clamp(3.75rem, 7vw, 6rem) var(--f5) clamp(3.75rem, 7vw, 5.75rem);
+  padding: clamp(3.75rem, 7vw, 6rem) var(--f5) 0;
   text-align: center;
   box-shadow: 0 24px 40px -32px rgba(0, 0, 0, 0.12);
+}
+.consult-strip-divider {
+  border: 0;
+  border-top: 1px solid rgba(26, 26, 24, 0.1);
+  margin: 0;
+  width: 100%;
+}
+/* Teljes szélességű vonal, mint a blokk tetején a border-top */
+.consult-strip-bottom {
+  margin: var(--f4) calc(-1 * var(--f5)) 0;
+  padding: 0 0 clamp(2.75rem, 5.5vw, 3.75rem);
+  width: calc(100% + 2 * var(--f5));
+  max-width: none;
+  box-sizing: border-box;
 }
 .consult-strip-inner {
   max-width: 34rem;
@@ -491,10 +507,15 @@ nav ul a:hover { color: white; }
 }
 @media (max-width: 600px) {
   .consult-strip { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .consult-strip-bottom {
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+    width: calc(100% + 2.5rem);
+  }
 }
 
 /* REVIEWS */
-.reviews { background: var(--off-white); padding: var(--f6) var(--f5); }
+.reviews { background: var(--off-white); padding: var(--f6) var(--f5); padding-top: clamp(3.5rem, 6.5vw, 5.5rem); }
 .rev-head { text-align: center; margin-bottom: var(--f5); }
 .rev-head h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 400; color: var(--text-dark); margin-bottom: var(--f2); }
 .rev-head p { font-size: 0.85rem; color: var(--text-light); }
@@ -1471,7 +1492,7 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       <h3>EGGER laminált bútorlapok</h3>
       <p data-i18n="egger_desc">Az EGGER lapok kiemelkedő tartóssággal, gazdag dekórválasztékkal és precíz felületi minőséggel rendelkeznek. Ideális konyhabútorokhoz, szekrénysorokhoz és irodabútorokhoz.</p>
       <div style="display:flex;flex-direction:column;gap:0.75rem;">
-        <a href="https://www.drevina.sk/egger" target="_blank" class="mat-cta" data-i18n="mat_browse">Kollekció böngészése</a>
+        <a href="https://www.drevina.sk/egger" target="_blank" class="mat-cta no-arrow" data-i18n="mat_browse">Kollekció böngészése</a>
         <a href="https://www.drevina.sk/egger-kolekcia-edc2020-22" target="_blank" class="mat-cta" data-i18n="mat_catalog">EDC 2020-22 katalógus</a>
       </div>
     </div>
@@ -1484,7 +1505,7 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       <h3>KRONOSPAN laminált bútorlapok</h3>
       <p data-i18n="krono_desc">A Kronospan lapok a legújabb belsőépítészeti trendeket követik – fás, beton, semleges, matt és fényes felületekkel. Tökéletes választás, ha egyedi, modern esztétikát keres.</p>
       <div style="display:flex;flex-direction:column;gap:0.75rem;">
-        <a href="https://www.drevina.sk/kronospan" target="_blank" class="mat-cta" data-i18n="mat_browse">Kollekció böngészése</a>
+        <a href="https://www.drevina.sk/kronospan" target="_blank" class="mat-cta no-arrow" data-i18n="mat_browse">Kollekció böngészése</a>
       </div>
     </div>
     <div class="mat-img-wrap">
@@ -1507,6 +1528,9 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
     <h2 class="consult-eyebrow" id="consultStripHeading" data-i18n="advice_eyebrow">Tanácsadás</h2>
     <p class="consult-lead" data-i18n="advice_text">Nem tudja melyiket válassza? Segítünk megtalálni a tökéletes anyagot az elképzeléséhez – vegye fel velünk a kapcsolatot!</p>
     <a href="#contact" class="btn-dark" data-i18n="mat_contact_btn">Tanácsadást kérek</a>
+  </div>
+  <div class="consult-strip-bottom">
+    <hr class="consult-strip-divider" aria-hidden="true">
   </div>
 </section>
 
