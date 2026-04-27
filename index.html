@@ -7,7 +7,6 @@
 <title>KMMK – Egyedi Bútorok</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
   --black: #0D0D0B;
@@ -826,138 +825,6 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
   background: var(--off-white);
   padding: var(--f6) var(--f5);
 }
-.mat-header {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto var(--f5);
-}
-.mat-header-label {
-  font-size: 0.72rem; text-transform: uppercase;
-  letter-spacing: 0.2em; color: var(--gold);
-  margin-bottom: var(--f2);
-}
-.mat-header h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 3.5vw, 3rem);
-  font-weight: 400; color: var(--text-dark);
-  line-height: 1.2; margin-bottom: var(--f2);
-}
-.mat-header-sub {
-  font-size: 0.88rem; line-height: 1.618;
-  color: var(--text-mid);
-}
-.mat-brands {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--f4);
-  max-width: 1000px;
-  margin: 0 auto var(--f5);
-}
-.mat-brand-card {
-  background: white;
-  border-radius: var(--r-xl);
-  padding: var(--f4);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-  transition: transform 0.3s, box-shadow 0.3s;
-  display: flex;
-  flex-direction: column;
-  gap: var(--f3);
-}
-.mat-brand-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
-}
-.mat-brand-top {
-  display: flex;
-  align-items: center;
-  gap: var(--f3);
-  padding-bottom: var(--f3);
-  border-bottom: 1px solid rgba(0,0,0,0.07);
-}
-.mat-brand-icon {
-  width: 52px; height: 52px;
-  background: var(--off-white);
-  border-radius: var(--r-lg);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem; flex-shrink: 0;
-}
-.mat-brand-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.5rem; font-weight: 600;
-  color: var(--text-dark); margin-bottom: 0.2rem;
-}
-.mat-brand-tagline {
-  font-size: 0.78rem; color: var(--text-light);
-}
-.mat-brand-desc {
-  font-size: 0.87rem; line-height: 1.618;
-  color: var(--text-mid);
-}
-.mat-brand-tags {
-  display: flex; flex-wrap: wrap; gap: 0.5rem;
-}
-.mat-brand-tags span {
-  background: var(--off-white);
-  border: 1px solid rgba(0,0,0,0.08);
-  padding: 0.3rem 0.75rem;
-  border-radius: var(--r-pill);
-  font-size: 0.72rem;
-  color: var(--text-mid);
-  letter-spacing: 0.05em;
-}
-.mat-brand-links {
-  display: flex;
-  flex-direction: column; gap: 0.75rem;
-  margin-top: auto;
-}
-.mat-link-primary {
-  display: inline-block;
-  background: var(--black); color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--r-pill);
-  font-size: 0.75rem; font-weight: 500;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  text-decoration: none;
-  transition: background 0.3s;
-  text-align: center;
-}
-.mat-link-primary:hover { background: var(--gold); }
-.mat-link-secondary {
-  display: inline-block;
-  border: 1.5px solid rgba(0,0,0,0.12);
-  color: var(--text-mid);
-  padding: 0.65rem 1.5rem;
-  border-radius: var(--r-pill);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-  transition: all 0.3s;
-  text-align: center;
-}
-.mat-link-secondary:hover { border-color: var(--gold); color: var(--gold); }
-.mat-note {
-  max-width: 700px; margin: 0 auto;
-  background: var(--teal);
-  border-radius: var(--r-xl);
-  padding: var(--f4) var(--f5);
-  display: flex; align-items: center; gap: var(--f4);
-  flex-wrap: wrap;
-}
-.mat-note-icon { font-size: 1.5rem; flex-shrink: 0; }
-.mat-note p {
-  font-size: 0.88rem; line-height: 1.618;
-  color: rgba(255,255,255,0.7); flex: 1;
-}
-.mat-note .btn-dark {
-  background: white; color: var(--black);
-  white-space: nowrap; flex-shrink: 0;
-}
-.mat-note .btn-dark:hover { background: var(--gold); color: white; }
-
-@media (max-width: 768px) {
-  .mat-brands { grid-template-columns: 1fr; }
-  .mat-note { flex-direction: column; text-align: center; }
-}
 </style>
 </head>
 <body>
@@ -1012,8 +879,8 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       tag_durable: 'Tartós', tag_wide: 'Széles választék', tag_eco: 'Környezetbarát', tag_eu: 'EU gyártás',
       mat_browse: 'Kollekció böngészése →',
       mat_catalog: 'EDC 2020-22 katalógus',
-      egger_boards_btn: 'Bútorlap kollekció',
-      egger_worktops_btn: 'Munkalap kollekció',
+      egger_boards_btn: '🪵 Bútorlapok böngészése →',
+      egger_worktops_btn: '📐 Munkalap kollekció (EDC 2020-22) →',
       krono_tag: 'Prémium kollekció, modern trendek',
       krono_desc: 'A Kronospan Global Collection a legújabb belsőépítészeti trendeket követi – fás, beton, semleges, matt és fényes felületekkel. Tökéletes választás, ha egyedi, modern esztétikát keres.',
       tag_modern: 'Modern design', tag_matte: 'Matt & fényes', tag_wood: 'Fa hatású', tag_concrete: 'Beton hatású',
@@ -1027,11 +894,11 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       advice_text: 'Nem tudja melyiket válassza? Segítünk megtalálni a tökéletes anyagot az elképzeléséhez – vegye fel velünk a kapcsolatot!',
       rev_title: 'Mit mondanak a megrendelőink?', rev_sub: 'Röviden arról, milyen velünk együtt dolgozni.',
       faq_label: 'Kérdések', faq_title: 'Tudj meg mindent,<br>mielőtt kapcsolatba lépnél.',
-      faq1_q: 'Hogyan lehet kapcsolatba lépni? <span class="faq-icon">+</span>', faq1_a: 'Az oldalon lévő kapcsolati űrlapon, e-mailen vagy telefonon bármikor elérhetsz minket. Általában 24 órán belül válaszolunk.',
-      faq2_q: 'Milyen típusú projekteket vállalsz? <span class="faq-icon">+</span>', faq2_a: 'Konyhabútor, szekrénysor, gardrób, fürdőszobabútor, irodabútor és egyéb egyedi darabok préselt bútorlapból.',
-      faq3_q: 'Mennyi idő alatt készül el egy projekt? <span class="faq-icon">+</span>', faq3_a: 'Átlagosan 2–4 hét, a projekt méretétől és komplexitásától függően. Pontos határidőt az egyeztetéskor megadunk.',
-      faq4_q: 'Mik a mérési paraméterek? <span class="faq-icon">+</span>', faq4_a: 'Minden projektet helyszíni méréssel kezdünk, így a bútor pontosan a te teredbe illeszkedik. Ez az egyedi kivitelezés alapja.',
-      faq5_q: 'Hogy kezdjük el? <span class="faq-icon">+</span>', faq5_a: 'Küldj egy üzenetet az elképzeléseddel, egyeztetünk egy helyszíni mérésre, majd 3D tervrajzot készítünk – ezután indul a gyártás.',
+      faq1_q: 'Hogyan lehet kapcsolatba lépni?', faq1_a: 'Az oldalon lévő kapcsolati űrlapon, e-mailen vagy telefonon bármikor elérhetsz minket. Általában 24 órán belül válaszolunk.',
+      faq2_q: 'Milyen típusú projekteket vállalsz?', faq2_a: 'Konyhabútor, szekrénysor, gardrób, fürdőszobabútor, irodabútor és egyéb egyedi darabok préselt bútorlapból.',
+      faq3_q: 'Mennyi idő alatt készül el egy projekt?', faq3_a: 'Átlagosan 2–4 hét, a projekt méretétől és komplexitásától függően. Pontos határidőt az egyeztetéskor megadunk.',
+      faq4_q: 'Mik a mérési paraméterek?', faq4_a: 'Minden projektet helyszíni méréssel kezdünk, így a bútor pontosan a te teredbe illeszkedik. Ez az egyedi kivitelezés alapja.',
+      faq5_q: 'Hogy kezdjük el?', faq5_a: 'Küldj egy üzenetet az elképzeléseddel, egyeztetünk egy helyszíni mérésre, majd 3D tervrajzot készítünk – ezután indul a gyártás.',
       cta_title: 'Egy ötlettel kezdődik minden.', cta_text: 'Lépj velünk kapcsolatba, és néhány nap múlva már láthatod is 3D-ben az elképzelt konyhádat vagy nappalid terveit.',
       cta_btn1: 'Lépj velünk kapcsolatba', cta_btn2: 'Tudj meg többet!', cta_call_btn: 'Hívj fel most!', cta_tel: 'Tel', cta_email_label: 'Email', cta_loc_label: 'Helyszín', cta_location: 'Magyarország'
     },
@@ -1061,8 +928,8 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       tag_durable: 'Odolné', tag_wide: 'Široký výber', tag_eco: 'Ekologické', tag_eu: 'Výroba v EÚ',
       mat_browse: 'Prezrieť kolekciu →',
       mat_catalog: 'Katalóg EDC 2020-22',
-      egger_boards_btn: 'Kolekcia nábytkových dosiek',
-      egger_worktops_btn: 'Kolekcia pracovných dosiek',
+      egger_boards_btn: '🪵 Prezrieť nábytkové dosky →',
+      egger_worktops_btn: '📐 Kolekcia pracovných dosiek (EDC 2020-22) →',
       krono_tag: 'Prémiová kolekcia, moderné trendy',
       krono_desc: 'Kolekcia Kronospan Global Collection sleduje najnovšie trendy interiérového dizajnu – drevené, betónové, neutrálne, matné a lesklé povrchy. Perfektná voľba pre jedinečnú modernú estetiku.',
       tag_modern: 'Moderný dizajn', tag_matte: 'Matné a lesklé', tag_wood: 'Drevený vzhľad', tag_concrete: 'Betónový vzhľad',
@@ -1075,11 +942,11 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       advice_text: 'Neviete, čo si vybrať? Pomôžeme nájsť perfektný materiál podľa vašej predstavy – kontaktujte nás!',
       rev_title: 'Čo hovoria naši zákazníci?', rev_sub: 'Stručne o tom, aké je s nami spolupracovať.',
       faq_label: 'Otázky', faq_title: 'Zistite všetko<br>predtým, ako nás kontaktujete.',
-      faq1_q: 'Ako vás môžem kontaktovať? <span class="faq-icon">+</span>', faq1_a: 'Môžete nás kedykoľvek osloviť cez kontaktný formulár na stránke, e-mailom alebo telefonicky. Zvyčajne odpovedáme do 24 hodín.',
-      faq2_q: 'Aké typy projektov prijímate? <span class="faq-icon">+</span>', faq2_a: 'Kuchynské skrine, obývacie steny, šatníky, kúpeľňový nábytok, kancelársky nábytok a ďalšie individuálne kusy z prestovaných dosiek.',
-      faq3_q: 'Ako dlho trvá realizácia projektu? <span class="faq-icon">+</span>', faq3_a: 'Priemerne 2–4 týždne v závislosti od veľkosti a zložitosti projektu. Presný termín určíme pri konzultácii.',
-      faq4_q: 'Aké sú parametre merania? <span class="faq-icon">+</span>', faq4_a: 'Každý projekt začíname meraním na mieste, aby nábytok presne zapadol do vášho priestoru. To je základ individuálnej výroby.',
-      faq5_q: 'Ako začneme? <span class="faq-icon">+</span>', faq5_a: 'Pošlite správu s vašou predstavou, dohodneme meranie na mieste, pripravíme 3D plán – potom začína výroba.',
+      faq1_q: 'Ako vás môžem kontaktovať?', faq1_a: 'Môžete nás kedykoľvek osloviť cez kontaktný formulár na stránke, e-mailom alebo telefonicky. Zvyčajne odpovedáme do 24 hodín.',
+      faq2_q: 'Aké typy projektov prijímate?', faq2_a: 'Kuchynské skrine, obývacie steny, šatníky, kúpeľňový nábytok, kancelársky nábytok a ďalšie individuálne kusy z prestovaných dosiek.',
+      faq3_q: 'Ako dlho trvá realizácia projektu?', faq3_a: 'Priemerne 2–4 týždne v závislosti od veľkosti a zložitosti projektu. Presný termín určíme pri konzultácii.',
+      faq4_q: 'Aké sú parametre merania?', faq4_a: 'Každý projekt začíname meraním na mieste, aby nábytok presne zapadol do vášho priestoru. To je základ individuálnej výroby.',
+      faq5_q: 'Ako začneme?', faq5_a: 'Pošlite správu s vašou predstavou, dohodneme meranie na mieste, pripravíme 3D plán – potom začína výroba.',
       cta_title: 'Všetko začína jedným nápadom.', cta_text: 'Kontaktujte nás a o niekoľko dní uvidíte svoju vysnívanú kuchyňu alebo obývačku v 3D.',
       cta_btn1: 'Kontaktujte nás', cta_btn2: 'Zistiť viac!', cta_call_btn: 'Zavolajte teraz!', cta_tel: 'Tel', cta_email_label: 'Email', cta_loc_label: 'Miesto', cta_location: 'Slovensko',
       mat1_text: 'Objav rôzne farby, drevené dekorácie a povrchy a nájdi štýl, ktorý najlepšie sedí do tvojho domova.', mat2_text: 'Pracovné dosky s prirodzeným vzhľadom dreva. Prirodzený povrch, moderná estetika.', mat3_text: 'Klasické pracovné dosky so zaoblenou hranou s vysokou odolnosťou a ľahko čistiteľným povrchom.',
@@ -1111,8 +978,8 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       tag_durable: 'Durable', tag_wide: 'Wide range', tag_eco: 'Eco-friendly', tag_eu: 'EU manufacturing',
       mat_browse: 'Browse collection →',
       mat_catalog: 'EDC 2020-22 catalogue',
-      egger_boards_btn: 'Furniture board collection',
-      egger_worktops_btn: 'Worktop collection',
+      egger_boards_btn: '🪵 Browse furniture boards →',
+      egger_worktops_btn: '📐 Worktop collection (EDC 2020-22) →',
       krono_tag: 'Premium collection, modern trends',
       krono_desc: 'Kronospan Global Collection follows the latest interior design trends – wood, concrete, neutral, matt and glossy surfaces. Perfect if you want a distinctive modern look.',
       tag_modern: 'Modern design', tag_matte: 'Matt & glossy', tag_wood: 'Wood effect', tag_concrete: 'Concrete effect',
@@ -1126,11 +993,11 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       advice_text: 'Not sure which to choose? We\'ll help you find the perfect material for your vision – get in touch!',
       rev_title: 'What do our customers say?', rev_sub: 'Briefly about what it\'s like to work with us.',
       faq_label: 'Questions', faq_title: 'Learn everything<br>before you get in touch.',
-      faq1_q: 'How can I get in touch? <span class="faq-icon">+</span>', faq1_a: 'You can reach us anytime via the contact form on the site, by email or phone. We usually respond within 24 hours.',
-      faq2_q: 'What types of projects do you take on? <span class="faq-icon">+</span>', faq2_a: 'Kitchen cabinets, living room units, wardrobes, bathroom furniture, office furniture and other bespoke pieces from laminated boards.',
-      faq3_q: 'How long does a project take? <span class="faq-icon">+</span>', faq3_a: 'On average 2–4 weeks depending on project size and complexity. We\'ll give you an exact deadline at the consultation.',
-      faq4_q: 'What are the measurement parameters? <span class="faq-icon">+</span>', faq4_a: 'Every project starts with an on-site measurement so the furniture fits your space exactly. That\'s the basis of bespoke manufacturing.',
-      faq5_q: 'How do we get started? <span class="faq-icon">+</span>', faq5_a: 'Send a message with your idea, we\'ll arrange an on-site measurement, we\'ll prepare a 3D plan – then production begins.',
+      faq1_q: 'How can I get in touch?', faq1_a: 'You can reach us anytime via the contact form on the site, by email or phone. We usually respond within 24 hours.',
+      faq2_q: 'What types of projects do you take on?', faq2_a: 'Kitchen cabinets, living room units, wardrobes, bathroom furniture, office furniture and other bespoke pieces from laminated boards.',
+      faq3_q: 'How long does a project take?', faq3_a: 'On average 2–4 weeks depending on project size and complexity. We\'ll give you an exact deadline at the consultation.',
+      faq4_q: 'What are the measurement parameters?', faq4_a: 'Every project starts with an on-site measurement so the furniture fits your space exactly. That\'s the basis of bespoke manufacturing.',
+      faq5_q: 'How do we get started?', faq5_a: 'Send a message with your idea, we\'ll arrange an on-site measurement, we\'ll prepare a 3D plan – then production begins.',
       cta_title: 'Everything starts with one idea.', cta_text: 'Get in touch and in a few days you\'ll see your dream kitchen or living room in 3D.',
       cta_btn1: 'Get in touch', cta_btn2: 'Learn more!', cta_call_btn: 'Call now!', cta_tel: 'Tel', cta_email_label: 'Email', cta_loc_label: 'Location', cta_location: 'Hungary'
     }
@@ -1498,14 +1365,14 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       <h3>EGGER laminált bútorlapok</h3>
       <p data-i18n="egger_desc">Az EGGER lapok kiemelkedő tartóssággal, gazdag dekórválasztékkal és precíz felületi minőséggel rendelkeznek. Ideális konyhabútorokhoz, szekrénysorokhoz és irodabútorokhoz.</p>
       <div style="display:flex;flex-direction:column;gap:0.75rem;">
-        <a href="https://www.drevina.sk/egger" target="_blank" class="mat-cta no-arrow" data-i18n="egger_boards_btn">Bútorlap kollekció</a>
-        <a href="https://www.drevina.sk/egger-kolekcia-edc2020-22" target="_blank" class="mat-cta no-arrow" data-i18n="egger_worktops_btn">Munkalap kollekció</a>
+        <a href="https://www.drevina.sk/egger" target="_blank" class="mat-cta no-arrow" data-i18n="egger_boards_btn">🪵 Bútorlapok böngészése →</a>
+        <a href="https://www.drevina.sk/egger-kolekcia-edc2020-22" target="_blank" class="mat-cta mat-cta-alt no-arrow" data-i18n="egger_worktops_btn">📐 Munkalap kollekció (EDC 2020-22) →</a>
       </div>
     </div>
   </div>
 
   <!-- KRONOSPAN -->
-  <div class="mat-row">
+  <div class="mat-row rev">
     <div class="mat-body dk">
       <p class="mat-tag">Prémium kollekció, modern trendek</p>
       <h3>Prémium laminált bútorlapok</h3>
@@ -1588,11 +1455,26 @@ html[lang="sk"] .adm-head h2 { font-family: 'Source Serif 4', serif; }
       <small data-i18n="faq_label">Kérdések</small>
       <h2 data-i18n="faq_title">Tudj meg mindent,<br>mielőtt kapcsolatba lépnél.</h2>
     </div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq1_q">Hogyan lehet kapcsolatba lépni? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq1_a">Az oldalon lévő kapcsolati űrlapon, e-mailen vagy telefonon bármikor elérhetsz minket. Általában 24 órán belül válaszolunk.</div></div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq2_q">Milyen típusú projekteket vállalsz? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq2_a">Konyhabútor, szekrénysor, gardrób, fürdőszobabútor, irodabútor és egyéb egyedi darabok préselt bútorlapból.</div></div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq3_q">Mennyi idő alatt készül el egy projekt? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq3_a">Átlagosan 2–4 hét, a projekt méretétől és komplexitásától függően. Pontos határidőt az egyeztetéskor megadunk.</div></div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq4_q">Mik a mérési paraméterek? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq4_a">Minden projektet helyszíni méréssel kezdünk, így a bútor pontosan a te teredbe illeszkedik. Ez az egyedi kivitelezés alapja.</div></div>
-    <div class="faq-row"><div class="faq-q" data-i18n="faq5_q">Hogy kezdjük el? <span class="faq-icon">+</span></div><div class="faq-a" data-i18n="faq5_a">Küldj egy üzenetet az elképzeléseddel, egyeztetünk egy helyszíni mérésre, majd 3D tervrajzot készítünk – ezután indul a gyártás.</div></div>
+    <div class="faq-row">
+      <div class="faq-q"><span data-i18n="faq1_q">Hogyan lehet kapcsolatba lépni?</span><span class="faq-icon"></span></div>
+      <div class="faq-a" data-i18n="faq1_a">Az oldalon lévő kapcsolati űrlapon, e-mailen vagy telefonon bármikor elérhetsz minket. Általában 24 órán belül válaszolunk.</div>
+    </div>
+    <div class="faq-row">
+      <div class="faq-q"><span data-i18n="faq2_q">Milyen típusú projekteket vállalsz?</span><span class="faq-icon"></span></div>
+      <div class="faq-a" data-i18n="faq2_a">Konyhabútor, szekrénysor, gardrób, fürdőszobabútor, irodabútor és egyéb egyedi darabok préselt bútorlapból.</div>
+    </div>
+    <div class="faq-row">
+      <div class="faq-q"><span data-i18n="faq3_q">Mennyi idő alatt készül el egy projekt?</span><span class="faq-icon"></span></div>
+      <div class="faq-a" data-i18n="faq3_a">Átlagosan 2–4 hét, a projekt méretétől és komplexitásától függően. Pontos határidőt az egyeztetéskor megadunk.</div>
+    </div>
+    <div class="faq-row">
+      <div class="faq-q"><span data-i18n="faq4_q">Mik a mérési paraméterek?</span><span class="faq-icon"></span></div>
+      <div class="faq-a" data-i18n="faq4_a">Minden projektet helyszíni méréssel kezdünk, így a bútor pontosan a te teredbe illeszkedik. Ez az egyedi kivitelezés alapja.</div>
+    </div>
+    <div class="faq-row">
+      <div class="faq-q"><span data-i18n="faq5_q">Hogy kezdjük el?</span><span class="faq-icon"></span></div>
+      <div class="faq-a" data-i18n="faq5_a">Küldj egy üzenetet az elképzeléseddel, egyeztetünk egy helyszíni mérésre, majd 3D tervrajzot készítünk – ezután indul a gyártás.</div>
+    </div>
   </div>
 </section>
 
