@@ -259,8 +259,7 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
   <div class="login-box">
     <div style="font-size:2.5rem;margin-bottom:1rem;">🔐</div>
     <h1>KMMK <span style="color:var(--gold)">Admin</span></h1>
-    <p>Az éles jelszó a Vercel <strong>KMMK_ADMIN_PASSWORD</strong> értéke (nem böngészős „kód”).</p>
-    <input type="password" id="passInput" placeholder="Admin jelszó" onkeydown="if(event.key==='Enter')doLogin()">
+    <input type="password" id="passInput" placeholder="Jelszó" onkeydown="if(event.key==='Enter')doLogin()">
     <button onclick="doLogin()">Belépés</button>
     <div class="login-err" id="loginErr">Hibás jelszó!</div>
   </div>
