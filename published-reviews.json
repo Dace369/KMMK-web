@@ -1,8 +1,16 @@
 {
   "version": 1,
   "usePublishedReviews": true,
-  "updatedAt": "2026-04-14T20:59:14.697Z",
+  "updatedAt": "2026-04-27T20:28:20.501Z",
   "items": [
+    {
+      "id": "r_5c5ff1c448c1935a",
+      "name": "dani",
+      "location": "Nagyolved",
+      "text": "asdsdasd",
+      "stars": 4,
+      "createdAt": "2026-04-27T20:28:20.305Z"
+    },
     {
       "id": "r_seed_1",
       "name": "Kovács Annamária",
