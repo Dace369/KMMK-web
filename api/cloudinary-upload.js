@@ -3,7 +3,8 @@ const https = require("https");
 const busboy = require("busboy");
 const { getAdminCookie, verifyToken } = require("./admin-cookie");
 
-const MAX_BYTES = 5 * 1024 * 1024;
+/* Vercel serverless request body limit ~4.5 MB; multipart overhead needs headroom. */
+const MAX_BYTES = 4 * 1024 * 1024;
 
 function cloudinarySignature(paramsToSign, apiSecret) {
   const keys = Object.keys(paramsToSign).sort();
@@ -181,7 +182,7 @@ module.exports = async function cloudinaryUploadHandler(req, res) {
           chunks.push(d);
         });
         file.on("limit", function () {
-          reject(new Error("Max. 5 MB / kép."));
+          reject(new Error("Max. 4 MB / kép."));
         });
         file.on("end", function () {
           fileBuffer = Buffer.concat(chunks);

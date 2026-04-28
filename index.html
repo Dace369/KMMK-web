@@ -2162,8 +2162,8 @@ function handleQuickPortfolioFiles(files) {
 function handlePortfolioItemFiles(itemIndex, files) {
   if (!portfolioItems[itemIndex]) return;
   Array.from(files || []).forEach(function(f) {
-    if (f.size > 5 * 1024 * 1024) {
-      alert('Max. 5 MB / kép.');
+    if (f.size > 4 * 1024 * 1024) {
+      alert('Max. 4 MB / kép.');
       return;
     }
     var uploadId = ++imgUploadSeq;
@@ -2173,7 +2173,16 @@ function handlePortfolioItemFiles(itemIndex, files) {
     fd.append('file', f);
     fetch('/api/cloudinary-upload', { method: 'POST', body: fd, credentials: 'include' })
       .then(function(res) {
-        return res.json().then(function(j) {
+        return res.text().then(function(raw) {
+          var j = {};
+          try {
+            j = raw ? JSON.parse(raw) : {};
+          } catch (eJson) {
+            if (res.status === 413 || /entity too large|request entity/i.test(raw || '')) {
+              throw new Error('A fájl túl nagy (max. 4 MB / kép, a Vercel feltöltési limit miatt). Próbálj kisebb képet vagy tömörítsd.');
+            }
+            throw new Error('Szerver válasz nem JSON (HTTP ' + res.status + ').');
+          }
           if (!res.ok) throw new Error(j.error || j.detail || (j.message ? j.message : 'Upload failed'));
           return j;
         });
@@ -2227,7 +2236,7 @@ function renderPortfolioEditor() {
   var uploadTop = '<div class="upload-zone adm-port-global-upload adm-port-quick-upload" role="button" tabindex="0" onclick="document.getElementById(\'portfolioQuickFileIn\').click()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();document.getElementById(\'portfolioQuickFileIn\').click();}">' +
     '<span class="uz-icon" aria-hidden="true">\uD83D\uDDBC</span>' +
     '<p style="margin:0;font-size:0.88rem;color:var(--text-dark);">Képek feltöltése</p>' +
-    '<small style="display:block;margin-top:0.35rem;">Kattints ide — <strong>több kép</strong> is kijelölhető egyszerre (Ctrl+klikk). A képek az <strong>utolsó</strong> projekthez kerülnek; ha még nincs elem, létrejön egy. Max. 5 MB / kép.</small></div>';
+    '<small style="display:block;margin-top:0.35rem;">Kattints ide — <strong>több kép</strong> is kijelölhető egyszerre (Ctrl+klikk). A képek az <strong>utolsó</strong> projekthez kerülnek; ha még nincs elem, létrejön egy. Max. 4 MB / kép.</small></div>';
   try {
   if (!portfolioItems.length) {
     root.innerHTML = '<div class="adm-port-one-sheet">' + uploadTop +

@@ -414,7 +414,7 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
           <input type="file" id="portImgIn" multiple accept="image/*">
           <div class="img-upload-icon">🖼</div>
           <p>Kattints ide vagy húzd ide a képeket</p>
-          <small>JPG, PNG, WEBP – max. 5 MB / kép</small>
+          <small>JPG, PNG, WEBP – max. 4 MB / kép</small>
         </div>
         <div class="upload-progress" id="portUploadProgress">Feltöltés folyamatban...</div>
         <div class="img-preview-grid" id="portImgPreview"></div>
@@ -464,7 +464,7 @@ body { font-family: 'Jost', sans-serif; background: var(--off-white); color: var
 <script>
 // KMMK külön admin oldal — ugyanazok a tárolók / API-k, mint a főoldali /#admin
 // Képfeltöltés: POST /api/cloudinary-upload (aláírt, admin süti szükséges — CLOUDINARY_API_SECRET a Vercelen)
-const MAX_IMG_BYTES = 5 * 1024 * 1024;
+const MAX_IMG_BYTES = 4 * 1024 * 1024;
 
 let portfolio = [];
 let reviews = [];
@@ -805,7 +805,7 @@ async function handlePortImgs(files) {
     for (var fi = 0; fi < list.length; fi++) {
       var file = list[fi];
       if (file.size > MAX_IMG_BYTES) {
-        alert('Max. 5 MB / kép.');
+        alert('Max. 4 MB / kép.');
         continue;
       }
       var idx = portCurrentImgs.length;
@@ -815,7 +815,16 @@ async function handlePortImgs(files) {
         var fd = new FormData();
         fd.append('file', file);
         var res = await fetch('/api/cloudinary-upload', { method: 'POST', body: fd, credentials: 'include' });
-        var data = await res.json();
+        var raw = await res.text();
+        var data = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch (parseErr) {
+          if (res.status === 413 || /entity too large|request entity/i.test(raw)) {
+            throw new Error('A fájl túl nagy (max. 4 MB / kép, a Vercel feltöltési limit miatt).');
+          }
+          throw new Error('Szerver válasz nem JSON (HTTP ' + res.status + ').');
+        }
         if (!res.ok) throw new Error(data.error || data.detail || 'Upload failed');
         var url = (data && (data.secure_url || data.url || '')).toString().trim();
         if (!/^https:\/\//i.test(url)) throw new Error('Nincs érvényes kép-URL.');
